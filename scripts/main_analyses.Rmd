@@ -1,0 +1,1154 @@
+---
+title: "NIJ MetaT analysis"
+author: "Allison R. Mason"
+output: html_document
+---
+
+```{r, include=FALSE}
+#adapted from: https://combine-australia.github.io/RNAseq-R/06-rnaseq-day1.html#Differential_expression_with_limma-voom
+set.seed(3)
+library(readxl)
+library(writexl)
+library(here)
+library(ggplot2)
+library(ggpubr)
+library(MASS)
+library(edgeR)
+library(limma)
+library(DESeq2)
+# library(reshape2)
+library(tidyverse)
+library(knitr)
+```
+
+```{r data, include=FALSE}
+# load counts matrix and metadata
+NIJ_all_counts = read_xlsx(here::here("data/NIJ_rawcounts_matrix.xlsx")) #counts
+gene_ref = NIJ_all_counts %>% select(Gene, Gene_length)
+
+
+# load sample metadata
+metadata = read_xlsx(here::here("data/SP_metadata.xlsx"), sheet = "R") #metadata
+metadata$Sample_name = as.factor(metadata$Sample_name)
+metadata$Trt = as.factor(metadata$Trt)
+metadata$Rep = as.factor(metadata$Rep)
+metadata$Study_day = factor(metadata$Study_day, ordered = TRUE, levels = c(0, 12, 58, 86, 168, 376))
+metadata$Study_con = factor(metadata$Study_con, ordered = TRUE, levels = c("con", "d.0", "d.12", "d.58", "d.86", "d.168", "d.376"))
+metadata$Stage = as.factor(metadata$Stage)
+
+# load eggnog annotation file
+gene_an = read_excel(here::here("data/NIJ_all_annotations.emapper.annotations.xlsx"), sheet = "R")
+COG_cat = read_excel(here::here("data/NIJ_all_annotations.emapper.annotations.xlsx"), sheet = "COG_prim")
+```
+
+```{r, include = FALSE, eval = FALSE}
+#make a raw counts dataframe with annotations
+
+NIJ_all_counts_ann <- NIJ_all_counts %>%
+  rename(query = Gene) %>%
+  left_join(gene_an, by = "query")
+
+write_xlsx(NIJ_all_counts_ann, here::here("data/NIJ_rawcounts_annotated.xlsx"))
+```
+
+```{r GOI, include=FALSE}
+NIJ_all_counts_ann <- read_excel(here::here("data/NIJ_rawcounts_annotated.xlsx"))
+# Genes of interest: 
+
+## look for annamox genes via EC
+  #hyradize synthase subunit - Hzs (EC: 1.7.2.7)
+  Hzs = NIJ_all_counts_ann %>% filter(EC == "1.7.2.7")
+  
+  #hydrazine dehydrogenase - Hdh (EC: 1.7.2.8)
+  Hdh = NIJ_all_counts_ann %>% filter(EC == "1.7.2.8")
+```
+
+```{r, include=FALSE}
+#format the data
+
+#dataframe of count data only:
+countdata = NIJ_all_counts %>% 
+  column_to_rownames(var = "Gene") %>%
+  select(-Gene_length)
+  
+#check colnames in counts file is in the same order as sample ID in metadata file
+all(colnames(countdata)==metadata$Sample_name)
+```
+
+```{r, include=FALSE}
+#convert counts into DGElist object to be used by edgeR
+y = DGEList(countdata)
+
+names(y) #what is stored in y
+
+trt = paste(metadata$Trt) #make an object for the variable trt
+trt = factor(trt) #make sure trt is a factor
+y$samples$trt = trt #add trt to the DGElist object under the samples tab
+
+study_day = paste(metadata$Study_day)
+study_day = factor(study_day)
+y$samples$study_day = study_day
+
+study_con = paste(metadata$Study_con)
+study_con = factor(study_con)
+y$samples$study_con = study_con
+
+y$samples
+```
+
+```{r, include=FALSE}
+#note: could add annotation information, especially if using entrezid; will just move on and add that info later (in the master enggnog annotation file)
+
+#filter lowly expressed genes: 
+#lowly expressed genes provide little evidence for differential expression and can hinder some statistical analyses. They can also reduce power to detect deferentially expressed genes when FDR methods are applied.
+#can filter by counts per million threshold in n number of samples; might try TPM
+#from edgeR: rule of thumb is that a gene is required to have a count of 5-10 in a library to be considered for DE
+
+#edgeR has the function filterByExpr(), which will keep rows(genes) that meet the threshold in a minimum number of samples. The minimum number of samples is determined by the group factor in the DGElist. EdgeR will assess the smallest sample size within the groups defined and make this the threshold. If you added metadata under a name other than 'group', you can specify the experimental varible you want edgR to consider. 
+#I will use day as groups
+
+keep = filterByExpr(y, group=study_con)
+y.con = y[keep, , keep.lib.sizes=FALSE]
+
+nrow(y$counts)-nrow(y.con$counts) #this removed 561,547 genes; only 455,022 remain
+```
+
+### Data quality
+
+```{r, echo=FALSE, warning=FALSE}
+# check data quality
+barplot(y.con$samples$lib.size, names=colnames(y.con),las=2, ann=FALSE, cex.names=0.75)
+mtext(side =1, text="Sample", line = 4)
+mtext(side = 2, text="Library size (millions)", line = 3)
+title("Library sizes (raw counts)")
+```
+
+
+```{r, echo=FALSE}
+# count data is not normally distributed (this was expected), need to scale (log2) to look at the distribution of raw counts.
+
+y.con.log = cpm(y.con,log=TRUE)
+
+boxplot(y.con.log, xlab="", ylab="Log2 counts per million", las=2)
+abline(h=median(y.con.log),col="purple")
+title("Boxplots of logCPMs (unnormalised)")
+```
+
+Most samples are within the median line, only samples that may be suspect are SP1_376 and SP1_86.
+
+### Do any samples appear to be different from the others?
+
+```{r, include = FALSE}
+#multidimensional scaling plot by study day:
+
+levels(metadata$Study_day) #how many study days and in what order are they stored
+#phylum_colors <- c("#CBD588", "#5F7FC7", "orange","#DA5724", "#508578", "#CD9BCD","#AD6F3B", "#673770","#D14285", "#652926", "#C84248", "#8569D5", "#5E738F","#D1A33D", "#8A7C64", "#599861")
+col.day = c("#CBD588", "#5F7FC7", "orange","#DA5724", "#508578", "#CD9BCD","#AD6F3B")[metadata$Study_day] #assign colors to each study day
+data.frame(metadata$Study_day, col.day)
+```
+
+
+```{r, echo = FALSE}
+#redo the MDS with color by study day
+plotMDS(y.con, col=col.day)
+legend("topleft",fill=c("#CBD588", "#5F7FC7", "orange","#DA5724", "#508578", "#CD9BCD"),legend=levels(metadata$Study_day))
+title("Study Day")
+
+#note: the distance between each pair of samples in the MDS plot are calculated and the leading fold change (root mean square of the largest 500 log2-fold changes) between that pair of samples.
+```
+
+```{r, include = FALSE}
+#tidy MDS plot with ggplot2
+mds = plotMDS(y.con) #save output of plotMDS to an R object. This will extract the plotting values as a matrix that we can use to replot in ggplot2
+
+mds_df <- data.frame("Sample_name" = rownames(mds$distance.matrix.squared),
+                "Dim1" = mds$x,
+                "Dim2" = mds$y) %>%
+  left_join(metadata, by = "Sample_name")
+
+library(RColorBrewer)
+brewer.pal(7, "Dark2")
+#"#1B9E77", "#D95F02", "#7570B3", "#E7298A", "#66A61E", "#E6AB02", "#A6761D"
+
+x_lab <- paste0("LogFC Dim1 (", round(mds$var.explained[1] * 100, 2), "%)")
+y_lab <- paste0("LogFC Dim2 (", round(mds$var.explained[2] * 100, 2), "%)")
+
+mds_stage <- ggplot(mds_df, aes(x=Dim1, y=Dim2, color= Stage, fill = Stage)) + geom_point(aes(color = Stage, shape = Rep), size = 5) + scale_shape_manual(values=c(15,16,17,18)) + scale_fill_manual(values = c("#1B9E77", "#D95F02", "#7570B3", "#E7298A", "#66A61E", "#E6AB02", "#A6761D"))+ scale_color_manual(values = c("#1B9E77", "#D95F02", "#7570B3", "#E7298A", "#66A61E", "#E6AB02", "#A6761D")) + labs(x = x_lab, y = y_lab, title = "Distance between gene expression across decomposition stages (MDS)")  + theme_bw()
+```
+
+```{r, echo = FALSE, warning=FALSE}
+mds_stage
+```
+
+```{r, include=FALSE, echo=FALSE, warning=FALSE}
+mds_df$day_num = as.numeric(as.character(mds_df$Study_day))
+x_lab <- paste0("LogFC Dim1 (", round(mds$var.explained[1] * 100, 2), "%)")
+y_lab <- paste0("LogFC Dim2 (", round(mds$var.explained[2] * 100, 2), "%)")
+
+ggplot(mds_df, aes(x=Dim1, y=Dim2, color = Study_day, shape = Rep)) + geom_point(size = 5)+ scale_shape_manual(values=c(15,16,17,18)) + scale_color_manual(values = c("#1B9E77", "#D95F02", "#7570B3", "#E7298A", "#66A61E", "#E6AB02", "#A6761D")) + labs(x = x_lab, y = y_lab, title = "Distance between gene expression over time (MDS)") + theme_bw()
+```
+
+```{r, include = FALSE}
+x_lab <- paste0("LogFC Dim1 (", round(mds$var.explained[1] * 100, 2), "%)")
+y_lab <- paste0("LogFC Dim2 (", round(mds$var.explained[2] * 100, 2), "%)")
+
+# colfunc <- colorRampPalette(c("lightblue","darkblue"))
+# colfunc(6)
+cols = c("#ADD8E6" ,"#8AACD3", "#6781C1", "#4556AF" ,"#222B9D", "#00008B")
+
+#pink to dark blue pal
+cols2 = c("#FB7B8E","#FAA7B8","#CDB3D4","#AAB6FB","#6096FD","#031B88")
+
+mds_day <- ggplot(mds_df, aes(x=Dim1, y=Dim2, color = Study_day, shape = Rep)) +
+  geom_hline(yintercept= 0, color = "grey95") + 
+  geom_vline(xintercept = 0, color = "grey95") + 
+  geom_point(size = 5) + 
+  scale_shape_manual(values=c(15,16,17,18)) + 
+  scale_color_manual(values = cols2) + 
+  labs(x = x_lab, y = y_lab, title = "Distance between gene expression over time (MDS)", color = "Study Day") + 
+  theme_bw() + 
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()) 
+```
+
+```{r, echo = FALSE, warning=FALSE}
+mds_day
+```
+
+There is nice separation with time, and some overlap between 186 and 376. All controls and timepoint 0 samples cluster together. Final timepoint samples (376) do not cluster with their respective initial timepoint samples, suggesting gene expression is still altered after 1-year of decomposition. All but the control at study day 168 cluster together. This sample was take in October while all others were taken between May and July, suggesting seasonal differences may occur, but were not fully captured by the timepoints chosen for analysis. 
+
+#### Top 500 most variable genes
+
+```{r, include = FASE}
+#heatmap.2() will calculate a matrix of euclidean distances from the logCPM for the 500 most variable genes
+
+#estimate variance for each row in the log counts matrix
+var_genes <- apply(y.con.log, 1, var)
+
+#extract the top 500 MOST variable genes
+select_var <- names(sort(var_genes, decreasing = TRUE))[1:500]
+
+#use the top names to subset the counts matrix
+highly_var_lcpm <- y.con.log[select_var,]
+dim(highly_var_lcpm)
+
+highly_var_lcpm_df <- highly_var_lcpm %>%
+  as.data.frame() %>%
+  rownames_to_column(var = "query") %>%
+  left_join(gene_an, by = "query") %>%
+  left_join(COG_cat, by = "COG_category")
+
+highly_var_lcpm_df$Ann = factor(highly_var_lcpm_df$Ann, levels = c("Function Unknown","Lipid transport and metabolism", "Inorganic ion transport and metabolism","Cell wall/membrane/envelope biogenesis", "unclassified","Energy production and conversion" ,"Replication, recombination and repair","Post-translational modification, protein turnover, and chaperones", "Transcription","Signal transduction mechanisms" ,"Translation, ribosomal structure and biogenesis", "Cell cycle control, cell division, chromosome partitioning" ,"Amino acid transport and metabolism", "Cell motility", "Secondary metabolites biosynthesis, transport, and catabolism","Carbohydrate transport and metabolism"  ,"Intracellular trafficking, secretion and vesicular transport" ,"Nucleotide transport and metabolism","Coenzyme transport and metabolism"))
+
+highly_var_lcpm_df_arran <- highly_var_lcpm_df %>%
+  arrange(Ann)
+
+highly_var_lcpm_df_arran$Ann = factor(highly_var_lcpm_df_arran$Ann, levels = c("Amino acid transport and metabolism", "Carbohydrate transport and metabolism", "Cell cycle control, cell division, chromosome partitioning", "Cell motility", "Cell wall/membrane/envelope biogenesis", "Coenzyme transport and metabolism", "Energy production and conversion", "Function Unknown", "Inorganic ion transport and metabolism", "Intracellular trafficking, secretion and vesicular transport", "Lipid transport and metabolism", "Nucleotide transport and metabolism", "Post-translational modification, protein turnover, and chaperones", "Replication, recombination and repair", "Secondary metabolites biosynthesis, transport, and catabolism", "Signal transduction mechanisms", "Transcription", "Translation, ribosomal structure and biogenesis", "unclassified"))
+```
+
+```{r, include = FALSE, eval = FALSE}
+write_xlsx(highly_var_lcpm_df, here::here("data/NIJ_confilter_log_top500.xlsx"))
+```
+
+*What COG categories are present in the top 500 most variable expressed genes?*
+
+```{r, include=FALSE}
+cog_cat_counts <- highly_var_lcpm_df %>%
+  select(query, COG_category) %>%
+  count(COG_category) %>%
+  mutate(per = ((n/500)*100)) %>%
+  left_join(COG_cat, by = "COG_category")
+
+colpalette2= c("khaki3","steelblue3","orange","chocolate","aquamarine4","plum3","black","mediumpurple4","violetred3","brown4","chartreuse3","lavenderblush4","lightpink","mediumpurple3","lightcyan1","palegreen4","red1","wheat4","papayawhip","tomato3")
+nb.cols=20
+expanded_cols=colorRampPalette(colpalette2)(nb.cols)
+
+top_500_cog_percent <- ggplot(cog_cat_counts, aes(x="", y=per, fill=Ann)) + 
+  geom_bar(width = 1, stat = "identity") + 
+  scale_fill_manual(values = expanded_cols) +
+  labs(x = "", y = "Percentage of Genes") +
+  theme_bw() + 
+  guides(color = guide_legend(override.aes = list(size = 0.5))) +
+  theme(legend.title = element_text(size = 8), 
+        legend.text = element_text(size = 8),
+        legend.key.size = unit(0.8, "lines"))
+```
+
+```{r, echo=FALSE, warning=FALSE}
+top_500_cog_percent
+```
+
+*How do the top 500 most variable expressed genes compare between samples?*
+
+```{r, include=FALSE}
+library(gplots)
+library(RColorBrewer)
+
+#prep colors for the heatmap
+mypalette <- brewer.pal(11, "RdYlBu")
+morecols <- colorRampPalette(mypalette)
+#colors for stage variable
+brewer.pal(7, "Dark2")
+col.study.con <- c("black","#FB7B8E","#FAA7B8", "#CDB3D4" ,"#AAB6FB", "#6096FD", "#031B88")[metadata$Study_con]
+
+col.COG = expanded_cols[highly_var_lcpm_df$Ann]
+col.ann <- expanded_cols[highly_var_lcpm_df_arran$Ann]
+
+highly_var_lcpm_plot <- highly_var_lcpm_df_arran %>%
+  column_to_rownames(var = "query") %>%
+  select(colnames(highly_var_lcpm))
+
+#plot heatmap - do not apply dendogram on y axis - order by COG cat
+heatmap.2(as.matrix(highly_var_lcpm_plot), 
+          col = rev(morecols(50)),
+          dendrogram = "none",
+          trace="none",
+          Rowv = FALSE,
+          RowSideColors = col.ann,
+          ColSideColors = col.study.con,
+          scale="row") +
+  legend(coords,      
+    legend = unique(metadata$Study_day),
+    col = unique(col.study.con), 
+    lty = 1,             
+    lwd = 5,           
+    cex =.7)
+
+#plot heatmap - dendogram on both sides
+coords <- list("x" = 0.178, "y" = 1.91)
+
+png(file = here::here("figures/Fig_S2.png"))
+heatmap.2(highly_var_lcpm, 
+          col=rev(morecols(50)),
+          trace="none",
+          ColSideColors = col.study.con,
+          RowSideColors = col.COG,
+          scale="row") +
+  legend("topleft",
+         inset=c(0.2 ,-0.2),
+         c("CON", levels(metadata$Study_day)), 
+         col = unique(col.study.con),
+         ncol = 2,
+         pch=15,
+         title = "Day") 
+dev.off()
++
+  theme(legend.title = element_text(size = 8), 
+        legend.text = element_text(size = 8),
+        legend.key.size = unit(0.8, "lines"))
+  legend(coords,
+         legend = unique(metadata$Study_day),
+         col = unique(col.study.con), 
+         lty = 1,             
+         lwd = 2,           
+         cex =.7)
+```
+
+*How do the 500 least variable expressed genes compare between samples?*
+
+```{r, echo=FALSE}
+#extract the top 500 LEAST variable genes
+select_var_l = names(sort(var_genes, decreasing = FALSE))[1:500]
+
+#use the top names to subset the counts matrix
+least_var_lcpm = y.con.log[select_var_l,]
+dim(least_var_lcpm)
+
+#prep colors for the heatmap
+mypalette <- brewer.pal(11, "RdYlBu")
+morecols <- colorRampPalette(mypalette)
+#colors for stage variable
+brewer.pal(7, "Dark2")
+col.study.con <- c("black","#FB7B8E","#FAA7B8", "#CDB3D4" ,"#AAB6FB", "#6096FD", "#031B88")[metadata$Study_con]
+
+#plot heatmap
+heatmap.2(least_var_lcpm,
+          col=rev(morecols(50)),
+          trace="none",main="Top 500 least variable genes across samples",
+          ColSideColors = col.study.con,
+          scale="row")
+```
+
+
+*Gene counts over time*
+
+```{r, include=FALSE}
+#normalize for composition bias
+
+#edgeR applies a TMM normalization to reduce bias between libraries; in this normalization approach, a set of normalization factors are calculated to define an effective library size; uses a weighted trimmed mean of the log expression ratios between samples: this corrects for sequencing depth, RNA composition, and gene length
+
+y_norm = calcNormFactors(y.con)
+y_norm$samples
+
+#normalization factors multiply to unity across all libraries. Normalization factor < 1 for a library, means the library size will be scaled down (counts are scaled up), while a normalization factor > 1 means the library will be scale up (counts scaled down)
+
+y_norm_counts = cpm(y_norm) #extract TMM normalized counts; note while we are using the edgeR cpm function, this command will check the DGElist object for norm.factors that are produed when TMM normalization is completed using the calcNormFactors(); While not in this code, counts produced from the non-normalized df (y) and TMM norm (y_norm) were compared and do differ even though the $counts list within both DGElists are the same
+```
+
+```{r, echo = FALSE}
+plotMD(y.con.log, column = 5)
+abline(h=0, col="grey")
+
+plotMD(y_norm_counts, column = 5)
+abline(h=0, col="grey")
+```
+```{r, include = FALSE}
+y_norm_counts = y_norm_counts %>% 
+  as.data.frame() %>%
+  rownames_to_column("query") %>%
+  left_join(gene_an, by = "query") %>%
+  left_join(COG_cat, by = "COG_category")
+
+```
+
+
+```{r, eval = FALSE}
+write_xlsx(y_norm_counts, here::here("data/NIJ_TMM_countstable.xlsx"))
+y_norm_counts = read_xlsx(here::here("data/NIJ_TMM_countstable.xlsx"))
+```
+
+
+```{r, include=FALSE}
+#bar plot of gene counts of annotated (COG) genes over time
+library(reshape2)
+y_norm_counts_melt <- y_norm_counts %>%
+  select(-seed_ortholog, -evalue, -score, -eggNOG_OGs, -max_annot_lvl, -Description, -Preferred_name, -GOs, -EC, -KEGG_ko, -KEGG_Pathway, -KEGG_Module, -KEGG_Reaction, -KEGG_rclass, -BRITE, -KEGG_TC, -CAZy, -BiGG_Reaction, -PFAMs) %>%
+  melt(., id.vars = c("query", "COG_category", "Ann"))
+
+y_norm_counts_sum <- y_norm_counts_melt %>%
+  rename(Sample_name = variable) %>%
+  group_by(Sample_name, Ann) %>%
+  summarise(sum_value = sum(value)) %>%
+  left_join(metadata, by = "Sample_name")
+```
+
+*TMM counts by COG category*
+
+```{r, echo = FALSE, warning=FALSE}
+colpalette2= c("khaki3","steelblue3","orange","chocolate","aquamarine4","plum3","black","mediumpurple4","violetred3","brown4","chartreuse3","lavenderblush4","lightpink","mediumpurple3","lightcyan1","palegreen4","red1","wheat4","papayawhip","tomato3")
+nb.cols=25
+expanded_cols=colorRampPalette(colpalette2)(nb.cols)
+
+a = ggplot(y_norm_counts_sum, aes(x=Study_day, y= sum_value, fill = Ann)) + 
+  geom_bar(stat = "identity") + scale_fill_manual(values = expanded_cols) + 
+  theme(axis.text.x = element_text(hjust = 1, size=6)) + 
+  scale_y_continuous(expand = c(0, 0)) + 
+  guides(fill=guide_legend(ncol=1)) + 
+  labs(x = "Study Day", y = "TMM Counts", fill = "COG Category") +
+  facet_wrap(~Rep) +
+  theme_bw()
+
+addSmallLegend <- function(myPlot, pointSize = 3, textSize = 8, spaceLegend = 0.5) {
+    myPlot +
+        guides(shape = guide_legend(override.aes = list(size = pointSize)),
+               color = guide_legend(override.aes = list(size = pointSize))) +
+        theme(legend.title = element_text(size = textSize), 
+              legend.text  = element_text(size = textSize),
+              legend.key.size = unit(spaceLegend, "lines"))
+}
+
+addSmallLegend(a)
+```
+
+```{r, include=FALSE}
+# other plots as the same above, reported here for reference
+#same plot, but remove any genes that were not assigned COG categories (aka 'unclassified')
+y_norm_counts_sum_meta_COGhits = y_norm_counts_sum %>% filter(Ann != "unclassified")
+
+b = ggplot(y_norm_counts_sum_meta_COGhits, aes(x=Study_day, y= sum_value, fill = Ann)) + geom_bar(stat = "identity") + scale_fill_manual(values = expanded_cols) + theme(axis.text.x = element_text(hjust = 1, size=6)) + scale_y_continuous(expand = c(0, 0)) + guides(fill=guide_legend(ncol=1))+ facet_wrap(~Rep) +theme_bw()
+
+addSmallLegend(b)
+
+y_norm_counts_sum_meta_COGhits_notunknown = y_norm_counts_sum_meta_COGhits %>% filter(Ann != "Function Unknown")
+
+c = ggplot(y_norm_counts_sum_meta_COGhits_notunknown, aes(x=Study_day, y= sum_value, fill = Ann)) + geom_bar(stat = "identity") + scale_fill_manual(values = expanded_cols) + theme(axis.text.x = element_text(hjust = 1, size=6)) + scale_y_continuous(expand = c(0, 0)) + guides(fill=guide_legend(ncol=1))+ facet_wrap(~Rep) +theme_bw()
+
+addSmallLegend(c)
+```
+
+```{r TPM, include=FALSE, eval=FALSE}
+#try with TPM data:
+tpm3 <- function(counts,len) {
+  x <- counts/len
+  return(t(t(x)*1e6/colSums(x)))
+}
+
+#first calculate TPM:
+#gene lengths need to be in kbp
+gene_ref = gene_ref %>% mutate(Gene_length_kbp = Gene_length/1000)
+
+countdata_TPM = tpm3(countdata, gene_ref$Gene_length_kbp)
+countdata_TPM = as.data.frame(countdata_TPM)
+
+# prove the tpm3 function step by step
+# RPK = countdata/gene_ref$Gene_length_kbp #one: divide counts by gene length (in kbp) 
+# RPK_sf = colSums(RPK)/1000000
+# TPM = RPK/RPK_sf #this results in the same values as those calculated by the tpm3 function
+
+countdata_TPM <- countdata_TPM %>%
+  rownames_to_column(var = "query") %>%
+  left_join(gene_an, by = "query")
+
+write_xlsx(countdata_TPM, here("data/NIJ_TPM_countstable.xlsx"))
+```
+
+```{r, include=FALSE}
+countdata_TPM <- readxl(here("data/NIJ_TPM_countstable.xlsx"))
+```
+
+
+*Carbon, Oxygen, Hydroge, Nitrogen, and Sulfur gene expression over time*
+
+```{r, incude = FALSE}
+#lets create a bubble plot of key carbon, oxygen, hydrogen, nitrogen, and sulfur genes (as found in Seyler et al 2021 Time series transcriptomics)
+
+# set genes of interest
+gene <- c("CBB cycle (cbbL)", "reverse TCA cycle (aclA)", "Wood-Ljungdahl pathway (cooS, acsA)", "methane/ammonia monooxygenase subunit A", "methane monooxygenase (pmoA)", "ubiquinol-cytochrome c reductase (UQRCRFS1, rip1, petA)", "cytochrome c oxidase (coxA)", "cytochrome c oxidase cbb3-type (ccoN)", "cytochrome d ubiquinol oxidase (cydA)", "cytochrome o ubiquinol oxidase (cyoB)", "NiFe-hydrogenase (hyaB, hyaC)", "nitrogen fixation", "ammonia monooxygenase (amoA)", "nitrate reductase / nitrite oxidoreductase", "dissimilatory nitrate reductase (napA)", "dissimilatory nitrite reductase (cytochrome; nrfA)", "dissimilatory nitrite reductase (NADH; nirB)", "nitrite reductase (NO-forming; nirK)", "nitric oxide reductase (norB)", "nitrous-oxide reductase (nosZ)", "sulfide-quinone oxidoreductase (sqr)", "sulfur-oxidizing protein", "thiosulfate dehydrogenase (tsdA)", "dissimilatory sulfite reductase (dsrB)", "adenylylsulfate reductase (aprA)", "sulfate adenylyltransferase (sat, met3)", "assimilatory sulfite reductase (NADPH; cysl)", "assimilatory sulfite reductase (ferredoxin; sir)", "Hydroxylamine Dehydrogenase (HAO)")
+
+EC_2018 <- c("4.1.1.39", "2.3.3.8", "1.2.7.4", "1.14.18.3,1.14.99.39", "1.14.18.3", "1.10.2.2", "1.9.3.1", "1.9.3.1", "1.10.3.14", "1.10.3.10", "1.12.99.6", "1.18.6.1", "1.14.99.39", "1.7.5.1", "1.9.6.1", "1.7.2.2", "1.7.1.15", "1.7.2.1", "1.7.2.5", "1.7.2.4", "1.8.5.4", "NA", "1.8.2.2", "1.8.99.5", "1.8.99.2", "2.7.7.4", "1.8.1.2", "1.8.7.1", "1.7.2.6")
+
+EC_2022 <- c("4.1.1.39", "2.3.3.8", "1.2.7.4", "1.14.18.3,1.14.99.39", "1.14.18.3", "7.1.1.8", "7.1.1.9", "7.1.1.9", "7.1.1.7", "7.1.1.3", "1.12.99.6", "1.18.6.1", "1.14.99.39", "1.7.5.1", "1.9.6.1", "1.7.2.2", "1.7.1.15", "1.7.2.1", "1.7.2.5", "1.7.2.4", "1.8.5.4", "NA", "1.8.2.2", "1.8.99.5", "1.8.99.2", "2.7.7.4", "1.8.1.2", "1.8.7.1", "1.7.2.6")
+
+EC_name <- c("cbbL", "aclA", "cooS, acsA", "pmoA - amoA", "pmoA", "rip1, petA", "coxA", "ccoN", "cydA", "cyoB", "hyaB, hyaC", "nifH", "amoA", "nxrA, NarG", "napA", "nrfA", "nirB", "nirK", "norB", "nosZ", "sqr", "soxZ", "tsdA", "dsrB", "aprA", "sat", "cysI", "sir", "HOA")
+
+element <- c("Carbon", "Carbon", "Carbon", "Carbon/Nitrogen", "Carbon", "Oxygen", "Oxygen", "Oxygen", "Oxygen", "Oxygen", "H2", "Nitrogen", "Nitrogen", "Nitrogen", "Nitrogen", "Nitrogen", "Nitrogen", "Nitrogen", "Nitrogen", "Nitrogen", "Sulfur", "Sulfur", "Sulfur", "Sulfur", "Sulfur", "Sulfur", "Sulfur", "Sulfur", "Nitrogen")
+
+GOI <- as.data.frame(cbind(gene, EC_2018, EC_2022, EC_name, element))
+```
+
+```{r, include=FALSE}
+# extract counts for all GOI
+GOI_long <- GOI %>%
+  pivot_longer(cols = c("EC_2018", "EC_2022")) %>%
+  rename(EC = value)
+
+y_norm_counts_GOI <- y_norm_counts %>%
+  filter(EC %in% GOI_long$EC) %>% 
+  select(-query, -COG_category, -Ann, -seed_ortholog, -evalue, -score, -eggNOG_OGs,
+         -max_annot_lvl, -Description, -GOs, -Preferred_name, -KEGG_ko, -KEGG_Pathway,
+         -KEGG_Module, -KEGG_Reaction, -KEGG_rclass, -BRITE, -KEGG_TC, -CAZy, -BiGG_Reaction,
+         -PFAMs) %>% 
+  left_join(GOI_long, by = "EC") #merge with GOI metadata list to take averages across queries of the same gene
+
+# reformat the data: TMM counts for each gene and study day
+GOI_counts_long <- melt(y_norm_counts_GOI,
+                 id.vars = c("EC_name", "gene", "name", "EC", "element")) %>%
+  rename(Sample_name = variable,
+         TMM = value) %>%
+  left_join(metadata, by = "Sample_name")
+
+GOI_counts_long$EC_name <- as.factor(GOI_counts_long$EC_name)
+
+GOI_counts_long_sum <- GOI_counts_long %>%
+  select(EC_name, Sample_name, Study_con, TMM) %>%
+  group_by(Study_con, EC_name) %>%
+  summarise(mean_TMM = mean(TMM)) %>% 
+  pivot_wider(names_from = EC_name, values_from = mean_TMM, values_fill = 0)  %>%
+  pivot_longer(cols = aclA:tsdA) %>%
+  rename(EC_name = name) %>%
+  left_join(GOI, by = "EC_name") %>%
+  mutate(element = as.factor(element)) %>%
+  mutate(EC_name = fct_reorder(EC_name, as.integer(element)))
+  # mutate(Taxa = fct_reorder(Taxa, as.integer(Order)))
+
+GOI_counts_long_sum$Study_con = factor(GOI_counts_long_sum$Study_con, levels=c("con","d.0","d.12","d.58","d.86","d.168","d.376"))
+
+b = ggplot(GOI_counts_long_sum, aes(x = Study_con, y = EC_name)) + 
+  geom_point(aes(size = value, fill = element), alpha = 0.75, shape = 21) +
+  #scale_size_continuous(limits = c(0.000001, 100), range = c(1,17), breaks = c(1,10,50,75)) + 
+  labs(x = "", y = "", size = "Average TMM", fill = "Element")  + 
+  theme(legend.key=element_blank(), 
+  axis.text.x = element_text(colour = "black", size = 12, face = "bold"), 
+  axis.text.y = element_text(colour = "black", face = "bold", size = 11), 
+  legend.text = element_text(size = 10, face ="bold", colour ="black"), 
+  legend.title = element_text(size = 12, face = "bold"), 
+  panel.background = element_blank(), panel.border = element_rect(colour = "black", fill = NA, linewidth = 1.2), 
+  legend.position = "right") +  
+  #scale_fill_manual(values = colours, guide = FALSE) + 
+  scale_y_discrete(limits = rev(levels(GOI_counts_long_sum$EC_name))) +
+  scale_x_discrete(labels = c("Control", "0", "12", "58", "86", "168", "376"))
+
+```
+
+
+```{r, echo=FALSE}
+addSmallLegend(b)
+```
+
+*How does expression of lipase genes change over decomposition (determined by filter EC 3.1.1.3)*
+
+```{r, include = FALSE}
+lipase_TPM <- countdata_TPM %>%
+  filter(EC == "3.1.1.3") %>% #keep all lipase genes of interest
+  select(-COG_category, -seed_ortholog, -evalue, -score, -eggNOG_OGs, -Description, -GOs, -KEGG_ko, -KEGG_Pathway, -KEGG_Module, -KEGG_Reaction, -KEGG_rclass, -BRITE, -KEGG_TC, -CAZy, -BiGG_Reaction, -PFAMs) #clean columns - remove all unnecessary columns
+lipase_names = lipase_TPM$query #save an obeject with query names of all detected lipase genes, this can be used to pull out differential expression data
+
+lipase_TPM_long <- lipase_TPM %>%
+  pivot_longer(cols = c(CON_0:SP3_376)) %>% #reshape the df to long format
+  rename("Sample_name" = "name",
+         "TPM" = "value") %>% 
+  left_join(metadata, by = "Sample_name") %>% #merge counts dataset with metadata 
+  mutate(query = as.factor(query),
+         tax = if_else(str_detect(max_annot_lvl, "Fungi"), "Fungi", "Bacteria"))
+```
+
+```{r, echo=FALSE}
+#average lipase gene transcript abundance ~ study day
+TPM_lipase_avg <- lipase_TPM_long %>% 
+  group_by(Study_con, query) %>% 
+  summarise(avg_TPM = mean(TPM)) 
+
+#average lipase gene transcript TPM ~ study con
+ggplot(TPM_lipase_avg, aes(x = Study_con, y = avg_TPM, fill = "indianred")) + 
+  geom_boxplot() + 
+  labs(title = "Mean TPM for each lipase gene at each study day", x = "Study Day", y = "Mean TPM Gene Counts") +
+  theme_bw() +
+  guides(fill="none")
+```
+
+```{r, echo = FALSE}
+lipase_TPM_avg = lipase_TPM_long %>% 
+  group_by(Sample_name) %>% 
+  summarise(avg_TPM = mean(TPM)) %>%
+  left_join(metadata, by = "Sample_name")
+
+#lipase gene transcript abudance ~ study day and rep
+ggplot(lipase_TPM_avg) +
+  aes(x = Study_con, y = avg_TPM, fill = "indianred") +
+  guides(fill = "none") +
+  geom_boxplot(position=position_dodge(1)) + 
+  labs(title = "Mean TPM within each sample", x = "Study Day", y = "Mean TPM gene counts") +
+  scale_x_discrete(labels = c("Control", "0", "12", "58", "86", "168", "376")) +
+  theme_bw()
+```
+
+```{r, include = FALSE}
+#average lipase gene transcript abundance ~ donor ~ day
+TPM_lipase_avg_day = lipase_TPM_long %>% 
+  filter(Rep != "CON") %>% 
+  group_by(Study_day, Rep) %>% 
+  summarise(avg_TPM = mean(TPM)) 
+
+#average lipase (day) ~ study day
+ggplot(TPM_lipase_avg_day) +
+  aes(x=Study_day, y=avg_TPM, fill = "indianred") +
+  geom_boxplot() + 
+  labs(x = "Study Day", y = "Mean TPM gene counts") +
+  scale_x_discrete(labels = c("Control", "0", "12", "58", "86", "168", "376")) +
+  stat_compare_means(method="anova") + 
+  guides(fill = "none") +
+  theme_bw()
+```
+
+
+```{r, echo = FALSE}
+#average lipase gene transcript abundance ~ donor ~ day
+TPM_lipase_avg_day_tax = lipase_TPM_long %>% 
+  filter(Rep != "CON") %>% 
+  group_by(Study_day, Rep, tax) %>% 
+  summarise(avg_TPM = mean(TPM)) 
+
+#average lipase (day) ~ study day ~ tax
+l_tax <- ggplot(TPM_lipase_avg_day_tax) + 
+  aes(x = Study_day, y=avg_TPM, fill = "indianred") +
+  geom_boxplot() +
+  labs(x = "Study Day", y = "Mean TPM gene counts") +
+  scale_x_discrete(labels = c("Control", "0", "12", "58", "86", "168", "376")) +
+  facet_wrap(~tax) + 
+  stat_compare_means(method="anova") +
+  guides(fill = "none") +
+  theme_bw() + 
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        strip.background = element_rect(fill = "white"))
+
+l_tax
+```
+
+Bacterial lipase gene expression decreases as decomposition progresses, while fungal lipase gene expression increases. 
+
+```{r, include=FALSE, eval=FALSE}
+write_xlsx(lipase_TPM_long, here("data/lipase_TPM.xlsx"))
+```
+
+```{r, include=FALSE}
+lipase_tax <- unique(lipase_TPM_long$max_annot_lvl)
+```
+
+Annotations for lipase genes are one of the following: `r lipase_tax`.
+
+```{r, echo=FALSE}
+library(plotrix)
+lipase_TPM_fungi_avg = lipase_TPM_long %>% 
+  filter(tax == "Fungi") %>%
+  group_by(Study_con, query) %>% 
+  summarise(avg_TPM = mean(TPM),
+            TPM_se = std.error(TPM)) 
+
+ggplot(lipase_TPM_fungi_avg) + 
+  aes(x=Study_con, y=avg_TPM, group=query, color=query) + 
+  geom_line(size=1) + 
+  geom_errorbar(aes(ymin=avg_TPM-TPM_se, ymax=avg_TPM+TPM_se), width=.2) + 
+  labs(title = "Change in TPM over time for each identified fungal lipase gene", x = "Study Day", y = "Mean TPM Gene Counts", color = "Gene ID") +
+  theme_bw()
+```
+
+```{r, include=FALSE}
+# other looks at the fungal lipase genes
+lipase_TPM_long %>%
+  filter(tax == "Fungi") %>%
+  # filter(Rep %in% c("SP1","SP2","SP3")) %>%
+  ggplot() +
+  aes(x=Study_day, y=TPM, fill="indianred") + 
+  geom_boxplot() + 
+  labs(title = "Fungal lipase gene expression below each donor", x = "Study Day", y = "TPM Gene Counts") +
+  facet_wrap(~Rep) + 
+  guides(fill = "none") +
+  theme_bw() +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        strip.background = element_rect(fill = "white"))
+  #boxplot by study day faceted by donor/rep to assess variation
+
+ggplot(lipase_TPM_fungi_avg) + 
+  aes(x=Study_con, y=avg_TPM, fill="indianred") + 
+  geom_boxplot() + 
+  guides(fill = "none") +
+  theme_bw() + 
+  stat_compare_means(method="anova") #plot average TPm of each fungal lipase gene at each study point
+
+ggplot(lipase_TPM_fungi_avg) + 
+  aes(x=Study_con, y=avg_TPM, fill="indianred") + 
+  geom_boxplot() + 
+  guides(fill = "none") +
+  theme_bw() + 
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=1) #plot average TPm of each fungal lipase gene at each study point with dotplot
+```
+
+```{r, include=FALSE}
+#bacterial lipase genes
+lipase_TPM_bact_avg <- lipase_TPM_long %>%
+  filter(tax == "Bacteria") %>%
+  group_by(Study_con, query) %>% 
+  summarise(avg_TPM = mean(TPM),
+            TPM_se = std.error(TPM)) 
+
+
+ggplot(lipase_TPM_bact_avg) + 
+  aes(x=Study_con, y=avg_TPM, fill="indianred") + 
+  geom_boxplot() + 
+  guides(fill = "none") +
+  theme_bw() + 
+  stat_compare_means(method="anova") #plot average TPm of each bacterial lipase gene at each study point
+
+lipase_TPM_long %>%
+  filter(tax == "Bacteria") %>%
+  ggplot() +
+  aes(x=Study_day, y=TPM, fill="indiandred") + 
+  geom_boxplot() + 
+  guides(fill = "none") +
+  facet_wrap(~Rep) + 
+  theme_bw() + 
+  stat_compare_means(method="anova") #
+
+a = ggplot(lipase_TPM_bact_avg) +
+  aes(x = Study_con, y = avg_TPM, group = query, color = query) + 
+  geom_line(size = 1) + 
+  geom_errorbar(aes(ymin = avg_TPM-TPM_se, ymax = avg_TPM+TPM_se), width = .2) + 
+  labs(title = "Change in TPM over time for each identified bacterial lipase gene", x = "Study Day", y = "Mean TPM Gene Counts") +
+  scale_x_discrete(labels = c("Control", "0", "12", "58", "86", "168", "376")) +
+  theme_bw() +
+  theme(legend.position = "none")  
+```
+
+```{r, echo=FALSE}
+a
+```
+
+```{r, include = FALSE}
+# lipase stats
+library(lme4)
+library(lmerTest)
+
+lipase_TPM_avg_day_rep <- lipase_TPM_long %>% 
+  filter(Rep != "CON") %>% 
+  group_by(Study_day, Rep, tax) %>% 
+  summarise(avg_TPM = mean(TPM)) 
+
+lipase <-  lmer(avg_TPM ~ Study_day*tax+(1|Rep), data = lipase_TPM_avg_day_rep)
+summary(lipase)
+
+lipase_aov <- anova(lipase) # all, including interaction term significant: study day:tax; will split models by taxonomy (bacteria vs fungi)
+
+
+################################
+#####       Bacteria        ####
+################################
+lipase_bact <- lmer(avg_TPM ~ Study_day+(1|Rep), data = filter(lipase_TPM_avg_day_rep, tax == "Bacteria"))
+summary(lipase_bact)
+
+lipase_bact_anova <- anova(lipase_bact) # sig
+lipase_bact_aov <- lipase_bact_anova
+
+attach(filter(lipase_TPM_avg_day_rep, tax == "Bacteria"))
+p_ttest = pairwise.t.test(avg_TPM, Study_day, p.adj = "bonf")
+detach()
+p_ttest_p = p_ttest$p.value
+
+library(multcompView)
+p_ttest_p_labels = data.frame(multcompLetters(p_ttest_p)['Letters']) 
+
+
+################################
+#####         Fungi         ####
+################################
+lipase_fung <- lmer(avg_TPM ~ Study_day+(1|Rep), data = filter(lipase_TPM_avg_day_rep, tax == "Fungi"))
+summary(lipase_fung)
+
+lipase_fung_aov <- anova(lipase_fung) #estimate: 0.005134; F = 4.509; p = 0.015
+
+attach(filter(lipase_TPM_avg_day_rep, tax == "Fungi"))
+f_p_ttest = pairwise.t.test(avg_TPM, Study_day, p.adj = "bonf")
+detach()
+f_p_ttest_p = f_p_ttest$p.value
+f_p_ttest_p_labels = data.frame(multcompLetters(f_p_ttest_p)['Letters']) 
+```
+
+Lipase full mod anova: 
+
+```{r, echo=FALSE}
+kable(lipase_aov, digits = 3)
+```
+
+Lipase - bacteria only mod anova:
+
+```{r, echo = FALSE}
+#lipase - bacteria only mod anova
+kable(lipase_bact_anova, digits = 3)
+```
+
+Lipase - fungi only mod anova:
+
+```{r, echo=FALSE}
+#lipase - fungi only mod anova
+kable(lipase_fung_anova, digits = 3)
+```
+
+```{r, include=FALSE}
+lipase_TPM_sum_donor <- lipase_TPM_long %>%
+  # filter(tax == "Fungi") %>%
+  group_by(Sample_name, tax) %>%
+  summarise(sum_TPM = sum(TPM)) %>%
+  left_join(metadata, by = "Sample_name") %>%
+  filter(Rep != "CON")
+
+lipase_TPM_avg_donor <- lipase_TPM_sum_donor %>%
+  ungroup() %>%
+  group_by(Study_day, tax) %>%
+  summarise(avg_TPM = mean(sum_TPM),
+            TPM_se = std.error(sum_TPM))
+  
+lipase_TPM_sum_control <- lipase_TPM_long %>%
+  group_by(Sample_name, tax) %>%
+  summarise(sum_TPM = sum(TPM)) %>%
+  ungroup() %>%
+  left_join(metadata, by = "Sample_name") %>%
+  filter(Rep == "CON") %>%
+  rename(avg_TPM = sum_TPM)
+```
+
+```{r, echo = FALSE}
+fl <- aov(lm(sum_TPM ~ Study_day, data = filter(lipase_TPM_sum_donor, tax == "Fungi"))) 
+fl_t = TukeyHSD(fl)
+
+#eztract p-values and labels
+Tukey.levels <- fl_t$Study_day[,4]
+Tukey.labels <- data.frame(multcompLetters(Tukey.levels)['Letters'])
+
+#I need to put the labels in the same order as in the boxplot :
+Tukey.labels$Study_day=rownames(Tukey.labels)
+Tukey.labels$Study_day = factor(Tukey.labels$Study_day, ordered = TRUE, levels = c(0, 12, 58, 86, 168, 376))
+Tukey.labels=Tukey.labels[order(Tukey.labels$Study_day) , ]
+
+max(lipase_TPM_avg_donor$avg_TPM)
+
+library(ggstar)
+
+lipase_f <- ggplot(filter(lipase_TPM_avg_donor, tax == "Fungi")) + 
+  aes(x = Study_day, y = avg_TPM, group = 1) + 
+  geom_line(size = 1) + 
+  geom_errorbar(aes(ymin = avg_TPM-TPM_se, ymax = avg_TPM+TPM_se), width = .2)  + 
+  theme(legend.position = "none") + 
+  geom_star(data = filter(lipase_TPM_sum_control, tax == "Fungi"), shape = 8, fill = "darkgoldenrod2", color = "darkgoldenrod2", size = 3) + 
+  geom_text(data = Tukey.labels, aes(x = Study_day, y = 1.8, label = Letters) , size = 3) + 
+  labs(x = "Study Day", y = "Mean TPM Gene Expression") +
+  theme_bw() +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
+lipase_f
+```
+
+
+How do fungal lipase trends correlate to budding yeast classes (*c__Saccharomycetes*, *c__Sordariomycetes*, *c__Eurotiomycetes*)?
+
+```{r, include=FALSE}
+#now lets extract Saccharomycetes, Sordariomycetes, and Eurotiomycetes in NIJ ARF soils
+library(vegan)
+library(scales)
+library(grid)
+library(phyloseq)
+
+# First, create the variables for the imported data (first 3 are ITS, second 6 are 16S)
+sharedfile <- here("data/NIJ_ARF_amplicon_data/NIJARFSP.trim.contigs.pcr.good.unique.precluster.pick.agc.shared")
+taxfile <- here("data/NIJ_ARF_amplicon_data/NIJARFSP.trim.contigs.pcr.good.unique.precluster.pick.agc.0.05.cons.taxonomy")
+
+metadata_seq_df <- read.csv(file = here("data/NIJ_ARF_amplicon_data/SP_ITS_metadata.csv"))
+
+# Now, import the mothur data
+mothur_data <- import_mothur(mothur_shared_file = sharedfile, mothur_constaxonomy_file = taxfile)
+
+# import the metadata_seq file as a phyloseq object
+metadata_seq <- sample_data(metadata_seq_df)
+# In the metadata_seq file set Sample_name as the row name
+rownames(metadata_seq) <- metadata_seq$Sample_name
+
+# Merge metadata_seq file into phyloseq object created above
+mothur_merged <- merge_phyloseq(mothur_data, metadata_seq)
+
+mothur_sub = subset_samples(mothur_merged, Study_day %in% c(0, 12, 58, 86, 168, 376)) #only keep those samples associated with metatranscriptome study days
+
+# Column names of taxonomy file are not particularly helpful, so we rename them.
+colnames(tax_table(mothur_sub))
+# Current names are "Rank 1",...through "Rank 7"
+# Rename them to something more accessible:
+colnames(tax_table(mothur_sub))<- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species") #ITS UNITE database
+
+#Now let's prune the singletons and doubletons
+mo_merge_pruned <- filter_taxa(mothur_sub, function (x) {sum(x > 0) > 2}, prune=TRUE)
+mo_merge_pruned #Now we have 3289 taxa for SP
+
+Class <- mo_merge_pruned %>%
+  tax_glom(taxrank="Class") %>%
+  transform_sample_counts(function(x) {x/sum(x)})
+ 
+Class # 68 Classes
+
+taxa <- c("c__Saccharomycetes", "c__Sordariomycetes", "c__Eurotiomycetes")
+
+TOI <- subset_taxa(Class, Class %in% taxa)
+TOI_table <- as(otu_table(TOI), "matrix")
+if(taxa_are_rows(TOI)){TOI_table = t(TOI_table)}
+
+TOI_table <- TOI_table %>%
+  as.data.frame() %>%
+  rename(c__Sordariomycetes = Otu00001, 
+         c__Saccharomycetes = Otu00002,
+         c__Eurotiomycetes = Otu00007) %>%
+  rownames_to_column(var = "Sample_name") %>%
+  left_join(metadata_seq_df, by = "Sample_name")
+
+
+TOI_table$Study_day = factor(TOI_table$Study_day, ordered = TRUE, levels = c(0, 12, 58, 86, 168, 376))
+
+# need to calculate relative values based on how we did DNA extractions (1/16th soil from interface, 15/16 from core)
+TOI_adj_donor <- TOI_table %>%
+  mutate(Rep = if_else(!is.na(str_split_i(Sample, pattern = "_", 3)), str_split_i(Sample, pattern = "_", 3), "CON")) %>%
+  mutate(Rep = str_to_upper(Rep)) %>%
+  filter(Rep != "CON") %>%
+  select("c__Sordariomycetes", "c__Saccharomycetes", "c__Eurotiomycetes", "Depth", "Study_day", "Rep") %>% 
+  pivot_wider(names_from = c("Study_day", "Rep"), values_from = c("c__Sordariomycetes", "c__Saccharomycetes", "c__Eurotiomycetes")) %>%
+  column_to_rownames(var = "Depth") %>%
+  t() %>%
+  as.data.frame() %>%
+  rownames_to_column(var = "taxa_sample") %>%
+  mutate(abundance = ((1/16)*interface) + ((15/16)*core)) %>%
+  mutate(taxa_sample = str_split_i(taxa_sample, "__", 2)) %>%
+  separate(taxa_sample, sep = "_", into = c("taxa", "Study_day", "Rep")) %>%
+  select(-core, -interface) %>%
+  pivot_wider(names_from = "taxa", values_from = "abundance") %>%
+  rename(c__Sordariomycetes = Sordariomycetes,
+         c__Saccharomycetes = Saccharomycetes,
+         c__Eurotiomycetes = Eurotiomycetes) %>%
+  inner_join(metadata, by = c("Study_day", "Rep"))
+
+# need to adjust controls (1/16th soil from interface, 15/16 from core)
+TOI_adj_control <- TOI_table %>%
+  mutate(Rep = if_else(!is.na(str_split_i(Sample, pattern = "_", 3)), str_split_i(Sample, pattern = "_", 3), "CON")) %>%
+  mutate(Rep = str_to_upper(Rep)) %>%
+  filter(Rep == "CON") %>%
+  select("c__Sordariomycetes", "c__Saccharomycetes", "c__Eurotiomycetes", "Depth", "Study_day", "Rep") %>% 
+  pivot_wider(names_from = c("Study_day", "Rep"), values_from = c("c__Sordariomycetes", "c__Saccharomycetes", "c__Eurotiomycetes")) %>%
+  column_to_rownames(var = "Depth") %>%
+  t() %>%
+  as.data.frame() %>%
+  rownames_to_column(var = "taxa_sample") %>%
+  mutate(abundance = ((1/16)*interface) + ((15/16)*core)) %>%
+  mutate(taxa_sample = str_split_i(taxa_sample, "__", 2)) %>%
+  separate(taxa_sample, sep = "_", into = c("taxa", "Study_day", "Rep")) %>%
+  select(-core, -interface) %>%
+  pivot_wider(names_from = "taxa", values_from = "abundance") %>%
+  rename(c__Sordariomycetes = Sordariomycetes,
+         c__Saccharomycetes = Saccharomycetes,
+         c__Eurotiomycetes = Eurotiomycetes) %>%
+  inner_join(metadata, by = c("Study_day", "Rep"))
+
+
+TOI_adj_long <- TOI_adj_donor %>%
+  bind_rows(TOI_adj_control) %>%
+  select(Sample_name, Study_day, Study_con, Rep, c__Sordariomycetes, c__Saccharomycetes, c__Eurotiomycetes) %>%
+  pivot_longer(c( c__Sordariomycetes, c__Saccharomycetes, c__Eurotiomycetes)) %>%
+  rename(abundance = value)
+```
+
+```{r, eval=FALSE, include=FALSE}
+write_xlsx(TOI_table, here("data/Fungal_lipase_taxa_abundance.xlsx"))
+```
+
+```{r, include=FALSE}
+ggplot(filter(TOI_adj_long, Rep != "CON")) + 
+  aes(x = Study_day, y = abundance, fill = name) + 
+  geom_col(position=position_dodge()) + 
+  geom_star(data = filter(TOI_adj_long, Rep == "CON"), shape = 8, size = 3) + 
+  scale_fill_manual(values = c("#882255", "#661100", "#6699CC")) + 
+  theme_bw()
+
+ggplot(filter(TOI_adj_long, Rep != "CON")) + 
+  aes(x = Study_day, y = abundance, fill = name) + 
+  geom_col(position=position_dodge()) + 
+  scale_fill_manual(values = c("#882255", "#661100", "#6699CC")) + 
+  theme_bw()
+```
+
+```{r, echo=FALSE, warning=FALSE}
+# get the maximum y value for tukey label placement
+max_y <- TOI_adj_donor %>%
+  bind_rows(TOI_adj_control) %>%
+  select(Sample_name, Study_day, Study_con, Rep, c__Sordariomycetes, c__Saccharomycetes, c__Eurotiomycetes) %>%
+  filter(Rep != "CON") %>%
+  left_join(filter(lipase_TPM_avg_donor, tax == "Fungi"), by = "Study_day") %>%
+  mutate(se_ymax = (avg_TPM + TPM_se)/2) %>%
+  select(-tax, -avg_TPM, -TPM_se) %>%
+  pivot_longer(c( c__Sordariomycetes, c__Saccharomycetes, c__Eurotiomycetes, se_ymax)) %>%
+  group_by(Study_day) %>%
+  summarise(max_y = max(value))
+
+Tukey <- Tukey.labels %>%
+  left_join(max_y, by = "Study_day")
+
+#line plot of fungal lipase TPM over the three fungal classes relative abundance 
+flp = ggplot(filter(TOI_adj_long, Rep != "CON")) + 
+  geom_col(aes(x = Study_day, y = abundance, fill = name), position=position_dodge()) +
+  scale_fill_manual(values = c("#882255", "#661100", "#6699CC"))+
+  geom_line(data = filter(lipase_TPM_avg_donor, tax == "Fungi"), aes(x = Study_day, y = avg_TPM/2, group = 1), size = 1) +
+  geom_errorbar(data = filter(lipase_TPM_avg_donor, tax == "Fungi"), aes(x = Study_day, y = avg_TPM/2, group = 1, ymin = avg_TPM/2-TPM_se/2, ymax = avg_TPM/2+TPM_se/2), width = .2) +
+  scale_y_continuous(limits = c(0, 1),
+                     sec.axis = sec_axis(~.*2, name = "Mean TPM Gene Expression")) +
+  geom_star(data = filter(lipase_TPM_sum_control, tax == "Fungi") , aes(x=Study_day, y=avg_TPM/2), shape = 8, fill = "darkgoldenrod2", color = "darkgoldenrod2", size = 3) +
+  geom_text(data = Tukey, aes(x = Study_day, y = (max_y + 0.05), label = Letters), size = 3) + 
+  stat_compare_means(data = filter(lipase_TPM_avg_day_rep, tax == "Fungi"), aes(x = Study_day, y = avg_TPM), method = "anova", size = 2) +
+  labs(x = "Study Day", y = "Relative Abundance", fill = "Class" ) +
+  theme_bw() +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "inside",
+        legend.justification = c("right", "top"),
+        legend.background = element_rect(fill = NA))
+
+lipase_f <- addSmallLegend(flp, textSize = 5) +
+  theme(legend.title = element_blank())
+lipase_f
+```
+
+```{r, include=FALSE}
+lipase_TPM_fungi_TOI <- lipase_TPM_sum_donor %>%
+  filter(tax == "Fungi") %>%
+  select(Sample_name, tax, sum_TPM) %>%
+  left_join(TOI_adj_donor, by = "Sample_name")
+
+library("Hmisc")
+library("corrplot")
+
+#be sure to remove any columns that are completely blank and that all variables are in numerical format
+lipase_cor <- lipase_TPM_fungi_TOI %>% 
+  filter(Rep != "CON") %>% 
+  select(c__Saccharomycetes, c__Sordariomycetes, c__Eurotiomycetes, sum_TPM) %>%
+  column_to_rownames(var = "Sample_name")
+
+#make sure the dataset is a matrix
+lipase_cor <- as.matrix(lipase_cor)
+
+#run the rcorr command on the data matrix
+NIJ_lipase_corr <- rcorr(lipase_cor, type="pearson")
+signif(NIJ_lipase_corr$r,2)
+
+#adjust the pvalue for multiple comparisions
+pvaluesBH <- (p.adjust(NIJ_lipase_corr$P, method = "BH"))
+
+NIJ_lipase_corr$P[]=p.adjust(NIJ_lipase_corr$P, method = "BH")
+class(NIJ_lipase_corr$P)
+NIJ_lipase_corr$P[]=p.adjust(NIJ_lipase_corr$P, method = "bonferroni")
+p_adj=as.data.frame(signif(NIJ_lipase_corr$P,2))
+
+
+#plot the correleation, where NS p-values appeat as white squares
+corrplot(NIJ_lipase_corr$r, method=c("color"), tl.cex=0.8, tl.col="black", addgrid.col=c("gray"), p.mat=NIJ_lipase_corr$P, sig.level=0.05)
+```
+
+```{r, echo = FALSE}
+bl <- aov(lm(sum_TPM ~ Study_day, data = filter(lipase_TPM_sum_donor, tax == "Bacteria"))) 
+bl_t = TukeyHSD(bl)
+
+#eztract p-values and labels
+Tukey.levels <- bl_t$Study_day[,4]
+Tukey.labels <- data.frame(multcompLetters(Tukey.levels)['Letters'])
+
+#I need to put the labels in the same order as in the boxplot :
+Tukey.labels$Study_day=rownames(Tukey.labels)
+Tukey.labels$Study_day = factor(Tukey.labels$Study_day, ordered = TRUE, levels = c(0, 12, 58, 86, 168, 376))
+Tukey.labels=Tukey.labels[order(Tukey.labels$Study_day) , ]
+
+Tukey <- Tukey.labels %>%
+  left_join(filter(lipase_TPM_avg_donor, tax == "Bacteria"), by = "Study_day") %>%
+  mutate(ymax = avg_TPM + TPM_se)
+
+aov <- paste0("Anova, p = ", round(lipase_bact_aov$`Pr(>F)`, 3))
+
+lipase_b <- ggplot(filter(lipase_TPM_avg_donor, tax == "Bacteria")) + 
+#  aes(x = Study_day, y = avg_TPM, group = 1) + 
+  geom_line(aes(x = Study_day, y = avg_TPM, group = 1), size = 1) + 
+  geom_errorbar(aes(x = Study_day, y = avg_TPM, ymin = avg_TPM-TPM_se, ymax = avg_TPM+TPM_se), width = .2)  + 
+  theme(legend.position = "none") + 
+  geom_star(data = filter(lipase_TPM_sum_control, tax == "Bacteria"), aes(x = Study_day, y = avg_TPM), fill = "darkgoldenrod2", color = "darkgoldenrod2", size = 3) + 
+  geom_text(data = Tukey, aes(x = Study_day, y = ymax + 5, label = Letters) , size = 3) + 
+  labs(x = "Study Day", y = "Mean TPM Gene Expression") +
+  annotate(geom = "text", x = 1.5, y = 95, label = aov, size = 2) +
+  theme_bw() +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
+
+lipase_b
+
+```
+
+
+```{r, echo=FALSE, warning=FALSE}
+# lipase_b and lipase_f
+ggarrange(lipase_b, lipase_f,  
+          ncol = 2, 
+          labels = c("A", "B"), 
+          align = "v")
+```
+
+```{r, include=FALSE, eval=FALSE}
+# width of 85 mm for half page width figure
+# width of 170 mm for full page width figure
+# maximum height of 225 mm for figure and legend
+# image resolution of approximately 300 dpi (dots per inch) at the final size
+
+tiff(here::here("figures/Fig4.tiff"), units = "mm", width = 170, height = 100, res = 300)
+ggarrange(lipase_b, lipase_f,  
+          ncol = 2, 
+          labels = c("A", "B"), 
+          align = "v")
+```
+
