@@ -1,0 +1,114 @@
+---
+title: Soil Microbial Functional Succession Over One Year of Human Decomposition
+format:
+  nature-pdf:
+    journal: "sn-nature"
+    keep-tex: true
+author:
+  - name: Allison R. Mason
+    affiliations:
+      - name: University of Tennessee-Knoxville
+        id: 1
+        department: Department of Microbiology
+        address: 1311 Cumberland Avenue
+        city: Knoxville
+        state: TN
+        postal-code: 37996
+  - name: Lois S. Taylor
+    affiliations:
+      - name: University of Tennessee-Knoxville
+        id: 2
+        department: Department of Biosystems Engineering and Soil Science
+        address: 2506 E.J. Chapman Drive
+        city: Knoxville
+        state: TN
+        postal-code: 37996
+  - name: Naomi Gilbert
+    affiliations:
+      - ref: 1
+  - name: Steven W. Wilhelm
+    affiliations:
+      - ref: 1
+  - name: Jennifer M. DeBruyn
+    affiliations:
+      - ref: 1
+      - ref: 2
+    email: jdeburyn@utk.edu
+    attributes:
+      corresponding: true
+abstract: |
+  **Background** The succession of microbial communities during vertebrate decomposition has been observed in various settings, documenting changes in taxa as decomposition progresses. These studies have predominantly employed phylogenetic makers (*i.e.*, rRNA genes), describing community composition and structure, but ultimately do not inform about which members are active or metabolic pathways they might be expressing. This has left a foundational knowledge gap regarding the function roles microorganisms play in vertebrate decomposition, which ultimately impact ecosystem functioning. Here we present the first study investigating gene expression in soil impacted by human decomposition. Total RNA was extracted and metatranscriptomes obtained from soil samples collected over the course of one year from below three decomposing human bodies.
+  
+  **Results** Microbial gene expression profiles shifted in response to decomposition:  decomposition impacted soils were most different from controls (*i.e*. nearby soils unimpacted by decomposition) at day 86, and profiles remained altered even after one year. Shifts in gene expression were partially explained by environmental and soil physiochemical variables, including internal body accumulated degree hours (*p* = 0.001), as well as soil temperature (*p* = 0.045), pH (*p* = 0.042) and electrical conductivity (*p* = 0.037). Differential expression analysis revealed that microbes in decomposition soils  increased expression of stress response genes (mean fold change 3.48), particularly heat shock proteins (*p* < 0.001), whose expression increased between days 0 and 58 and remained elevated through day 376. Further, we identified genes whose expression was altered at certain timepoints. This included increased expression of nitrogen cycling genes HAO (85x), norB (83x), and nosZ (19x) at day 86 when dissolved oxygen was reduced to approximately 85%, suggesting that microbial communities may be converting hydroxylamine to nitric oxide during reduced oxygen conditions. 
+  
+  **Conclusions** Our results show that human decomposition alters soil microbial gene expression profiles providing evidence of altered microbial metabolisms (*e.g.*, taurine metabolism, nitrogen cycling, and lipid metabolism) and reveal the potential of vertebrate decomposition to have both ephemeral and lasting effects on ecosystem processing in response to mortality events. 
+keywords: [Human Decomposition, Microbial Succession, Metatranscriptomics, Soil Microbial Ecology]
+bibliography: bibliography.bib  
+---
+
+# Introduction {#sec-intro}
+
+Soil microbial communities are important drivers of ecosystem processes in terrestrial environments. Many soil microbes are decomposers that are involved in degradation of complex organic matter and drive nutrient cycling in terrestrial ecosystems. Environmental disturbances can impact the presence and/or activity of soil microorganisms that are invovled in these cycles, ultimately affecting nutrient availability and the release of greenhouse gas emissions, such as CO\textsubscript{2} and N\textsubscript{2}O [@benninger_biochemical_2008;@towne_prairie_2000]. Vertebrate death, and subsequent carcass deposition in terrestrial ecosystems, is one disturbance that impact soil biogeochemical cycling and microbial community structure. Specifically altered elemental concentrations [@taylor_soil_2023] and carbon (C) and nitrogen (N) transformations [@parmenter_carrion_2009;@macdonald_carrion_2014;@bump_ungulate_2009;@aitkenhead-peterson_mapping_2012;@keenan_mortality_2018;@fancher_evaluation_2017;@quaggiotto_dynamic_2019] have been observed in responde to the release of concentrated decomposition products into the surrounding soil.
+
+While C and N transformations have been documented during decomposition, the functional response of microbes and their roles in nutrient cycles remain unclear. Previous work from our lab [@cobaugh_functional_2015;@keenan_spatial_2018] and others [@singh_temporal_2018;@metcalf_microbial_2016;@finley_microbial_2016;@fu_fungal_2019] have conducted surveys of decomposition-impacted soil microbial communities through amplicon sequencing of marker genes(*i.e.*, 16S rRNA, 18S rRNA, ITS). This has allowed us to investigate how microbial biodiversity and composition change in response to vertebrate decomposition, revealing patterns such as increases in the anaerobic taxa *Firmicutes* and *Bacteroidetes*. However, few studies have investigated soil biogeochemistry and microbial communities within the same study, which can further help to describe microbial ecology in human and animal decomposition systems. Taylor et al. [-@taylor_soil_2024] suggested that obserbed fungal community shifts were linked to soil dissolved oxygen, highlighting interactions between soil microbes and the surrounding environment. Additionally, Metcalf et al. [-@metcalf_microbial_2016] started to connect microbial changes to physiochemical data (*e.g.*, nitrate, pH) during controlled mouse decomposition experiments. While insightful for making potential connections between taxa and physiochemistry, these analyses cannot inform which taxa are active members of the community responsible for chemical transformations, which functional pathways/genes are expressed, and how these pathways are altered in response to decomposition.
+
+Methods such as RNA sequencing (*i.e.*, metatranscriptomics) and metabolomics can be used to investigate microbial community functional succession in response to decomposition by measuring gene expression and metabolites, respectively. Where DNA-based methods are limited to explaining structural succession, analysis of microbial community gene expression (*i.e.*, mRNA) helps to determine which functional pathways are altered in response to decomposition. This can inform how ecological functions, including C and N cycling, are impacted by decomposition events in terrestrial ecosystems. To date, only two studies have applied metatranscriptomic approaches to assess mRNA in vertebrate decomposition samples [@burcham_total_2019;@ashe_characterization_2021]: Burcham et al. [-@burcham_total_2019] examined gene expression of internal organ microbial communities during mouse decomposition, while Ashe et al. [-@ashe_characterization_2021] examined gene expression of oral microbial communities during human decomposition. Both studies suggest that the host microbial community functionality is altered during decomposition, including differential expression of amino acid and carbohydrate metabolism in the heart [@burcham_total_2019] and shifts in gene transcripts across different taxa [@ashe_characterization_2021]. We expect that soil microbial community gene expression profiles are also altered; however, this has never been examined. The decomposition-impacted soil metabolome was assessed by DeBruyn et al. [-@debruyn_comparative_2021], showing changes in soil metabolites over time, however it is unclear which microbes are responsible for these shifts. Additionally, DeBruyn et al. [-@debruyn_comparative_2021] showed the soil metabolome was still altered compared to starting conditions at the end of the 21-week study, suggesting long-term impacts of decomposition on soil microbial functioning.
+
+The purpose of this study was to investigate soil microbial gene expression during a one-year period of human decomposition and address the following questions: (1) which genes are differentially expressed in soils impacted by human decomposition? (2) how does gene expression change over time in decomposition-impacted soils? (3) do microbial gene expression profiles return to pre-decomposition conditions after one year? We hypothesized that gene expression would change over time as resources are used and transformed and soil chemical and physical conditions change as a result of tissue degradation [@keenan_mortality_2018;@fancher_evaluation_2017;@debruyn_comparative_2021]. For example, we expected to observe changes in the expression of genes encoding enzymes involved in nitrogen cycling, as increased nitrogen transformations have been previously described in decomposition soils [@keenan_mortality_2018]. Additionally, we expected to observe increased expression of lipid metabolizing genes during active and advanced decomposition as microbes degrade lipids deposited in the soil [@howard_characterization_2010]. Finally, multiple studies have shown than soil chemistry [@macdonald_carrion_2014;@keenan_mortality_2018] and microbial community composition [@cobaugh_functional_2015;@singh_temporal_2018] (via 16S rRNA gene amplicon sequencing) are still impacted after one year, therefore we did not expect soil expression profiles to return to pre-decomposition conditions.
+
+To answer these questions, metatranscriptomes of soil samples collected at six key time points over one year of human decomposition were used to determine the active populations and expression of genes and pathways relevant to the enhanced biogeochemical cycling observed in decomposition hotspots. We compared expressed genes between decomposition and control soils that were unexposed to decomposition products to determine differential gene expression, as well as between time points, identifying functions of functional pathways of interest. This assessment of functional profiles within decomposition-impacted soils provided insight into the soil microbial response to vertebrate decomposition in terrestrial settings and biogeochemical cycling within these hotspots.
+
+# Methods
+
+
+# Using this template {#sec-template}
+
+This Quarto template is unofficial and built out of Springer Nature's template. 
+Some examples of commonly used commands and features are listed below, to help you get started.
+
+As seen below, you can mix markdown and Latex with each other, though it's likely best to mostly use markdown.
+
+## Cross Referencing
+
+To reference a figure with example label "plot", use `@fig-plot`. 
+Analogously, to reference a table with example label "data", use `@tbl-data`.
+To reference a section, such as the Introduction (@sec-intro), use `@sec-intro`.
+
+For complete information on cross referencing with Quarto, see <https://quarto.org/docs/authoring/cross-references.html>.
+
+## Citations
+
+Quarto formats citations and references automatically using the bibliography records in your .bib file. For a citation in parentheses use [@singh_temporal_2018] and for a text citation: @singh_temporal_2018. Multiple citations can be given as [@singh_temporal_2018;@payne_summer_1965]. Drop the author like so [-@singh_temporal_2018].
+
+# Tables and Figures
+
+To include figures, you can use Quarto syntax.
+
+![An example figure (an empty plot)](fig.eps){#fig-plot}
+
+For both figures and tables, you can use LaTeX syntax if you need additional customizability. 
+
+For example, to use footnotes within a table, you may want to use LaTeX.
+
+\begin{table}[h]
+\caption{LaTeX caption text}\label{tbl-data}%
+\begin{tabular}{@{}llll@{}}
+\toprule
+Column 1 & Column 2  & Column 3 & Column 4\\
+\midrule
+row 1    & data 1   & data 2  & data 3  \\
+row 2    & data 4   & data 5\footnotemark[1]  & data 6  \\
+row 3    & data 7   & data 8  & data 9\footnotemark[2]  \\
+\botrule
+\end{tabular}
+\footnotetext{Source: This is an example of table footnote. This is an example of table footnote.}
+\footnotetext[1]{Example for a first table footnote. This is an example of table footnote.}
+\footnotetext[2]{Example for a second table footnote. This is an example of table footnote.}
+\end{table}
+
+# References
+<!-- the pattern below controls the placement of the references -->
+:::{#refs}
+:::
+
+
