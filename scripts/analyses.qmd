@@ -18,6 +18,9 @@ library(limma)
 library(DESeq2)
 library(kableExtra)
 # library(reshape2)
+library(pals)
+library(cowplot)
+library(ggpubr)
 library(tidyverse)
 library(knitr)
 
@@ -154,8 +157,10 @@ Count data is not normally distributed (this was expected), need to scale (log2)
 y.con.log = cpm(y.con,log=TRUE)
 
 boxplot(y.con.log, xlab="", ylab="Log2 counts per million", las=2)
-abline(h=median(y.con.log),col="purple")
+abline(h = median(y.con.log),col="purple")
 title("Boxplots of logCPMs (unnormalised)")
+
+saveRDS(y.con.log, here("data/NIJ_filter_log2.rds"))
 ```
 
 Most samples are within the median line, only samples that may be suspect are SP1_376 and SP1_86.
@@ -210,7 +215,6 @@ y_norm_counts = read_xlsx(here::here("data/NIJ_TMM_countstable.xlsx"))
 TPM normalized:
 ```{r TPM}
 #| include: false
-#| eval: false
 #try with TPM data:
 tpm3 <- function(counts,len) {
   x <- counts/len
@@ -233,6 +237,7 @@ abline(h=0, col="grey")
 
 ```{r}
 #| include: false
+#| eval: false
 # prove the tpm3 function step by step
 # RPK = countdata/gene_ref$Gene_length_kbp #one: divide counts by gene length (in kbp) 
 # RPK_sf = colSums(RPK)/1000000
@@ -247,13 +252,8 @@ write_xlsx(countdata_TPM, here("data/NIJ_TPM_countstable.xlsx"))
 
 ```{r}
 #| include: false
-#| eval: false
 
 countdata_TPM <- read_xlsx(here("data/NIJ_TPM_countstable.xlsx"))
-```
-
-```{r}
-#| include: false
 
 TPM_long <- countdata_TPM %>%
   pivot_longer(cols = starts_with(c("CON", "SP"))) 
@@ -536,7 +536,6 @@ ggarrange(mds_day, cca, labels = c("A", "B"), nrow = 2, common.legend = TRUE, le
 
 ```{r}
 #| include: false
-#| eval: false
 #heatmap.2() will calculate a matrix of euclidean distances from the logCPM for the 500 most variable genes
 
 #estimate variance for each row in the log counts matrix
@@ -646,19 +645,19 @@ coords <- list("x" = 0.178, "y" = 1.91)
 
 #plot heatmap - dendogram on both sides
 # png(file = here::here("figures/Fig_S2.png"))
-heatmap.2(highly_var_lcpm, 
-          col=rev(morecols(50)),
-          trace="none",
-          ColSideColors = col.study.con,
-          RowSideColors = col.COG,
-          scale="row") +
-  legend("topleft",
-         inset=c(0.2 ,-0.2),
-         c("CON", levels(metadata$Study_day)), 
-         col = unique(col.study.con),
-         ncol = 2,
-         pch=15,
-         title = "Day") 
+# heatmap.2(highly_var_lcpm, 
+#           col=rev(morecols(50)),
+#           trace="none",
+#           ColSideColors = col.study.con,
+#           RowSideColors = col.COG,
+#           scale="row") +
+#   legend("topleft",
+#          inset=c(0.2 ,-0.2),
+#          c("CON", levels(metadata$Study_day)), 
+#          col = unique(col.study.con),
+#          ncol = 2,
+#          pch=15,
+#          title = "Day") 
 # dev.off()
 # +
 #   theme(legend.title = element_text(size = 8), 
@@ -940,7 +939,7 @@ lipase_TPM %>%
 l_tax <- lipase_TPM %>% 
   filter(Rep != "CON") %>% 
   summarise(avg_TPM = mean(TPM),
-            .by = c("Study_day", "Rep", "tax")) %>%å
+            .by = c("Study_day", "Rep", "tax")) %>%
   ggplot() + 
   aes(x = Study_day, y=avg_TPM, fill = "indianred") +
   geom_boxplot() +
@@ -1444,7 +1443,7 @@ Tukey <- Tukey.labels %>%
   left_join(max_y, by = "Study_day")
 
 #line plot of fungal lipase TPM over the three fungal classes relative abundance 
-flp = ggplot(filter(TOI_adj_long, Rep != "CON")) + 
+flp = ggplot(filter(TOI_adj, Rep != "CON")) + 
   geom_col(aes(x = Study_day, y = abundance, fill = name), position=position_dodge()) +
   scale_fill_manual(values = c("#882255", "#661100", "#6699CC"))+
   geom_line(data = filter(lipase_TPM_avg_donor, tax == "Fungi"), aes(x = Study_day, y = avg_TPM/2, group = 1), size = 1) +
@@ -1592,7 +1591,7 @@ HAO_TPM <- TPM_long %>%
 #HAO gene transcript abudance ~ study day and rep
 HAO_TPM %>%
   ggplot() +
-  aes(x = Study_day, y = TPM)
+  aes(x = Study_day, y = TPM) +
   geom_boxplot() + 
   theme_bw()
 
@@ -1858,10 +1857,12 @@ ggplot(aminopep_TPM_avg_day_rep) +
 
 ```{r}
 #| include: false
-#| eval: false
 #Differential expression with limma-voom
 #limma includes voom, which will transform read counts into logCPMs while also accounting for mean-variance in the data
 y_norm <- readRDS(here("data/NIJ_DGEList_TMM.rds"))
+y.con.log <- readRDS(here("data/NIJ_filter_log2.rds"))
+trt = paste(metadata$Trt) #make an object for the variable trt
+trt = factor(trt) #make sure trt is a factor
 
 #specify a design matrix without an intercept term (variable options: trt, study day, study con)
 
@@ -1876,10 +1877,11 @@ v = voom(y_norm, design_trt, plot = TRUE) #results in voom normalized log2 count
 
 #compare normalized data to normalized data:
 par(mfrow=c(1,2))
-boxplot(y.con.log, xlab="", ylab="Log2 counts per million",las=2,main="Unnormalised logCPM")
-abline(h=median(y.con.log),col="blue") ## Let's add a blue horizontal line that corresponds to the median logCPM
-boxplot(v$E, xlab="", ylab="Log2 counts per million",las=2,main="Voom transformed logCPM")
-abline(h=median(v$E),col="blue") ## Let's add a blue horizontal line that corresponds to the median logCPM
+boxplot(y.con.log, xlab = "", ylab = "Log2 counts per million",las = 2,main = "Unnormalised logCPM")
+abline(h = median(y.con.log), col = "blue") ## Let's add a blue horizontal line that corresponds to the median logCPM
+boxplot(v$E, xlab = "", ylab = "Log2 counts per million", las = 2, main = "Voom transformed logCPM")
+abline(h = median(v$E), col = "blue") ## Let's add a blue horizontal line that corresponds to the median logCPM
+par(mfrow=c(1,1))
 
 #test for DE:
   #1: fit linear model for each gene
@@ -1901,23 +1903,340 @@ summa.fit = decideTests(fit.cont)
 trt_sum = summary(summa.fit) #in theory up should be upreg in control and down should be downreg in control
 
 #make a dataframe of the normalized log2 expression values for all query genes used in DE analysis
-as.data.frame(v$E) %>%
+trt_nlog2 <-  as.data.frame(v$E) %>%
   rownames_to_column(var = "query") %>%
-  write_xlsx(here("data/trt_nlog2_expression.xlsx"))
-  
-```
-
-```{r}
-#| include: false
-read_xlsx(here("data/trt_nlog2_expression.xlsx")) %>%
   pivot_longer(-query, names_to = "Sample_name", values_to = "nlog2") %>%
-  left_join(metadata, by = "Sample_name") %>%sg
-  head()
+  left_join(metadata, by = "Sample_name") 
 ```
 
+Number of genes whose expression was higher in the control samples (Up), lower in control samples (Down), or not significantly different.
+
+```{r}
+#| echo: false
+kable(trt_sum)
+```
+
+`r trt_sum[which(rownames(trt_sum) == "Up"), "trt"]` genes were upregulated in control soils, while `r trt_sum[which(rownames(trt_sum) == "Down"), "trt"]` were downregulated in control soils.
+
+```{r}
+#| include: false
+names <- data.frame("query" = rownames(fit.cont$coefficients)) %>%
+  left_join(select(gene_an, query, Preferred_name), by = "query") %>%
+  mutate(Preferred_name = ifelse(Preferred_name == "-", query, Preferred_name))
+```
+
+*Control vs decomposition MD plot*
+
+```{r}
+#| echo: false
+#Control vs decomposition
+plotMD(fit.cont, coef = 1, status = summa.fit[,"trt"], values = c(-1,1), hl.col=c("blue","red"))
+```
+
+
+*Volcano plot: top #100 of genes highlighted*
+```{r}
+#| echo: false
+volcanoplot(fit.cont,coef = 1, highlight = 100, main="trt")
+```
+
+*Volcano plot: top #10 of genes highlighted*
+```{r}
+#| echo: false
+volcanoplot(fit.cont,coef = 1, highlight = 10, main = "Control vs. Decomposition", names = row.names(fit.cont$coefficients))
+```
+
+```{r}
+#| include: false
+trt_contrast = as.data.frame(summa.fit) %>%
+  rownames_to_column(var = "query") %>%
+  rename(trt_cont = trt) 
+#this is a dataframe of all the genes used for DE analysis; cell values can only be one of the following: -1, 0, or 1: -1 = downregulated, 0 = not significantly DE, 1 = upregulated
+
+#save coefficients contrasts:
+trt_coeff <- as.data.frame(fit.cont$coefficients) %>%
+  rownames_to_column(var = "query") %>%
+  rename(trt_coeff = trt) 
+#extract coefficients for each comparison; these are the log2 fold change values for each gene
+
+#save DE p-values
+trt_p <- as.data.frame(fit.cont$p.value) %>%
+  rownames_to_column(var = "query") %>%
+  rename(trt_p = trt) #note: these p-values are the same as those reported in the F.p.value 
+
+
+trt_DE_summary = trt_contrast %>%
+  left_join(trt_coeff, by = "query") %>% 
+  left_join(trt_p, by = "query") %>% 
+  mutate(log_p = -log10(trt_p)) %>%
+  left_join(gene_an, by = "query") %>% 
+  left_join(COG_cat, by = "COG_category")
+```
+
+*Top 6 upregulated genes in control soils:*
+
+```{r}
+#| echo: false
+#top 6 upregulated genes in control soils
+
+trt_DE_summary %>%
+  arrange(desc(trt_coeff)) %>%
+  head() %>%
+  select(query, trt_cont, trt_coeff, trt_p, max_annot_lvl, Preferred_name, Ann) %>%
+  kable()
+```
 
 ```{r}
 #| include: false
 
+# ordered by largest coefficient and p-value
+trt_15_sig_up = trt_DE_summary %>%
+arrange(desc(log_p), desc(trt_coeff)) %>%
+top_n(15, log_p) #top 10 significant and upregulated genes in control soils
 
+trt_DE_summary %>%
+  filter(query == "k123_2470867_1")
+
+# k123_2470867_1
+```
+
+```{r}
+#| include: false
+top_up = trt_DE_summary %>%
+  top_n(1, trt_coeff) %>% 
+  pull(query)
+```
+
+The gene with the largest coefficient was `r top_up`. The expression in all samples, by treatment type is below.
+
+```{r}
+#| echo: false
+library(RColorBrewer)
+library(glue)
+nice.col = brewer.pal(7, name="Dark2")
+title <- glue("{top_up}",
+              ": ",
+              "{gene_an %>% filter(query == top_up) %>% pull(Description)}")
+
+stripchart(v$E[top_up,] ~ trt,vertical=TRUE, 
+           las=2, cex.axis = 0.8, pch = 16, cex = 1.3, 
+           col = nice.col, method = "jitter", 
+           ylab = "Normalized log2 expression", 
+           main = title)
+```
+
+The gene with the largest coefficient, and smallest p-value was `r head(trt_15_sig_up, 1) %>% pull(query)`. The expression in all samples, by treatment is below. 
+
+```{r}
+#| echo: false
+top_s_up <- head(trt_15_sig_up, 1) %>% pull(query)
+title <- glue("{top_s_up}",
+              ": ",
+              "{gene_an %>% filter(query == top_s_up) %>% pull(Description)}}")
+
+
+stripchart(v$E[top_s_up,] ~ trt, vertical=TRUE, 
+           las=2, cex.axis = 0.8, pch = 16, cex = 1.3, 
+           col = nice.col, method = "jitter", 
+           ylab = "Normalized log2 expression", 
+           main = title)
+```
+
+Multiple genes for secretion system proteins are in the top significantly upregulated genes, including type II and multiple type IV. Seems like signalling/cell motility might be downregulated in decomp - kind of makes sense as nutrients are increasing.
+
+```{r}
+#| include: false
+#downregulated genes
+head(trt_DE_summary %>% arrange(desc(log_p),trt_coeff)) #top 6 significant and downregulated genes in control soils
+
+trt_15_sig_down <- trt_DE_summary %>% 
+arrange(desc(log_p), trt_coeff) %>%
+filter(trt_cont == "-1") %>% 
+top_n(15, log_p) #top 10 significant and downregulated genes in control soils
+
+trt_top_up.down = rbind(trt_15_sig_up, trt_15_sig_down)
+```
+
+A majority of the genes that are down regulated in control soils (therefore display higher expression in decomposition soils are related to heat shock response): 11/15 genes.
+
+```{r}
+#| include: false
+#| eval: false
+trt_top_up.down %>% 
+mutate(tax = str_split_i(max_annot_lvl, "\\|", 2)) %>%
+select(query, trt_coeff, trt_p, tax, COG_category, Description, Preferred_name, EC) %>%
+  kbl(.,
+      format = "latex",
+      digits = 3,
+      col.names = c("Query", "Coefficient", "p-Value", "Taxonomic Annotation", "COG Category", "Description", "Gene Name", "EC"),
+      booktabs = TRUE) %>%
+  column_spec(6, width = "10em") %>%
+  save_kable(., file = here::here("figures/Top15_DE_genes_trt.pdf"))
+```
+
+Differentially expressed genes between controls
+
+```{r}
+#| echo: false
+#plot differentially expressed genes between controls
+
+trt_sig_up.20 = trt_DE_summary %>% arrange(desc(log_p))%>% filter(trt_cont == "1") %>%top_n(20, log_p) #top 10 significant and downregulated genes in control soils
+
+trt_sig_down.20 = trt_DE_summary %>% arrange(desc(log_p))%>% filter(trt_cont == "-1") %>%top_n(20, log_p) #top 10 significant and downregulated genes in control soils
+
+trt_top_up.down.20 = rbind(trt_sig_up.20, trt_sig_down.20)
+
+length(unique(trt_sig_up.20$Ann)) #10 unique COGs
+length(unique(trt_sig_down.20$Ann)) #4 unique COGs
+
+
+#horizontal bar plot: 
+trt_top_up.down.20$query = factor(trt_top_up.down.20$query)
+trt_top_up.down.20$Ann = factor(trt_top_up.down.20$Ann, levels = c("Cell motility","Energy production and conversion","Transcription","Cell cycle control, cell division, chromosome partitioning","Carbohydrate transport and metabolism","Intracellular trafficking, secretion and vesicular transport","Signal transduction mechanisms","Translation, ribosomal structure and biogenesis","Post-translational modification, protein turnover, and chaperones", "Function Unknown", "unclassified"))
+trt_top_up.down.20$max_annot_lvl = factor(trt_top_up.down.20$max_annot_lvl)
+
+trt <- trt_top_up.down.20 %>%
+  ggplot() +
+  aes(x = query, y = trt_coeff, fill = Ann) + 
+  geom_col(width = 0.5) +
+  scale_fill_manual(values = expanded_cols) + 
+  labs(y = "log2 Fold Change", 
+      x = "Query Transcript",
+      fill = "COG Category") +
+  theme_bw() + 
+  coord_flip() + 
+  theme(axis.text.y = element_text(size = 6), 
+        axis.text.x = element_text(size = 6),
+        aspect.ratio = 2/1)
+
+addSmallLegend_bottom <- function(myPlot, pointSize = 3, textSize = 8, spaceLegend = 0.5) {
+    myPlot +
+        guides(shape = guide_legend(override.aes = list(size = pointSize)),
+               color = guide_legend(override.aes = list(size = pointSize)),
+               fill = guide_legend(ncol = 1)) +
+        theme(legend.title.position = "top",
+              legend.title = element_text(size = textSize), 
+              legend.text  = element_text(size = textSize),
+              legend.key.size = unit(spaceLegend, "lines"),
+              legend.position = "bottom")
+}
+
+addSmallLegend_bottom(trt)
+
+trt_tax <- trt_top_up.down.20 %>%
+  ggplot() +
+  aes(x = query, y = trt_coeff, fill = max_annot_lvl) + 
+  geom_col(width = 0.5) +
+  scale_fill_manual(values = unname(kelly())) +
+  labs(y = "log2 Fold Change", 
+     x = "Query Transcript",
+     fill = "Taxonomy") +
+  theme_bw() + 
+  coord_flip() + 
+  theme(axis.text.y = element_text(size = 6),
+        axis.text.x = element_text(size = 6), 
+        aspect.ratio = 2/1)
+
+addSmallLegend_bottom(trt_tax)
+
+
+plot_grid(addSmallLegend_bottom(trt), addSmallLegend_bottom(trt_tax), ncol = 2, labels = "AUTO", align = "h")
+```
+
+```{r}
+#| include: false
+#| eval: false
+
+tiff(here::here("figures/Trt_DE_top20_barplot.tiff"), units = "mm", width = 170, height = 225, res = 300)
+ggarrange(addSmallLegend_bottom(trt), addSmallLegend_bottom(trt_tax), ncol = 2, labels = "AUTO", align = "h")
+dev.off()
+```
+
+#### Heat Shock Proteins
+
+
+```{r}
+#| echo: false
+hs = c("k123_4681706_1","k123_2129273_1","k123_2784358_1","k123_2453574_1","k123_2580989_1","k123_784972_1","k123_1897324_1","k123_1119824_1","k123_3023451_1","k123_1018246_1","k123_4142344_1")
+
+
+#average fold change of hsp
+hs_fc = trt_DE_summary %>% 
+  filter(query %in% hs) %>% 
+  summarise(avg_fc = mean(trt_coeff))
+
+# white banners
+
+trt_nlog2 %>% 
+  filter(query %in% hs) %>%
+  ggplot() +
+  aes(x = Study_day, y = nlog2, group = Rep, color = Rep) + 
+  geom_point(size =1 ) +
+  geom_line() +
+  scale_color_manual(values = nice.col) + 
+  facet_wrap( ~ query) + 
+  labs(title = "Expression of Top Downregulated Heat Shock Genes")+ 
+  xlab("Study Day") + 
+  ylab("Normalized log2 Expression") + 
+  theme_bw() +
+  theme(legend.position = "inside",
+        legend.position.inside = c(0.9, 0.15),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        strip.background = element_rect(fill = "white"))
+  
+tiff(here::here("figures/Trt_DE_top15_heatshockTPM.tiff"), units = "mm", width = 170, height = 225, res = 300)
+trt_nlog2 %>% 
+  filter(query %in% hs) %>%
+  ggplot() +
+  aes(x = Study_day, y = nlog2, group = Rep, color = Rep) + 
+  geom_point(size =1 ) +
+  geom_line() +
+  scale_color_manual(values = nice.col) + 
+  facet_wrap( ~ query) + 
+  xlab("Study Day") + 
+  ylab("Normalized log2 Expression") + 
+  theme_bw() +
+  theme(legend.position = "inside",
+        legend.position.inside = c(0.9, 0.15),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        strip.background = element_rect(fill = "white")) 
+dev.off()
+```
+
+General TMM heat shock proteins for each donor and controls:
+
+```{r}  
+#| echo: false
+# same heat shock protiens in TMM
+phylum_colors <- c("#CBD588", "#5F7FC7", "orange","#DA5724", "#508578", "#CD9BCD","#AD6F3B", "#673770","#D14285", "#652926", "#C84248", "#8569D5", "#5E738F","#D1A33D", "#8A7C64", "#599861")
+
+y_norm_counts %>%
+  pivot_longer(cols = starts_with(c("CON", "SP")), names_to = "Sample_name", values_to = "TMM") %>%
+  filter(query %in% hs) %>%
+  summarise(sum_TMM = sum(TMM), .by = c("Sample_name")) %>%
+  left_join(metadata, by = "Sample_name") %>%
+  ggplot() +
+  aes(x = Study_day, y = sum_TMM, color = Rep) + 
+  geom_point(size = 1) +
+  scale_color_manual(values = phylum_colors) + 
+  labs(y = "Gene Transcript Counts (TMM)",
+       x = "Study Day",
+       title = "Gene Transcript Counts (TMM) for heat shock\n protiens in the top 20 Downregulated Genes in Control Soils") +
+  theme_bw()
+```
+
+```{r}
+#| include: false
+#determine magnitude of difference in exression for each query hs gene
+y_norm_counts %>%
+  pivot_longer(cols = starts_with(c("CON", "SP")), names_to = "Sample_name", values_to = "TMM") %>%
+  filter(query %in% hs) %>%
+  left_join(metadata, by = "Sample_name") %>%
+  summarise(mean = mean(TMM), .by = c("Trt", "Study_day", "query")) %>%
+  pivot_wider(names_from = Trt, values_from = mean) %>%
+  mutate(diff = Decomposition - Control,
+         times = Decomposition / Control)
+  
 ```
