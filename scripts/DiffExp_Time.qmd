@@ -1,0 +1,908 @@
+---
+title: "Differential Expression: Sequential Timepoints"
+format: pdf
+---
+
+```{r libs}
+#| include: false
+#adapted from: https://combine-australia.github.io/RNAseq-R/06-rnaseq-day1.html#Differential_expression_with_limma-voom
+set.seed(3)
+library(readxl)
+library(writexl)
+library(here)
+library(ggplot2)
+library(ggpubr)
+library(MASS)
+library(edgeR)
+library(limma)
+library(DESeq2)
+library(glue)
+library(kableExtra)
+library(lme4)
+library(lmerTest)
+library(ggstar)
+library(ggtext)
+library(cowplot)
+library(multcompView)
+library(tidyverse)
+library(knitr)
+library(pals)
+
+colpalette2= c("khaki3","steelblue3","orange","chocolate","aquamarine4","plum3","black","mediumpurple4","violetred3","brown4","chartreuse3","lavenderblush4","lightpink","mediumpurple3","lightcyan1","palegreen4","red1","wheat4","papayawhip","tomato3")
+```
+
+ ```{r}
+#| include: false
+y_norm <- readRDS(here("data/NIJ_DGEList_TMM.rds"))
+y.con.log <- readRDS(here("data/NIJ_filter_log2.rds"))
+
+metadata <- read_xlsx(here::here("data/SP_metadata.xlsx"), sheet = "R") %>%
+    mutate(Sample_name = as.factor(Sample_name),
+           Trt = as.factor(Trt),
+           Rep = as.factor(Rep),
+           Study_day = factor(Study_day, ordered = TRUE, levels = c(0, 12, 58, 86, 168, 376)),
+           Study_con = factor(Study_con, ordered = TRUE, 
+                              levels = c("con", "d.0", "d.12", "d.58", "d.86", "d.168", "d.376")),
+           Stage = as.factor(Stage))
+
+study_con <- factor(paste(metadata$Study_con)) #make an factor object for the variable trt
+col.study.con <- c("black","#FB7B8E","#FAA7B8", "#CDB3D4" ,"#AAB6FB", "#6096FD", "#031B88")[metadata$Study_con]
+
+# load eggnog annotation file
+COG_cat = read_excel(here::here("data/NIJ_all_annotations.emapper.annotations.xlsx"), sheet = "COG_prim")
+gene_an = read_excel(here::here("data/NIJ_all_annotations.emapper.annotations.xlsx"), sheet = "R") %>%
+  left_join(COG_cat, by = "COG_category")
+
+# countdata_TPM <- read_xlsx(here("data/NIJ_TPM_countstable.xlsx"))
+
+# TPM_long <- countdata_TPM %>%
+#   pivot_longer(cols = starts_with(c("CON", "SP")), 
+#                names_to = "Sample_name",
+#                values_to = "TPM") 
+ ```
+
+### Differential Expression: Compare genes in sequential decompostion timepoints
+
+```{r}
+#| include: false
+#Differential Expression: study con: sequential by time
+
+#Differential expression with limma-voom
+#limma includes voom, which will transform read counts into logCPMs 
+# while also accounting for mean-variance in the data
+
+#design 2: which genes are differentially expressed in decomposition
+# soil compared to control soils
+design_ts = model.matrix(~ 0 + study_con)
+colnames(design_ts) = levels(study_con) 
+
+#Voom transform the data (edgeR TMM normalized df):
+v_ts = voom(y_norm, design_ts, plot = TRUE) #results in voom normalized log2 counts
+boxplot(v_ts$E, xlab = "", ylab = "Log2 counts per million",
+        las = 2, main = "Voom transformed logCPM")
+## Let's add a blue horizontal line that corresponds to the median logCPM
+abline(h = median(v_ts$E), col = "blue")
+
+#test for DE:
+  #1: fit linear model for each gene
+fit_ts = lmFit(v_ts) #lmFit estimates group means according to the specified design matrix (here study con)
+
+  #2: specify comparisons for test (which groups do we want to compared differences for?) Here: control compared to each study day decomposition samples
+cont.matrix_ts = makeContrasts(C.12v0 = d.12 - d.0, C.58v12 = d.58 - d.12, C.86v58 = d.86 - d.58, C.168v86 = d.168 - d.86, C.376v168 = d.376 - d.168, levels = design_ts) #note: we can specify as many comparisons as we want in one command
+
+  #3: Apply comparisons to the fit model; this will result in statistics and estimated parameters for the comparision(s)
+fit.cont_ts = contrasts.fit(fit_ts, cont.matrix_ts)
+
+  #4: Perform empirical Bayes shrinkage on variances and estimate t-stats/p-values
+fit.cont_ts = eBayes(fit.cont_ts)
+head(fit.cont_ts$p.value)
+
+dim(fit.cont_ts)
+
+#summary of DE:
+summa.fit_ts = decideTests(fit.cont_ts)
+ts_sum = summary(summa.fit_ts) 
+```
+
+```{r}
+#| echo: false
+#| cap: Number of Differentially Expressed Genes for Each Timepoint Comparison
+
+names <- colnames(ts_sum) %>%
+  str_replace("C.", "") %>%
+  str_replace("v", " - ")
+  
+exp_tbl <- ts_sum %>% 
+  kbl(.,
+      format = "latex",
+      digits = 3,
+      col.names = names,
+      booktabs = TRUE)
+exp_tbl
+```
+
+```{r}
+#| include: false
+exp_tbl %>%
+  save_kable(., file = here::here("figures/Time_numberDEgens.pdf"))
+```
+
+
+```{r}
+#| include: false
+
+ts_contrast <- as.data.frame(summa.fit_ts) %>%
+  rownames_to_column(var = "query") %>%
+  pivot_longer(-query, names_to = "comp", values_to = "cont") 
+  
+#this is a dataframe of all the genes used for DE analysis; cell values can only be one of the following: -1, 0, or 1: -1 = downregulated, 0 = not significantly DE, 1 = upregulated
+
+#save coefficients contrasts:
+ts_coeff <- as.data.frame(fit.cont_ts$coefficients) %>%
+  rownames_to_column(var = "query") %>%
+  pivot_longer(-query, names_to = "comp", values_to = "coeff") 
+#extract coefficients for each comparison; these are the log2 fold change values for each gene
+
+#save DE p-values
+ts_p <- as.data.frame(fit.cont_ts$p.value) %>%
+  rownames_to_column(var = "query") %>%
+  pivot_longer(-query, names_to = "comp", values_to = "p") 
+#note: these p-values are the same as those reported in the F.p.value 
+
+ts_DE_summary <- ts_contrast %>%
+  left_join(ts_coeff, by = c("query", "comp")) %>%
+  left_join(ts_p, by = c("query", "comp")) %>%
+  mutate(log_p = -log10(p)) %>%
+  left_join(gene_an, by = c("query")) 
+
+#make a dataframe of the normalized log2 expression values for all query genes used in DE analysis
+ts_nlog2 <- as.data.frame(v_ts$E) %>%
+  rownames_to_column(var = "query") %>%
+  pivot_longer(-query, names_to = "Sample_name", values_to = "nlog2") %>%
+  left_join(metadata, by = "Sample_name") %>%
+  left_join(gene_an, by = "query") 
+```
+
+# Day 12 vs. 0 DE genes
+
+*MD plot*
+```{r}
+#| echo: false
+
+#MD plot
+plotMD(fit.cont_ts, coef = 1, status = summa.fit_ts[,"C.12v0"],
+       values = c(-1,1), hl.col=c("blue","red"))
+```
+
+*Volcano plot*
+```{r}
+#| echo: false
+
+volcanoplot(fit.cont_ts, coef = 1, highlight = 100, main= "C.12v0")
+```
+
+
+```{r}
+#| include: false
+ts_12.0_sig_up = ts_DE_summary %>% 
+  filter(comp == "C.12v0") %>%
+  arrange(desc(log_p), desc(coeff)) %>%
+  top_n(10, log_p) #top 10 significant and upregulated genes in day 12 decomp soils
+
+ts_12.0_sig_down = ts_DE_summary %>%
+  filter(comp == "C.12v0") %>%
+  arrange(desc(log_p), coeff) %>%
+  filter(cont == "-1") %>%
+  top_n(10, log_p) #top 10 significant and downregulated genes in day 12 decomp soils
+  
+ts_top20_12.0 <- rbind(ts_12.0_sig_up, ts_12.0_sig_down)
+```
+
+```{r}
+#| echo: false
+#| cap: Top 10 signigicantly up- (+ Coefficient) and down- (- Coefficient) regulated genes at study day 12, compared to day 0.
+
+tbl1 <- ts_top20_12.0 %>%
+  mutate(tax = str_split_i(max_annot_lvl, "\\|", 2)) %>%
+  select(query, coeff, p, tax, Preferred_name, EC) %>%
+  kbl(.,
+      format = "latex",
+      digits = 3,
+      col.names = c("Query", "Coefficient", "p-Value", "Taxonomic Annotation", "Gene Name", "EC"),
+      booktabs = TRUE)
+
+tbl1
+```
+
+```{r}
+#| include: false
+
+tauD_ec <- ts_top20_12.0 %>%
+  filter(Preferred_name == "tauD") %>%
+  top_n(1, coeff) %>%
+  pull(EC)
+  
+tauD_n <- ts_top20_12.0 %>%
+  count(EC) %>%
+  filter(EC == tauD_ec) %>%
+  pull(n)
+  
+  
+tauD_query <- ts_top20_12.0 %>%
+  filter(EC == tauD_ec) %>%
+  top_n(-1, coeff) %>%
+  pull(query)
+```
+
+Interesting, TauD appears to be downregulated in day 12 soils. TauD encodes the gene for taurine dioxygenase (EC: `r tauD_ec`). TauD, by EC value, comprised `r tauD_n` of the top 10 most significantly down-regulated genes in day 12 soils (~ `r round((tauD_n / 12) * 100, 2)`).
+
+## tauD
+
+Let's look at one of the tauD gene query with the largest differential expression coefficient, `r tauD_query`.
+
+```{r}
+#| echo: false
+
+title <- glue("{tauD_query}",
+     ": ",
+     "{ts_top20_12.0 %>% filter(EC == tauD_ec) %>% top_n(-1, coeff) %>% pull(Description)}")
+
+
+stripchart(v_ts$E[tauD_query, ] ~ study_con, vertical = TRUE,
+           las = 2, cex.axis = 0.8, pch = 16, cex = 1.3, 
+           col = col.study.con, method = "jitter", 
+           ylab = "Normalized log2 expression", 
+           main = title)
+```
+
+
+```{r}
+#| include: false
+
+# all tauD query genes
+taud_DE <- ts_nlog2 %>% 
+  filter(EC.y == tauD_ec) %>%
+  summarise(avg = mean(nlog2), .by = c("Sample_name", "query")) %>%
+  left_join(metadata, by = "Sample_name")
+
+taud_DE %>%
+  ggplot() +
+  aes(x = Study_day,
+      y = avg, 
+      color = Rep) +
+  geom_point(size = 1) +
+  facet_wrap(~ query, scales = "free_y") +
+  theme_bw()
+
+taud_DE %>%
+  ggplot() +
+  aes(x = Study_con, 
+      y = avg, 
+      fill = "indianred") +
+  geom_boxplot() +
+  facet_wrap(~query, scales = "free_y") +
+  theme_bw()
+```
+
+
+```{r}
+#| include: false
+
+taud_DE %>%
+  ggplot() +
+  aes(x = Study_day,
+      y = )
+
+taud_nlog2_sum <- ts_nlog2 %>% 
+  filter(EC.y == tauD_ec) %>%
+  summarise(avg = mean(nlog2),
+            sum = sum(nlog2),
+            .by = c("Sample_name")) %>%
+  left_join(metadata, by = "Sample_name")
+  
+taud_nlog2_sum %>%
+  ggplot() +
+  aes(x = Study_con,
+      y = sum, 
+      fill = "indianred") +
+  geom_boxplot() +
+  theme_bw()
+  
+taud_nlog2_sum %>%
+  ggplot() +
+  aes(x = Study_con,
+      y = avg, 
+      fill = "indianred") +
+  geom_boxplot() +
+  theme_bw() +
+  stat_compare_means(method = "anova")
+
+#### linear mixed effects model
+taud_anova <- taud_nlog2_sum %>%
+  filter(Rep != "CON") %>%
+  lmer(avg ~ Study_day + (1|Rep), data = .) %>%
+  anova(.)
+
+taud_anova$`Pr(>F)`
+
+#### post-hoc Tukey
+
+m2 <- taud_nlog2_sum %>%
+  filter(Rep != "CON") %>%
+  lm(avg ~ Study_day, data = .) %>%
+  aov(.)
+# m2 = aov(lm(avg ~ Study_day, data = taud_nlog2_avg_dd)) 
+taud_t = TukeyHSD(m2)
+
+#eztract p-values and labels
+Tukey.levels <- taud_t$Study_day[,4]
+Tukey.labels <- data.frame(multcompLetters(Tukey.levels)['Letters']) %>%
+  rownames_to_column(var = "Study_day") %>%
+  mutate(Study_day = factor(Study_day, ordered = TRUE, levels = c(0, 12, 58, 86, 168, 376))) %>%
+  arrange(Study_day)
+
+#### pairwise t-test
+
+attach(taud_nlog2_sum)
+taud_ttest = pairwise.t.test(avg, Study_con, p.adjust.method = "bonf")
+detach(taud_nlog2_sum) #sig different from controls at day 86, 168, and 376 
+taud_ttest$p.value
+
+#### plot
+max <- taud_nlog2_sum %>%
+  filter(Rep != "CON") %>%
+  summarise(max = max(avg)) %>%
+  pull(max)
+
+min <- taud_nlog2_sum %>%
+  filter(Rep != "CON") %>%
+  summarise(min = min(avg)) %>%
+  pull(min)
+
+taud_p <- taud_nlog2_sum %>%
+  filter(Rep != "CON") %>%
+  ggplot() +
+  aes(x = Study_day,
+      y = avg,
+      fill = "indianred") + 
+  guides(fill = "none") +
+  geom_boxplot() +
+  geom_star(data = filter(taud_nlog2_sum, Rep == "CON"), 
+            fill = "darkgoldenrod2",
+            color = "darkgoldenrod2",
+            size = 6) +
+  labs(x = "Study Day",
+       y = "Average Normalized<br>log2 expression (*tauD*)") +
+  theme_bw() +
+  theme(axis.title = element_markdown()) +
+  annotate("text",
+           x = 1.25,
+           y = min,
+           label = bquote(paste("ANOVA ", italic("p"), " = ", .(round(taud_anova$`Pr(>F)`, 4)))),
+           size = 3) +
+  geom_text(data = Tukey.labels, 
+            aes(x = Study_day, 
+                y = max + 0.1, label = Letters),
+            size=5)
+```
+
+```{r}
+#| echo: false
+
+taud_p + labs(title = "tauD Gene Expression by Study Day")
+```
+
+### tauD genes by taxonomy
+
+```{r}
+#| include: false
+
+ts_nlog2 %>%
+  filter(EC.y == tauD_ec) %>%
+  summarise(avg = mean(nlog2),
+            sum = sum(nlog2),
+            .by = c("Sample_name", "max_annot_lvl")) %>%
+  left_join(metadata, by = "Sample_name") %>%
+  ggplot() +
+  aes(x = Study_day, y = sum, color = Rep) +
+  geom_point(size = 1) + 
+  facet_wrap(~ max_annot_lvl, scales = "free_y") + 
+  theme_bw()
+  
+ts_nlog2 %>%
+  filter(EC.y == tauD_ec) %>%
+  ggplot() +
+  aes(x = Study_day,
+      y = nlog2,
+      group = query, 
+      color = max_annot_lvl) +
+  geom_line(size = 1) + 
+  facet_wrap(~ Rep, scales = "free_y") +
+  scale_color_manual(values = colpalette2) +
+  theme_bw()
+
+
+taud_tax <- ts_nlog2 %>%
+  filter(EC.y == tauD_ec) %>%
+  summarise(avg = mean(nlog2), .by = c("query", "Study_day", "Trt")) %>%
+  left_join(gene_an, by = "query") %>%
+  mutate(tax = str_split_i(max_annot_lvl, "\\|", 2)) %>%
+  ggplot() +
+  aes(x = Study_day,
+      y = avg,
+      group = query,
+      color = tax) +
+  geom_line(size = 1) +
+  labs(x = "Study Day",
+       y = "Average Normalized log2 expression (*tauD*)",
+       color = "Taxonomic Association") +
+  facet_grid(tax ~ Trt,
+             scales = "free_y") +
+  scale_color_manual(values = colpalette2) + 
+  theme_bw() +
+  theme(axis.title = element_markdown(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        strip.background = element_rect(fill = "white")
+        )
+```
+
+```{r}
+#| echo: false
+
+addSmallLegend <- function(myPlot, pointSize = 3, textSize = 8, spaceLegend = 0.5) {
+    myPlot +
+        guides(shape = guide_legend(override.aes = list(size = pointSize)),
+               color = guide_legend(override.aes = list(size = pointSize))) +
+        theme(legend.title = element_text(size = textSize), 
+              legend.text  = element_text(size = textSize),
+              legend.key.size = unit(spaceLegend, "lines"))
+}
+
+addSmallLegend(taud_tax) + 
+  labs(title = "tauD Gene Expression by Taxonomic Association") +
+  theme(legend.position = "bottom")
+```
+
+```{r}
+#| include: false
+# width of 170 mm for full page width figure
+# maximum height of 225 mm for figure and legend
+
+tiff(here::here("figures/tauD_nlog2_taxonomy.tiff"), units = "mm", width = 170, height = 225, res = 300)
+addSmallLegend(taud_tax) + theme(strip.text = element_text(size = 6))
+dev.off()
+```
+
+Bile salt hydrolase: anerobic gut taxa contain this enzyme which conjugates bile salts to produce either taurine or glycine. Does the expression of the gene that produces taurine match tauD expression patterns?
+
+## BSH
+
+```{r}
+#| include: false
+
+#bile salt hydrolase - 3.5.1.24  
+bsh_ec <-  "3.5.1.24"  
+bsh_nlog2_sum <- ts_nlog2 %>% 
+  filter(EC.y == bsh_ec) %>%
+  summarise(avg = mean(nlog2),
+            sum = sum(nlog2),
+            .by = c("Sample_name")) %>%
+  left_join(metadata, by = "Sample_name") 
+
+#### linear mixed effects model
+bsh_anova <- bsh_nlog2_sum %>%
+  filter(Rep != "CON") %>%
+  lmer(avg ~ Study_day + (1|Rep), data = .) %>%
+  anova(.)
+
+bsh_anova$`Pr(>F)`
+
+#### post-hoc Tukey
+
+m2 <- bsh_nlog2_sum %>%
+  filter(Rep != "CON") %>%
+  lm(avg ~ Study_day, data = .) %>%
+  aov(.)
+# m2 = aov(lm(avg ~ Study_day, data = taud_nlog2_avg_dd)) 
+bsh_t = TukeyHSD(m2)
+
+#eztract p-values and labels
+Tukey.levels <- bsh_t$Study_day[,4]
+Tukey.labels <- data.frame(multcompLetters(Tukey.levels)['Letters']) %>%
+  rownames_to_column(var = "Study_day") %>%
+  mutate(Study_day = factor(Study_day, ordered = TRUE, levels = c(0, 12, 58, 86, 168, 376))) %>%
+  arrange(Study_day)
+
+#### pairwise t-test
+
+attach(bsh_nlog2_sum)
+bsh_ttest = pairwise.t.test(avg, Study_con, p.adjust.method = "bonf")
+detach(bsh_nlog2_sum) #sig different from controls at day 86, 168, and 376 
+bsh_ttest$p.value
+
+#### plot
+max <- bsh_nlog2_sum %>%
+  filter(Rep != "CON") %>%
+  summarise(max = max(avg)) %>%
+  pull(max)
+
+min <- bsh_nlog2_sum %>%
+  filter(Rep != "CON") %>%
+  summarise(min = min(avg)) %>%
+  pull(min)
+
+# Plot
+  
+bsh_p <- bsh_nlog2_sum %>%
+  filter(Rep != "CON") %>%
+  ggplot() +
+  aes(x = Study_day,
+      y = avg,
+      fill = "indianred") + 
+  guides(fill = "none") +
+  geom_boxplot() +
+  geom_star(data = filter(bsh_nlog2_sum, Rep == "CON"), 
+            fill = "darkgoldenrod2",
+            color = "darkgoldenrod2",
+            size = 6) +
+  labs(x = "Study Day",
+       y = "Average Normalized<br>log2 expression (*BSH*)") +
+  theme_bw() +
+  theme(axis.title = element_markdown()) +
+  annotate("text",
+           x = 1.25,
+           y = max - 0.1,
+           label = bquote(paste("ANOVA ", italic("p"), " = ", .(round(bsh_anova$`Pr(>F)`, 4)))),
+           size = 3) +
+  geom_text(data = Tukey.labels, 
+            aes(x = Study_day, 
+                y = max + 0.3, label = Letters),
+            size=5)
+```
+
+```{r}
+#| echo: false
+
+bsh_p + labs(title = "BSH Gene Expression by Study Day")
+```
+
+## Overlay *tauD* and *BSH*
+
+
+```{r}
+#| echo: false
+
+plot_grid(bsh_p, taud_p, ncol = 1, labels = "AUTO")
+```
+
+
+```{r}
+#| include: false
+
+# width of 170 mm for full page width figure
+# maximum height of 225 mm for figure and legend
+
+tiff(here::here("figures/tauD_bsh_nlog2.tiff"), units = "mm", width = 125, height = 225, res = 300)
+plot_grid(bsh_p, taud_p, ncol = 1, labels = "AUTO")
+dev.off()
+```
+
+# Day 58 vs. 12 DE genes
+
+*MD plot*
+```{r}
+#| echo: false
+
+#MD plot
+plotMD(fit.cont_ts, coef = 2, status = summa.fit_ts[, "C.58v12"],
+       values = c(-1,1), hl.col = c("blue","red"))
+```
+
+*Volcano plot*
+```{r}
+#| echo: false
+
+volcanoplot(fit.cont_ts, coef = 2, highlight = 100, main= "C.58v12")
+```
+
+
+```{r}
+#| include: false
+ts_58.12_sig_up = ts_DE_summary %>% 
+  filter(comp == "C.58v12") %>%
+  arrange(desc(log_p), desc(coeff)) %>%
+  filter(cont == "1") %>%
+  top_n(10, log_p) #top 10 significant and upregulated genes in day 58 decomp soils
+
+ts_58.12_sig_down = ts_DE_summary %>%
+  filter(comp == "C.58v12") %>%
+  arrange(desc(log_p), coeff) %>%
+  filter(cont == "-1") %>%
+  top_n(10, log_p) #top 10 significant and downregulated genes in day 58 decomp soils
+  
+ts_top20_58.12 <- rbind(ts_58.12_sig_up, ts_58.12_sig_down)
+```
+
+```{r}
+#| echo: false
+#| cap: Top 10 signigicantly up- (+ Coefficient) and down- (- Coefficient) regulated genes at study day 58, compared to day 12.
+
+tbl1 <- ts_top20_58.12 %>%
+  mutate(tax = str_split_i(max_annot_lvl, "\\|", 2)) %>%
+  select(query, coeff, p, tax, Preferred_name, EC) %>%
+  kbl(.,
+      format = "latex",
+      digits = 3,
+      col.names = c("Query", "Coefficient", "p-Value", "Taxonomic Annotation", "Gene Name", "EC"),
+      booktabs = TRUE)
+
+tbl1
+```
+
+# Day 86 vs. 58 DE genes
+
+*MD plot*
+```{r}
+#| echo: false
+
+#MD plot
+plotMD(fit.cont_ts, coef = 3, status = summa.fit_ts[, "C.86v58"],
+       values = c(-1,1), hl.col = c("blue","red"))
+```
+
+*Volcano plot*
+```{r}
+#| echo: false
+
+volcanoplot(fit.cont_ts, coef = 3, highlight = 100, main= "C.86v58")
+```
+
+
+```{r}
+#| include: false
+ts_86.58_sig_up = ts_DE_summary %>% 
+  filter(comp == "C.86v58") %>%
+  arrange(desc(log_p), desc(coeff)) %>%
+  filter(cont == "1") %>%
+  top_n(10, log_p) #top 10 significant and upregulated genes in day 86 decomp soils
+
+ts_86.58_sig_down = ts_DE_summary %>%
+  filter(comp == "C.86v58") %>%
+  arrange(desc(log_p), coeff) %>%
+  filter(cont == "-1") %>%
+  top_n(10, log_p) #top 10 significant and downregulated genes in day 86 decomp soils
+  
+ts_top20_86.58 <- rbind(ts_86.58_sig_up, ts_86.58_sig_down)
+```
+
+```{r}
+#| echo: false
+#| cap: Top 10 signigicantly up- (+ Coefficient) and down- (- Coefficient) regulated genes at study day 86, compared to day 58.
+
+tbl2 <- ts_top20_86.58 %>%
+  mutate(tax = str_split_i(max_annot_lvl, "\\|", 2)) %>%
+  select(query, coeff, p, tax, Preferred_name, EC) %>%
+  kbl(.,
+      format = "latex",
+      digits = 3,
+      col.names = c("Query", "Coefficient", "p-Value", "Taxonomic Annotation", "Gene Name", "EC"),
+      booktabs = TRUE)
+
+tbl2
+```
+
+# Day 168 vs. 86 DE genes
+
+
+*MD plot*
+```{r}
+#| echo: false
+
+#MD plot
+plotMD(fit.cont_ts, coef = 4, status = summa.fit_ts[, "C.168v86"],
+       values = c(-1,1), hl.col = c("blue","red"))
+```
+
+*Volcano plot*
+```{r}
+#| echo: false
+
+volcanoplot(fit.cont_ts, coef = 4, highlight = 100, main= "C.168v86")
+```
+
+
+```{r}
+#| include: false
+ts_168.86_sig_up = ts_DE_summary %>% 
+  filter(comp == "C.168v86") %>%
+  arrange(desc(log_p), desc(coeff)) %>%
+  filter(cont == "1") %>%
+  top_n(10, log_p) #top 10 significant and upregulated genes in day 168 decomp soils
+
+ts_168.86_sig_down = ts_DE_summary %>%
+  filter(comp == "C.168v86") %>%
+  arrange(desc(log_p), coeff) %>%
+  filter(cont == "-1") %>%
+  top_n(10, log_p) #top 10 significant and downregulated genes in day 168 decomp soils
+  
+ts_top20_168.86 <- rbind(ts_168.86_sig_up, ts_168.86_sig_down)
+```
+
+```{r}
+#| echo: false
+#| cap: Top 10 signigicantly up- (+ Coefficient) and down- (- Coefficient) regulated genes at study day 168, compared to day 86.
+
+tbl3 <- ts_top20_168.86 %>%
+  mutate(tax = str_split_i(max_annot_lvl, "\\|", 2)) %>%
+  select(query, coeff, p, tax, Preferred_name, EC) %>%
+  kbl(.,
+      format = "latex",
+      digits = 3,
+      col.names = c("Query", "Coefficient", "p-Value", "Taxonomic Annotation", "Gene Name", "EC"),
+      booktabs = TRUE)
+
+tbl3
+```
+
+# Day 376 vs. 168 DE genes
+
+
+*MD plot*
+```{r}
+#| echo: false
+
+#MD plot
+plotMD(fit.cont_ts, coef = 5, status = summa.fit_ts[, "C.376v168"],
+       values = c(-1,1), hl.col = c("blue","red"))
+```
+
+*Volcano plot*
+```{r}
+#| echo: false
+
+volcanoplot(fit.cont_ts, coef = 5, highlight = 100, main= "C.376v168")
+```
+
+
+```{r}
+#| include: false
+ts_376.168_sig_up = ts_DE_summary %>% 
+  filter(comp == "C.376v168") %>%
+  arrange(desc(log_p), desc(coeff)) %>%
+  filter(cont == "1") %>%
+  top_n(10, log_p) #top 10 significant and upregulated genes in day 376 decomp soils
+
+ts_376.168_sig_down = ts_DE_summary %>%
+  filter(comp == "C.376v168") %>%
+  arrange(desc(log_p), coeff) %>%
+  filter(cont == "-1") %>%
+  top_n(10, log_p) #top 10 significant and downregulated genes in day 376 decomp soils
+  
+ts_top20_376.168 <- rbind(ts_376.168_sig_up, ts_376.168_sig_down)
+```
+
+```{r}
+#| echo: false
+#| cap: Top 10 signigicantly up- (+ Coefficient) and down- (- Coefficient) regulated genes at study day 376, compared to day 168.
+
+tbl4 <- ts_top20_376.168 %>%
+  mutate(tax = str_split_i(max_annot_lvl, "\\|", 2)) %>%
+  select(query, coeff, p, tax, Preferred_name, EC) %>%
+  kbl(.,
+      format = "latex",
+      digits = 3,
+      col.names = c("Query", "Coefficient", "p-Value", "Taxonomic Annotation", "Gene Name", "EC"),
+      booktabs = TRUE)
+
+tbl4
+```
+
+# Summarize all timepoints
+
+```{r}
+#| include: false
+
+all_top <- rbind(ts_top20_12.0,
+                 ts_top20_58.12,
+                 ts_top20_86.58,
+                 ts_top20_168.86,
+                 ts_top20_376.168) %>% 
+  mutate(tax = str_split_i(max_annot_lvl, "\\|", 2),
+         p = ifelse(p < 0.001, "< 0.001", p))
+  
+all_top %>%
+  select(query, coeff, p, tax, COG_category, Description, Preferred_name, EC) %>%
+  kbl(.,
+      format = "latex",
+      digits = 3,
+      col.names = c("Query", "Coefficient", "p-Value", "Taxonomic Annotation", "COG Category", "Description", "Gene Name", "EC"),
+      booktabs = TRUE) %>%
+  column_spec(6, width = "10em") %>%
+  column_spec(4, width = "10em") %>%
+  save_kable(., file = here::here("figures/Top20_DE_genes_study.con.pdf"))
+```
+
+
+```{r}
+#| include: false
+
+colpalette2 = c("khaki3","steelblue3","orange","chocolate","aquamarine4","plum3","black","mediumpurple4","violetred3","brown4","chartreuse3","lavenderblush4","lightpink","mediumpurple3","lightcyan1","palegreen4","red1","wheat4","papayawhip","tomato3")
+nb.cols = 20
+expanded_cols = colorRampPalette(colpalette2)(nb.cols)
+
+all_cog <- all_top %>%
+  mutate(query = as.factor(query),
+         Ann = as.factor(Ann),
+         tax = as.factor(tax)) %>%
+  ggplot() +
+  aes(x = query, y = coeff, fill = Ann) + 
+  geom_col(width = 0.5) +
+  scale_fill_manual(values = expanded_cols) + 
+  labs(y = "log2 Fold Change", 
+      x = "Query Transcript",
+      fill = "COG Category") +
+  theme_bw() + 
+  coord_flip() + 
+  facet_wrap(~ comp, nrow = 1, scales = "free_y") +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        strip.background = element_rect(fill = "white"),
+        axis.text.y = element_text(size = 6), 
+        axis.text.x = element_text(size = 6),
+        aspect.ratio = 2/1)
+  
+all_cog <- addSmallLegend(all_cog, pointSize = 0.2, textSize = 6, spaceLegend = 0.2) +
+  guides(fill=guide_legend(ncol = 3)) +
+  theme(legend.title.position = "top",
+        legend.position = "top",
+        legend.key.spacing = unit(.1, "cm"))
+```
+
+```{r}
+#| include: false
+
+all_tax <- all_top %>%
+  mutate(query = as.factor(query),
+         Ann = as.factor(Ann),
+         tax = as.factor(tax)) %>%
+  ggplot() +
+  aes(x = query, y = coeff, fill = tax) + 
+  geom_col(width = 0.5) +
+  scale_fill_manual(values = unname(kelly())) + 
+  labs(y = "log2 Fold Change", 
+      x = "Query Transcript",
+      fill = "Taxonomic Association") +
+  theme_bw() + 
+  coord_flip() + 
+  facet_wrap(~ comp, nrow = 1, scales = "free_y") +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        strip.background = element_rect(fill = "white"),
+        axis.text.y = element_text(size = 6), 
+        axis.text.x = element_text(size = 6),
+        aspect.ratio = 2/1)
+  
+all_tax <- addSmallLegend(all_tax, pointSize = 0.2, textSize = 6, spaceLegend = 0.2) +
+  guides(fill=guide_legend(ncol = 6)) +
+  theme(legend.title.position = "top",
+        legend.position = "top",
+        legend.key.spacing = unit(.1, "cm"))
+```
+
+```{r}
+#| echo: false
+
+plot_grid(all_cog, all_tax, ncol = 1, labels = "AUTO", align = "h")
+```
+
+```{r}
+#| include: false
+
+# width of 170 mm for full page width figure
+# maximum height of 225 mm for figure and legend
+
+tiff(here::here("figures/Study.con_DE_top20_barplot.tiff"), units = "mm", width = 225, height = 170, res = 300)
+plot_grid(all_cog, all_tax, ncol = 1, labels = "AUTO", align = "h")
+dev.off()
+```
