@@ -1,0 +1,236 @@
+---
+title: "Soil Chemistry"
+format: pdf
+---
+
+```{r setup}
+#| include: false
+
+
+set.seed(5)
+library(readxl)
+library(lme4)
+library(lmerTest)
+library(ggplot2)
+library(ggpubr)
+library(ggstar)
+library(here)
+library(viridis)
+library(fBasics)
+library(knitr)
+library(reshape2)
+library(tidyverse)
+library(dplyr)
+library(sjPlot)
+library(sjmisc)
+library(plotrix)
+```
+
+```{r data}
+#| include: false
+
+days <- c(0, 12, 58, 86, 168, 376)
+
+# read_excel(here("data/SP_metadata.xlsx"), sheet = "Sheet1") %>%
+#     rename(Study_day = `Study day`) %>%
+#     filter(is.na(MetaT)) %>%
+#     mutate(Trt = case_when(startsWith(Sample, "con") ~ "Control",
+#                            startsWith(Sample, "gr") ~ "Decomposition",
+#                            TRUE ~ NA_character_),
+#            Depth = case_when(str_detect(Sample, "int") ~ "0-1",
+#                              str_detect(Sample, "15") ~ "1-16",
+#                              TRUE ~ NA_character_),
+#            Donor = toupper(str_split_i(Sample, "_", 3))) %>%
+#     select(Sample, Trt, Depth, Donor) %>%
+#     head()
+
+dat <- read_excel(here("data/SP_metadata.xlsx"), 
+    sheet = "R") %>%
+    mutate(Trt = as.factor(Trt),
+           Study_day = as.factor(Study_day),
+           Stage = factor(Stage, 
+                          ordered = TRUE,
+                          levels = c("Initial", "Active", "Advanced4","Advanced6","Advanced11","Skeletonization4"))) %>%
+    pivot_longer(c(-Sample_name, -Date, -MetaT, -Trt, -Rep, -Study_con, -Study_day, -ADH_ambient, -ADH_internal, -ADH_soil, -Stage, -TBS, -timepoint), names_to = "parameter") %>%
+    filter(parameter %in% c("temp_ambient", "temp_soil", "Gravimetric_moisture", "pH", "EC" , "DO", "CO2_μg C_gdw", "NH4_mg_gdw", "NO3_mg_gdw", "N_percent", "C_percent", "CN_ratio")) %>%
+    mutate(parameter = factor(parameter, 
+                              levels =  c("temp_ambient", "temp_soil", "Gravimetric_moisture", "pH", "EC" , "DO", "CO2_μg C_gdw", "NH4_mg_gdw", "NO3_mg_gdw", "N_percent", "C_percent", "CN_ratio"),
+                              labels = c("Air Temperature", "Soil Temperature", "Gravimetric Moisture", "pH", "EC" , "DO", "CO~2~ (μg gdw<sup>-1</sup>)", "NH~4~ (mg gdw<sup>-1</sup>)", "NO~3~ (mg gdw<sup>-1</sup>)", "% N", "% C", "C:N")))
+
+# dat_long_donor = dat_long %>% filter(Trt != "CON") #create a dataset with decompostion soils only
+# dat_long_con = dat_long %>% filter(Trt == "CON") #create a dataset with control soils only - these two datasets will be used to plot controls as stars while decompostion soils will be normal line plots
+```
+
+```{r}
+#| include: false
+
+#All soil data presented by study day - standard line plot  
+dat %>%
+    ggplot() +
+    aes(x = Study_day,
+        y = value,
+        group = Trt,
+        color = Trt) +
+    geom_point(size = 1) +
+    geom_line(linewidth = 1) +
+    scale_color_manual(values = c("#999999", "#E69F00", "#56B4E9","black")) +
+    theme_bw() +
+    facet_wrap(~parameter, scales = "free", ncol = 5)
+    
+    
+dat %>%
+    filter(Trt != "CON") %>%
+    ggplot() +
+    aes(x = Study_day,
+        y = value,
+        group = Trt,
+        color = Trt) +
+    geom_point(size = 1) + 
+    geom_star(data = filter(dat, Rep == "CON"),
+              shape = 8,
+              fill = "#999999",
+              color="#999999",
+              size = 3) +
+    geom_line(linewidth = 1) +
+    scale_color_manual(values = c("#E69F00", "#56B4E9","black")) +
+    theme_bw() +
+    facet_wrap(~parameter, scales = "free", ncol = 5)
+```
+
+
+NIJ ARF soil data for metatranscriptome samples:
+
+```{r}
+#| echo: false
+
+sum_plot <- dat %>%
+    filter(Rep != "CON") %>%
+    ggplot() +
+    aes(x = Study_day, 
+        y = value,
+        group = Rep,
+        color = Rep) +
+    labs(x = "Study Day",
+         color = "Donor") +
+    geom_point(size = 1) +
+    geom_line(linewidth = 1) + 
+    scale_color_manual(values = c("#E69F00", "#56B4E9","black")) +
+    geom_star(data = filter(dat, Rep == "CON"),
+              fill = "#999999",
+              color = "#999999",
+              size = 3)  +
+    facet_wrap(~parameter, scales = "free", ncol = 4) +
+    theme_bw() +
+    theme(strip.text = element_markdown(),
+          legend.position = "bottom",
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          strip.background = element_rect(fill = "white"))
+sum_plot
+```
+
+```{r}
+#| include: false
+
+#| include: false
+#| eval: false
+# width of 85 mm for half page width figure
+# width of 170 mm for full page width figure
+# maximum height of 225 mm for figure and legend
+# image resolution of approximately 300 dpi (dots per inch) at the final size
+
+tiff(here::here("figures/soilchem_summary.tiff"), units = "mm", width = 170, height = 180, res = 300)
+sum_plot
+dev.off()
+```
+Mean ammonium and nitrate concentrations by study day in the same plot
+
+```{r}
+#select 
+n_species = c("NH4_mg_gdw", "NO3_mg_gdw")
+
+
+n_dat <- dat %>%
+    filter(parameter == n_species) %>%
+    summarise(avg = mean(value), 
+              se = std.error(value),
+              .by = c(parameter, Trt, Study_day))
+
+#70AD47 - for ammonium
+#8FE1DB - for nitrate
+
+library(ggtext)
+n_dat %>%
+    filter(Trt == "Decomposition") %>%
+    mutate(parameter = factor(parameter, levels = n_species, labels = c("NH~4~", "NO~3~"))) %>%
+    ggplot() +
+    aes(x = Study_day,
+        y = avg,
+        group = parameter,
+        color = parameter) +
+    geom_point(size = 1) +
+    geom_line(linewidth = 1) +
+    scale_color_manual(values = c("#70AD47", "#8FE1DB")) +
+    geom_errorbar(aes(ymin = avg - se,
+                      ymax = avg + se),
+                  width = 0.2) +
+    labs(y = "Mean mg gdw<sup>-1</sup>",
+         x = "Study Day",
+         color = "Parameter") +
+    theme_bw() +
+    theme(axis.title = element_markdown(),
+          legend.text = element_markdown())
+
+```
+
+
+Mean soil temp and EC by study day in the same plot
+
+```{r}
+ec_t <- dat %>%
+    filter(parameter == c("temp_soil", "EC")) %>%
+    select(Sample_name, Date, MetaT, Trt, Rep, Study_day, Study_con, parameter, value) %>%
+    summarise(avg = mean(value),
+              se = std.error(value),
+              .by = c(parameter, Trt, Study_day))
+    
+#select 
+# dat_t_ec = dat %>% select(Sample_name,Date,MetaT,Trt,Rep,Study_day,Study_con,temp_soil,EC)
+# dat_t_ec_donor = dat_t_ec %>% filter(Trt=="Decomposition")
+# dat_t_ec_control = dat_t_ec %>% filter(Trt=="Control")
+
+# vars = c("temp_soil", "EC")
+
+# dat_vars_avg = dat_long_donor %>% filter(variable %in% vars) %>% group_by(variable, Study_day) %>% summarise(avg = mean(value))
+# dat_vars_avg_wide = dat_vars_avg %>% spread(variable, avg)
+
+# dat_vars_se = dat_long_donor %>% filter(variable %in% vars) %>% group_by(variable, Study_day) %>% summarise(se = std.error(value))
+# dat_vars_se_wide = dat_vars_se %>% spread(variable, se)
+# colnames(dat_vars_se_wide) = c("Study_day", "temp_soil_se","EC_se")
+
+# dat_vars_summary = dat_vars_avg %>% left_join(dat_vars_se, by = c("variable", "Study_day"))
+# dat_vars_summary_wide = dat_vars_avg_wide %>% left_join(dat_vars_se_wide, by = "Study_day")
+
+
+#70AD47 - for ammonium
+#8FE1DB - for nitrate
+
+
+
+########
+# coeff = 12.4
+
+# ggplot(dat_vars_summary_wide, aes(x=Study_day, group=1)) +
+#   geom_line(aes(y=temp_soil), color="#1B9E77",size=1) +
+#   geom_errorbar(aes(x=Study_day, y=temp_soil, group =1, ymin=temp_soil-temp_soil_se, ymax=temp_soil+temp_soil_se), color = "#1B9E77", width=.2) +
+#   geom_star(data=dat_t_ec_control, aes(x=Study_day, y=temp_soil), shape=8, fill="#1B9E77", color = "#1B9E77", size=2) +
+#   geom_line(aes(y=EC / coeff), color = "#7570B3",size=1) + 
+#   geom_errorbar(aes(x=Study_day, y=EC/ coeff, group =1, ymin=EC/ coeff-EC_se/ coeff, ymax=EC/ coeff+EC_se/ coeff), color = "#7570B3", width=.2)+
+#   geom_star(data=dat_t_ec_control, aes(x=Study_day, y=EC/coeff), shape=8, fill="#7570B3", color = "#7570B3", size=2) +
+#   scale_y_continuous(name = "Soil Temperature", sec.axis = sec_axis(~.*coeff, name = "Electrical Conductivity"))+theme_bw()
+
+#+ geom_star(data=TPM_lipase_long_fungi_control, aes(x=Study_day, y=avg_TPM/2), shape=8, fill="darkgoldenrod2", color="darkgoldenrod2", size=3)
+
+```
+
+
