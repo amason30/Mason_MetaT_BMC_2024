@@ -14,6 +14,7 @@ library(lmerTest)
 library(ggplot2)
 library(ggpubr)
 library(ggstar)
+library(ggtext)
 library(here)
 library(viridis)
 library(fBasics)
@@ -138,6 +139,10 @@ sum_plot
 # width of 170 mm for full page width figure
 # maximum height of 225 mm for figure and legend
 # image resolution of approximately 300 dpi (dots per inch) at the final size
+
+png(here::here("figures/soilchem_summary.png"), units = "mm", width = 170, height = 180, res = 300)
+sum_plot
+dev.off()
 
 tiff(here::here("figures/soilchem_summary.tiff"), units = "mm", width = 170, height = 180, res = 300)
 sum_plot

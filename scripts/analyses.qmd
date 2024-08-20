@@ -369,7 +369,11 @@ There is nice separation with time, and some overlap between 186 and 376. All co
 
 ```{r}
 #| include: false
-#| eval: false
+
+png(here::here("figures/MDS_studyday.png"), units = "mm", width = 150, height = 100, res = 300)
+mds_day
+dev.off()
+
 tiff(here::here("figures/MDS_studyday.tiff"), units = "mm", width = 150, height = 100, res = 300)
 mds_day
 dev.off()
@@ -522,11 +526,13 @@ cca + labs(title = "CCA for NIJ ARF Spring")
 
 ```{r}
 #| include: false
-#| eval: false
 # width of 85 mm for half page width figure
 # width of 170 mm for full page width figure
 # maximum height of 225 mm for figure and legend
 # image resolution of approximately 300 dpi (dots per inch) at the final size
+
+png(here::here("figures/Fig1.png"), units = "mm", width = 170, height = 200, res = 300)
+ggarrange(mds_day, cca, labels = c("A", "B"), nrow = 2, common.legend = TRUE, legend = "right")
 
 tiff(here::here("figures/Fig1.tiff"), units = "mm", width = 170, height = 200, res = 300)
 ggarrange(mds_day, cca, labels = c("A", "B"), nrow = 2, common.legend = TRUE, legend = "right")
@@ -835,7 +841,11 @@ addSmallLegend(b)
 
 ```{r}
 #| include: false
-#| eval: false
+
+png(here::here("figures/TPM_element_bubbleplot.png"), units = "mm", width = 170, height = 100, res = 300)
+addSmallLegend(b)
+dev.off()
+
 tiff(here::here("figures/TPM_element_bubbleplot.tiff"), units = "mm", width = 170, height = 100, res = 300)
 addSmallLegend(b)
 dev.off()
@@ -1093,6 +1103,7 @@ lipase <-  lmer(avg_TPM ~ Study_day*tax+(1|Rep), data = lipase_TPM_avg_day_rep)
 summary(lipase)
 
 lipase_aov <- anova(lipase) 
+write.csv(lipase_aov, here("data/lipase_TPM_full_anova.csv"))
 # all, including interaction term significant: study day:tax; will split models by taxonomy (bacteria vs fungi)
 
 
@@ -1103,6 +1114,7 @@ lipase_bact <- lmer(avg_TPM ~ Study_day+(1|Rep), data = filter(lipase_TPM_avg_da
 summary(lipase_bact)
 
 lipase_bact_anova <- anova(lipase_bact) # sig
+write.csv(lipase_bact_anova, here("data/lipase_TPM_bact_anova.csv"))
 lipase_bact_aov <- lipase_bact_anova
 
 attach(filter(lipase_TPM_avg_day_rep, tax == "Bacteria"))
@@ -1121,6 +1133,7 @@ lipase_fung <- lmer(avg_TPM ~ Study_day+(1|Rep), data = filter(lipase_TPM_avg_da
 summary(lipase_fung)
 
 lipase_fung_aov <- anova(lipase_fung) #estimate: 0.005134; F = 4.509; p = 0.015
+write.csv(lipase_fung_aov, here("data/lipase_TPM_fungi_anova.csv"))
 
 attach(filter(lipase_TPM_avg_day_rep, tax == "Fungi"))
 f_p_ttest = pairwise.t.test(avg_TPM, Study_day, p.adj = "bonf")
@@ -1556,17 +1569,24 @@ ggarrange(lipase_b, lipase_f,
 
 ```{r}
 #| include: false
-#| eval: false
 # width of 85 mm for half page width figure
 # width of 170 mm for full page width figure
 # maximum height of 225 mm for figure and legend
 # image resolution of approximately 300 dpi (dots per inch) at the final size
+
+png(here::here("figures/Fig4.png"), units = "mm", width = 170, height = 100, res = 300)
+ggarrange(lipase_b, lipase_f,  
+          ncol = 2, 
+          labels = c("A", "B"), 
+          align = "v")
+dev.off()
 
 tiff(here::here("figures/Fig4.tiff"), units = "mm", width = 170, height = 100, res = 300)
 ggarrange(lipase_b, lipase_f,  
           ncol = 2, 
           labels = c("A", "B"), 
           align = "v")
+dev.off()
 ```
 
 ### Nitrogen Cycling Genes
@@ -1614,6 +1634,18 @@ ggplot(HAO_TPM_avg_day, aes(x = Study_day, y = sum_TPM, fill = "indianred")) +
   theme_bw() + 
   theme(legend.position = "none") +
   stat_compare_means(method="anova")
+```
+
+```{r}
+#| include: false
+hao_lmer_df <- HAO_TPM %>%
+  summarise(sum = sum(TPM), .by = c("Study_day", "Rep")) %>%
+  filter(Rep != "CON")
+
+HAO_mod <- lmer(sum ~ Study_day + (1|Rep), data = hao_lmer_df)
+summary(HAO_mod)
+
+write.csv(as.data.frame(anova(HAO_mod)), here("data/hao_lmer_anova.csv"))
 ```
 
 ```{r}
@@ -1772,11 +1804,14 @@ ggarrange(nc, nd, labels = c("A", "B"), common.legend = TRUE)
 ```
 
 ```{r}
-#| eval: false
 #| include: false
+png(here::here("figures/Fig5.png"), units = "mm", width = 130, height = 100, res = 300)
+ggarrange(nc, nd, labels = c("A", "B"), common.legend = TRUE)
+dev.off()
+
 tiff(here::here("figures/Fig5.tiff"), units = "mm", width = 130, height = 100, res = 300)
 ggarrange(nc, nd, labels = c("A", "B"), common.legend = TRUE)
-
+dev.off()
 ```
 
 ### Aminopeptidases
@@ -2145,7 +2180,10 @@ plot_grid(addSmallLegend_bottom(trt), addSmallLegend_bottom(trt_tax), ncol = 2, 
 
 ```{r}
 #| include: false
-#| eval: false
+
+png(here::here("figures/Trt_DE_top20_barplot.png"), units = "mm", width = 170, height = 225, res = 300)
+ggarrange(addSmallLegend_bottom(trt), addSmallLegend_bottom(trt_tax), ncol = 2, labels = "AUTO", align = "h")
+dev.off()
 
 tiff(here::here("figures/Trt_DE_top20_barplot.tiff"), units = "mm", width = 170, height = 225, res = 300)
 ggarrange(addSmallLegend_bottom(trt), addSmallLegend_bottom(trt_tax), ncol = 2, labels = "AUTO", align = "h")
@@ -2184,7 +2222,30 @@ trt_nlog2 %>%
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         strip.background = element_rect(fill = "white"))
-  
+```
+
+```{r}
+#| include: false
+
+png(here::here("figures/Trt_DE_top15_heatshockTPM.png"), units = "mm", width = 170, height = 225, res = 300)
+trt_nlog2 %>% 
+  filter(query %in% hs) %>%
+  ggplot() +
+  aes(x = Study_day, y = nlog2, group = Rep, color = Rep) + 
+  geom_point(size =1 ) +
+  geom_line() +
+  scale_color_manual(values = nice.col) + 
+  facet_wrap( ~ query) + 
+  xlab("Study Day") + 
+  ylab("Normalized log2 Expression") + 
+  theme_bw() +
+  theme(legend.position = "inside",
+        legend.position.inside = c(0.9, 0.15),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        strip.background = element_rect(fill = "white")) 
+dev.off()
+
 tiff(here::here("figures/Trt_DE_top15_heatshockTPM.tiff"), units = "mm", width = 170, height = 225, res = 300)
 trt_nlog2 %>% 
   filter(query %in% hs) %>%

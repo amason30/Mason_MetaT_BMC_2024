@@ -322,6 +322,7 @@ taud_anova <- taud_nlog2_sum %>%
   filter(Rep != "CON") %>%
   lmer(avg ~ Study_day + (1|Rep), data = .) %>%
   anova(.)
+write.csv(taud_anova, here("data/taud_aov.csv"))
 
 taud_anova$`Pr(>F)`
 
@@ -468,6 +469,9 @@ addSmallLegend(taud_tax) +
 #| include: false
 # width of 170 mm for full page width figure
 # maximum height of 225 mm for figure and legend
+png(here::here("figures/tauD_nlog2_taxonomy.png"), units = "mm", width = 170, height = 225, res = 300)
+addSmallLegend(taud_tax) + theme(strip.text = element_text(size = 6))
+dev.off()
 
 tiff(here::here("figures/tauD_nlog2_taxonomy.tiff"), units = "mm", width = 170, height = 225, res = 300)
 addSmallLegend(taud_tax) + theme(strip.text = element_text(size = 6))
@@ -495,6 +499,7 @@ bsh_anova <- bsh_nlog2_sum %>%
   filter(Rep != "CON") %>%
   lmer(avg ~ Study_day + (1|Rep), data = .) %>%
   anova(.)
+write.csv(bsh_anova, here("data/bsh_aov.csv"))
 
 bsh_anova$`Pr(>F)`
 
@@ -582,6 +587,9 @@ plot_grid(bsh_p, taud_p, ncol = 1, labels = "AUTO")
 
 # width of 170 mm for full page width figure
 # maximum height of 225 mm for figure and legend
+png(here::here("figures/tauD_bsh_nlog2.png"), units = "mm", width = 125, height = 225, res = 300)
+plot_grid(bsh_p, taud_p, ncol = 1, labels = "AUTO")
+dev.off()
 
 tiff(here::here("figures/tauD_bsh_nlog2.tiff"), units = "mm", width = 125, height = 225, res = 300)
 plot_grid(bsh_p, taud_p, ncol = 1, labels = "AUTO")
@@ -901,6 +909,9 @@ plot_grid(all_cog, all_tax, ncol = 1, labels = "AUTO", align = "h")
 
 # width of 170 mm for full page width figure
 # maximum height of 225 mm for figure and legend
+png(here::here("figures/Study.con_DE_top20_barplot.png"), units = "mm", width = 225, height = 170, res = 300)
+plot_grid(all_cog, all_tax, ncol = 1, labels = "AUTO", align = "h")
+dev.off()
 
 tiff(here::here("figures/Study.con_DE_top20_barplot.tiff"), units = "mm", width = 225, height = 170, res = 300)
 plot_grid(all_cog, all_tax, ncol = 1, labels = "AUTO", align = "h")
