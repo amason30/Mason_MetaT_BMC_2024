@@ -2,9 +2,18 @@
 title: Soil Microbial Functional Succession Over One Year of Human Decomposition
 format:
   nature-pdf:
-    journal: "sn-nature"
+    # journal.cite-style is included in the tex file but ignored by pandoc if 
+    # cite-method is not `natbib`.
+    journal:
+      cite-style: sn-nature
+    # `citeproc` is the pandoc default. Set `cite-method: natbib` if required
+    # to use the bst styles from the upstream template.
+    cite-method: natbib
     keep-tex: true
     equal-margins: true
+    classoption:
+      lineno,
+      referee
 author:
   - name: Allison R. Mason
     affiliations:
