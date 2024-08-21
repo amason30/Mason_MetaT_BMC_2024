@@ -1,5 +1,11 @@
 ---
 title: Soil Microbial Functional Succession Over One Year of Human Decomposition
+crossref:
+  custom:
+    - kind: float
+      reference-prefix: Supplementary Material
+      key: sup
+      latex-env: supplemental
 format:
   nature-pdf:
     # journal.cite-style is included in the tex file but ignored by pandoc if 
@@ -65,17 +71,15 @@ library(tidyverse)
 library(pdftools)
 ```
 
-# Introduction {#sec-intro}
+# Introduction
 
 Soil microbial communities are important drivers of ecosystem processes in terrestrial environments. Many soil microbes are decomposers that are involved in degradation of complex organic matter and drive nutrient cycling in terrestrial ecosystems. Environmental disturbances can impact the presence and/or activity of soil microorganisms that are invovled in these cycles, ultimately affecting nutrient availability and the release of greenhouse gas emissions, such as CO\textsubscript{2} and N\textsubscript{2}O [@benninger_biochemical_2008;@towne_prairie_2000]. Vertebrate death, and subsequent carcass deposition in terrestrial ecosystems, is one disturbance that impact soil biogeochemical cycling and microbial community structure. Specifically altered elemental concentrations [@taylor_soil_2023] and carbon (C) and nitrogen (N) transformations [@parmenter_carrion_2009;@macdonald_carrion_2014;@bump_ungulate_2009;@aitkenhead-peterson_mapping_2012;@keenan_mortality_2018;@fancher_evaluation_2017;@quaggiotto_dynamic_2019] have been observed in responde to the release of concentrated decomposition products into the surrounding soil.
 
-While C and N transformations have been documented during decomposition, the functional response of microbes and their roles in nutrient cycles remain unclear. Previous work from our lab [@cobaugh_functional_2015;@keenan_spatial_2018] and others [@singh_temporal_2018;@metcalf_microbial_2016;@finley_microbial_2016;@fu_fungal_2019] have conducted surveys of decomposition-impacted soil microbial communities through amplicon sequencing of marker genes(*i.e.*, 16S rRNA, 18S rRNA, ITS). This has allowed us to investigate how microbial biodiversity and composition change in response to vertebrate decomposition, revealing patterns such as increases in the anaerobic taxa *Firmicutes* and *Bacteroidetes*. However, few studies have investigated soil biogeochemistry and microbial communities within the same study, which can further help to describe microbial ecology in human and animal decomposition systems. Taylor et al. [-@taylor_soil_2024] suggested that obserbed fungal community shifts were linked to soil dissolved oxygen, highlighting interactions between soil microbes and the surrounding environment. Additionally, Metcalf et al. [-@metcalf_microbial_2016] started to connect microbial changes to physiochemical data (*e.g.*, nitrate, pH) during controlled mouse decomposition experiments. While insightful for making potential connections between taxa and physiochemistry, these analyses cannot inform which taxa are active members of the community responsible for chemical transformations, which functional pathways/genes are expressed, and how these pathways are altered in response to decomposition.
+While C and N transformations have been documented during decomposition, the functional response of microbes and their roles in nutrient cycles remain unclear. Previous work from our lab [@cobaugh_functional_2015;@keenan_spatial_2018] and others [@singh_temporal_2018;@metcalf_microbial_2016;@finley_microbial_2016;@fu_fungal_2019] have conducted surveys of decomposition-impacted soil microbial communities through amplicon sequencing of marker genes(*i.e.*, 16S rRNA, 18S rRNA, ITS). This has allowed us to investigate how microbial biodiversity and composition change in response to vertebrate decomposition, revealing patterns such as increases in the anaerobic taxa *Firmicutes* and *Bacteroidetes*. However, few studies have investigated soil biogeochemistry and microbial communities within the same study, which can further help to describe microbial ecology in human and animal decomposition systems. Taylor et al. (2024) [@taylor_soil_2024] suggested that observed fungal community shifts were linked to soil dissolved oxygen, highlighting interactions between soil microbes and the surrounding environment. Additionally, Metcalf et al. (2016) [@metcalf_microbial_2016] started to connect microbial changes to physiochemical data (*e.g.*, nitrate, pH) during controlled mouse decomposition experiments. While insightful for making potential connections between taxa and physiochemistry, these analyses cannot inform which taxa are active members of the community responsible for chemical transformations, which functional pathways/genes are expressed, and how these pathways are altered in response to decomposition.
 
-Methods such as RNA sequencing (*i.e.*, metatranscriptomics) and metabolomics can be used to investigate microbial community functional succession in response to decomposition by measuring gene expression and metabolites, respectively. Where DNA-based methods are limited to explaining structural succession, analysis of microbial community gene expression (*i.e.*, mRNA) helps to determine which functional pathways are altered in response to decomposition. This can inform how ecological functions, including C and N cycling, are impacted by decomposition events in terrestrial ecosystems. To date, only two studies have applied metatranscriptomic approaches to assess mRNA in vertebrate decomposition samples [@burcham_total_2019;@ashe_characterization_2021]: Burcham et al. [-@burcham_total_2019] examined gene expression of internal organ microbial communities during mouse decomposition, while Ashe et al. [-@ashe_characterization_2021] examined gene expression of oral microbial communities during human decomposition. Both studies suggest that the host microbial community functionality is altered during decomposition, including differential expression of amino acid and carbohydrate metabolism in the heart [@burcham_total_2019] and shifts in gene transcripts across different taxa [@ashe_characterization_2021]. We expect that soil microbial community gene expression profiles are also altered; however, this has never been examined. The decomposition-impacted soil metabolome was assessed by DeBruyn et al. [-@debruyn_comparative_2021], showing changes in soil metabolites over time, however it is unclear which microbes are responsible for these shifts. Additionally, DeBruyn et al. [-@debruyn_comparative_2021] showed the soil metabolome was still altered compared to starting conditions at the end of the 21-week study, suggesting long-term impacts of decomposition on soil microbial functioning.
+Methods such as RNA sequencing (*i.e.*, metatranscriptomics) and metabolomics can be used to investigate microbial community functional succession in response to decomposition by measuring gene expression and metabolites, respectively. Where DNA-based methods are limited to explaining structural succession, analysis of microbial community gene expression (*i.e.*, mRNA) helps to determine which functional pathways are altered in response to decomposition. This can inform how ecological functions, including C and N cycling, are impacted by decomposition events in terrestrial ecosystems. To date, only two studies have applied metatranscriptomic approaches to assess mRNA in vertebrate decomposition samples [@burcham_total_2019;@ashe_characterization_2021]: Burcham et al. (2019) [@burcham_total_2019] examined gene expression of internal organ microbial communities during mouse decomposition, while Ashe et al. (2021) [@ashe_characterization_2021] examined gene expression of oral microbial communities during human decomposition. Both studies suggest that the host microbial community functionality is altered during decomposition, including differential expression of amino acid and carbohydrate metabolism in the heart [@burcham_total_2019] and shifts in gene transcripts across different taxa [@ashe_characterization_2021]. We expect that soil microbial community gene expression profiles are also altered; however, this has never been examined. The decomposition-impacted soil metabolome was assessed by DeBruyn et al. (2021) [@debruyn_comparative_2021], showing changes in soil metabolites over time, however it is unclear which microbes are responsible for these shifts. Additionally, DeBruyn et al. (2021) [@debruyn_comparative_2021] showed the soil metabolome was still altered compared to starting conditions at the end of the 21-week study, suggesting long-term impacts of decomposition on soil microbial functioning.
 
-The purpose of this study was to investigate soil microbial gene expression during a one-year period of human decomposition and address the following questions: (1) which genes are differentially expressed in soils impacted by human decomposition? (2) how does gene expression change over time in decomposition-impacted soils? (3) do microbial gene expression profiles return to pre-decomposition conditions after one year? 
-
-The human body is comprised of carbon-rich organic molecules, many of which are broken down during decomposition. We hypothesized that gene expression would change over time as resources are used and transformed and soil chemical and physical conditions change as a result of tissue degradation [@keenan_mortality_2018;@fancher_evaluation_2017;@debruyn_comparative_2021]. For example, we expected to observe changes in the expression of genes encoding enzymes involved in nitrogen cycling, as increased nitrogen transformations have been previously described in decomposition soils [@keenan_mortality_2018]. Of the main macromolecules in the body (carbohydrates, proteins, lipids, and nucleic acids), we were particularly interested in lipid metabolism, as we expect lipids from the body to enter the soil during decomposition and previous studies showed altered lipase activity in decomposition soils [@howard_characterization_2010]. Finally, multiple studies have shown than soil chemistry [@macdonald_carrion_2014;@keenan_mortality_2018] and microbial community composition [@cobaugh_functional_2015;@singh_temporal_2018] (via 16S rRNA gene amplicon sequencing) are still impacted after one year, therefore we did not expect soil expression profiles to return to pre-decomposition conditions.
+The purpose of this study was to investigate soil microbial gene expression during a one-year period of human decomposition and address the following questions: (1) which genes are differentially expressed in soils impacted by human decomposition? (2) how does gene expression change over time in decomposition-impacted soils? (3) do microbial gene expression profiles return to pre-decomposition conditions after one year? The human body is comprised of carbon-rich organic molecules, many of which are broken down during decomposition. We hypothesized that gene expression would change over time as resources are used and transformed and soil chemical and physical conditions change as a result of tissue degradation [@keenan_mortality_2018;@fancher_evaluation_2017;@debruyn_comparative_2021]. For example, we expected to observe changes in the expression of genes encoding enzymes involved in nitrogen cycling, as increased nitrogen transformations have been previously described in decomposition soils [@keenan_mortality_2018]. Of the main macromolecules in the body (carbohydrates, proteins, lipids, and nucleic acids), we were particularly interested in lipid metabolism, as we expect lipids from the body to enter the soil during decomposition and previous studies showed altered lipase activity in decomposition soils [@howard_characterization_2010]. Finally, multiple studies have shown than soil chemistry [@macdonald_carrion_2014;@keenan_mortality_2018] and microbial community composition [@cobaugh_functional_2015;@singh_temporal_2018] (via 16S rRNA gene amplicon sequencing) are still impacted after one year, therefore we did not expect soil expression profiles to return to pre-decomposition conditions.
 
 To answer these questions, metatranscriptomics of soil samples collected at six key timepoints over one year of human decomposition were used to determine the active populations and expression of genes and pathways relevant to the enhanced biogeochemical cycling observed in decomposition hotspots. We compared gene expression between decomposition timepoints and control soils that we unexposed to decompositin products to identify functions or functional pathways of interest. This assessment of function profiles within decomposition-impacted soils provided insight into the microbial response to vertebrate decomposition in terrestrial settings and biogeochemical cycling within these hotspots.
 
@@ -116,15 +120,15 @@ nh4_mag <- read_excel(here("data/SP_metadata.xlsx"),
     pull(diff)
 ```
 
-As reported in the original study, soil chemistry was altered in response to human decomposition, with multiple parameters still impacted after one-year [@taylor_soil_2024]. Generally, soil pH decreased and remained low in decomposition soils of all but one individual. Soil electrical conductivity (EC) increased in response to decomposition, remaining elevated through approximately day 58 before gradually decreasing throughout the remainder of the study (@chem-plot). Respiration (evolved CO~2~) increased by an order of magnitude beginning at day 12, which corresponded to a reduction in soil dissolved oxygen (DO) to `r min(do.12$value)`\% - `r max(do.12$value)`\%. Ammonium concentrations increased `r round(nh4_mag, 0)` fold, reaching maximum concentrations between days 12 and 58. This was followed by decreased ammoniumm and increased nitrate concentrations at day 86, with nitrate concentrations reaching a maximum at day 168 (@chem-plot).
+As reported in the original study, soil chemistry was altered in response to human decomposition, with multiple parameters still impacted after one-year [@taylor_soil_2024]. Generally, soil pH decreased and remained low in decomposition soils of all but one individual. Soil electrical conductivity (EC) increased in response to decomposition, remaining elevated through approximately day 58 before gradually decreasing throughout the remainder of the study (@sup-chem-plot). Respiration (evolved CO~2~) increased by an order of magnitude beginning at day 12, which corresponded to a reduction in soil dissolved oxygen (DO) to `r min(do.12$value)`\% - `r max(do.12$value)`\%. Ammonium concentrations increased `r round(nh4_mag, 0)` fold, reaching maximum concentrations between days 12 and 58. This was followed by decreased ammoniumm and increased nitrate concentrations at day 86, with nitrate concentrations reaching a maximum at day 168 (@sup-chem-plot).
 
 ## Sequencing
 
-Illumina sequencing of the 24 libraries yielded a total of 5,073,476,730 reads, or 2,536,738,365 paired reads, with a mean of 105,697,432 paired reads per sample. Removal of adapters and low-quality reads removed 4.7\% of all reads, leaving 4,834,123,062 total reads. Filtering of ribosomal RNA further removed 7.3\% of reads, leaving 4,479,804,360 reads for assembly. After co-assembly, a total of 6,257,674 proteins were identified by Prodigal. From this, 1,048,573 proteins were annotated by eggNOG-mapper (16.7\%). Most of the annotated proteins were taxonomically annotated as bacteria (91.3 %), followed by eukaryotes (7.6 %), and archaea (0.81 %). Of the 7.6\% of eukaryotic proteins, 64.4\% (4.9\% of all proteins) were annotated as fungi. For this study, genes of interest included all bacterial, archaeal, and fungal proteins, therefore all non-fungal eukaryotic proteins (32,004) were removed prior to downstream analysis. The reference file of genes was then used to determine gene transcript counts in all samples using CLC genomic workbench. The percent of reads mapped to genes of interest ranged from 21 to 38\%, with an average of 31\% reads mapped. Gene counts were then combined in a single file and used for downstream analyses in R.
+Illumina sequencing of the 24 libraries yielded a total of 5,073,476,730 reads, or 2,536,738,365 paired reads, with a mean of 105,697,432 paired reads per sample. Removal of adapters and low-quality reads removed 4.7\% of all reads, leaving 4,834,123,062 total reads. Filtering of ribosomal RNA further removed 7.3\% of reads, leaving 4,479,804,360 reads for assembly. After co-assembly, a total of 6,257,674 proteins were identified by Prodigal. From this, 1,048,573 proteins were annotated by eggNOG-mapper (16.7\%). Most of the annotated proteins were taxonomically annotated as bacteria (91.3\%), followed by eukaryotes (7.6 %), and archaea (0.81 %). Of the 7.6\% of eukaryotic proteins, 64.4\% (4.9\% of all proteins) were annotated as fungi. For this study, genes of interest included all bacterial, archaeal, and fungal proteins, therefore all non-fungal eukaryotic proteins (32,004) were removed prior to downstream analysis. The reference file of genes was then used to determine gene transcript counts in all samples using CLC genomic workbench. The percent of reads mapped to genes of interest ranged from 21\% to 38\%, with an average of 31\% reads mapped. Gene counts were then combined in a single file and used for downstream analyses in R.
 
 ## Microbial gene expression in response to human decomposition
 
-Gene expression profiles in decomposition-impacted soils shifted away from controls and day zero samples as decomposition progressed (`Fig~\ref{fig-mds}`{=latex}A). Expression was most different from controls on study days 58, 86, 168 (@heatmap-plot), before shifting back toward control conditions on study day 376. After one year of decomposition, soil gene expression profiles had not returned to pre-decomposition conditions, as evidenced by their clustering away from controls and day zero samples in the MDS plot (`Fig~\ref{fig-mds}`{=latex}A).
+Gene expression profiles in decomposition-impacted soils shifted away from controls and day zero samples as decomposition progressed (`Fig~\ref{fig-mds}`{=latex}A). Expression was most different from controls on study days 58, 86, 168 (@sup-heatmap-plot), before shifting back toward control conditions on study day 376. After one year of decomposition, soil gene expression profiles had not returned to pre-decomposition conditions, as evidenced by their clustering away from controls and day zero samples in the MDS plot (`Fig~\ref{fig-mds}`{=latex}A).
 
 ```{=tex}
 % Place figure captions after the first paragraph in which they are cited.
@@ -136,9 +140,9 @@ Multidimensional scaling (MDS) shows gene expression within soils changed as dec
 ```
 ![](../../figures/Fig1.png)
 
-Some correlations were observed between gene expression shifts and soil physiochemical data at decomposition timepoints. Canonical correspondence analysis (CCA) was used to constrain gene expression data with soil physiochemical data (`Fig~\ref{fig-mds}`{=latex}B). CCA1 and CCA2 explained 36.2 and 20.9 percent of the variance in gene expression, respectively. Transcript profiles at day 12 were associated with an increase in soil C:N. Gene expression profiles at days 58 to 86 were correlated with increased soil temperature, EC, and evolved CO2, while study day 168 was associated with elevated levels of soil NO3. Further, Permutational Analysis of Variance (PERMANOVA) revealed that internal ADH, soil temperature, pH, and EC significantly explained some of the variation in gene expression profiles (p < 0.05). No other variables were significant at α = 0.05 (@cca-panova-tbl).
+Some correlations were observed between gene expression shifts and soil physiochemical data at decomposition timepoints. Canonical correspondence analysis (CCA) was used to constrain gene expression data with soil physiochemical data (`Fig~\ref{fig-mds}`{=latex}B). CCA1 and CCA2 explained 36.2\% and 20.9\% of the variance in gene expression, respectively. Transcript profiles at day 12 were associated with an increase in soil C:N. Gene expression profiles at days 58 to 86 were correlated with increased soil temperature, EC, and evolved CO~2~, while study day 168 was associated with elevated levels of soil NO~3~. Further, Permutational Analysis of Variance (PERMANOVA) revealed that internal ADH, soil temperature, pH, and EC significantly explained some of the variation in gene expression profiles (p < 0.05). No other variables were significant at \textalpha\ = 0.05 (@sup-tbl-cca-panova).
 
-Overall, decomposition changed soil gene expression profiles over the one-year study relative to control soils. Differential expression analysis between decomposition soils and control identified 7,047 down-regulated and 38,425 up-regulated genes. Gene transcripts that were associated with control soils were from a wide variety of clusters of orthologous genes (COG) functional categories. Specifically, the top 20 genes whose expression was higher in control soils belonged to ten unique COG categories, including signal transduction mechanisms, transcription, and those of unknown function. In contrast, the top 20 genes whose expression was higher in decomposition soils only fell into four COG categories (@t30-trt-plot A): 1) post-translational modification, protein turnover, and chaperones; 2) energy production and conversion; 3) cell motility; and 4) carbohydrate transport and metabolism. The most common COG category represented in decomposition soils were post-translational modification, protein turnover, and chaperones. Within this category, several heat shock stress response genes were identified, including SSA2, HSP82, and clpB (@t30-trt-tbl). Further investigation into these genes shows their expression increased in response to decomposition, typically reaching maximum transcript levels around study days 58 and 86 (`Fig~\ref{fig-heatshock}`{=latex}). This corresponded to elevated soil temperature below decomposing bodies between study days 12-80, with soil temperatures up to approximately 43&deg;C [@taylor_soil_2024], and maximum soil electrical conductivity measurements between days 12 and 58 (@chem-plot).
+Overall, decomposition changed soil gene expression profiles over the one-year study relative to control soils. Differential expression analysis between decomposition soils and control identified 7,047 down-regulated and 38,425 up-regulated genes. Gene transcripts that were associated with control soils were from a wide variety of clusters of orthologous genes (COG) functional categories. Specifically, the top 20 genes whose expression was higher in control soils belonged to ten unique COG categories, including signal transduction mechanisms, transcription, and those of unknown function. In contrast, the top 20 genes whose expression was higher in decomposition soils only fell into four COG categories (@sup-t30-trt-plot A): 1) post-translational modification, protein turnover, and chaperones; 2) energy production and conversion; 3) cell motility; and 4) carbohydrate transport and metabolism. The most common COG category represented in decomposition soils were post-translational modification, protein turnover, and chaperones. Within this category, several heat shock stress response genes were identified, including SSA2, HSP82, and clpB (@sup-t30-trt-tbl). Further investigation into these genes shows their expression increased in response to decomposition, typically reaching maximum transcript levels around study days 58 and 86 (`Fig~\ref{fig-heatshock}`{=latex}). This corresponded to elevated soil temperature below decomposing bodies between study days 12-80, with soil temperatures up to approximately 43&deg;C [@taylor_soil_2024], and maximum soil electrical conductivity measurements between days 12 and 58 (@sup-chem-plot).
 
 ```{=tex}
 % Place figure captions after the first paragraph in which they are cited.
@@ -150,11 +154,11 @@ Symbol color denotes if the sample is a control (CON, green), or one of three in
 ```
 ![](../../figures/Trt_DE_top15_heatshockTPM.png)
 
-Taxonomy associated with top differentially expressed gene transcripts also differed between control and decomposition soils. The top 30 significantly differentially expressed gene transcripts in decomposition soils were associated with Fungi, *Actinobacteria*, and *Xanthomonadales*, while gene transcripts in controls were associated with *Acidobacteria*, *Cyanobacteria*, *Proteobacteria* (\textalpha, \textdelta, \textgamma), and Planctomycetes (@t30-trt-plot B). The greatest number of differentially expressed genes relative to control samples was observed at day 86, where we saw 145,460 and 124,883 up- and down-regulated genes, respectively.
+Taxonomy associated with top differentially expressed gene transcripts also differed between control and decomposition soils. The top 30 significantly differentially expressed gene transcripts in decomposition soils were associated with Fungi, *Actinobacteria*, and *Xanthomonadales*, while gene transcripts in controls were associated with *Acidobacteria*, *Cyanobacteria*, *Proteobacteria* (\textalpha, \textdelta, \textgamma), and Planctomycetes (@sup-t30-trt-plot B). The greatest number of differentially expressed genes relative to control samples was observed at day 86, where we saw 145,460 and 124,883 up- and down-regulated genes, respectively.
 
 ## Fate of decomposition products as evidenced in gene expression profiles over time
 
-Differential expression analysis between respective sequential study days further revealed which genes were altered between decomposition timepoints. The top ten significantly up- and down-regulated genes, determined by lowest p-values from differential expression analysis, are reported in @t20-day-tbl and `Fig~\ref{fig-top-day-bar}`{=latex}. 
+Differential expression analysis between respective sequential study days further revealed which genes were altered between decomposition timepoints. The top ten significantly up- and down-regulated genes, determined by lowest p-values from differential expression analysis, are reported in @sup-t20-day-tbl and `Fig~\ref{fig-top-day-bar}`{=latex}. 
 
 ```{=tex}
 % Place figure captions after the first paragraph in which they are cited.
@@ -168,7 +172,7 @@ Positive values denote increased expression compared to the preceding timepoint,
 
 Expression of genes annotated with the COG categories cell wall/membrane/envelope biogenesis, inorganic ion transport and metabolism, and carbohydrate transport and metabolism increased from day 0 to 12. In contrast, expression of secondary metabolite biosynthesis, transport, and catabolism genes decreased during this period (`Fig~\ref{fig-top-day-bar}`{=latex}A). Transcripts from *Bacilli* and *Clostridia* increased, while transcripts from *Actinobacteria* decreased between study days zero and 12 (`Fig~\ref{fig-top-day-bar}`{=latex}). 
 
-Between days 12 and 58, 90\% of the topmost upregulated genes were associated with the COG translation, ribosomal structure and biogenesis and all were taxonomically associated with *Betaproteobacteria* (`Fig~\ref{fig-top-day-bar}`{=latex}A,B). Many of these genes were annotated as proteins within the rpl protein family, involved in ribosomal binding. Genes across multiple COG categories with taxonomic associations to *Bacilli* and *Clostridia* decreased between study days 12 and 58, six of which were transcripts that previously increased between days zero and 12 (`Fig~\ref{fig-top-day-bar}`{=latex}B, @t20-day-tbl). 
+Between days 12 and 58, 90\% of the topmost upregulated genes were associated with the COG translation, ribosomal structure and biogenesis and all were taxonomically associated with *Betaproteobacteria* (`Fig~\ref{fig-top-day-bar}`{=latex}A,B). Many of these genes were annotated as proteins within the rpl protein family, involved in ribosomal binding. Genes across multiple COG categories with taxonomic associations to *Bacilli* and *Clostridia* decreased between study days 12 and 58, six of which were transcripts that previously increased between days zero and 12 (`Fig~\ref{fig-top-day-bar}`{=latex}B, @sup-t20-day-tbl). 
 
 ```{r}
 #| include: false
@@ -176,7 +180,7 @@ Between days 12 and 58, 90\% of the topmost upregulated genes were associated wi
 hao_aov <- read.csv(here("data/hao_lmer_anova.csv"))
 ```
 
-Multiple transcripts associated with the energy production and conversion COG, as well as transcripts annotated with the COGs inorganic transport and metabolism, and translation, ribosomal structure and biogenesis, increased between days 58 and 86 (`Fig~\ref{fig-top-day-bar}`{=latex}A). Two of the upregulated energy and production and conservation transcripts were associated with cytochrome c oxidase subunits in *Betaproteobacteria*, while another was annotated as *hao*, encoding the enzyme hydroxylamine dehydrogenase which is involved in conversion of hydroxylamine to nitrite during nitrification (@t20-day-tbl). Further investigation into hydroxylamine dehydrogenase showed a significant increase in hao transcripts at day 86 followed by subsequent decreases at days 168 and 376 (F = `r round(hao_aov$F.value, 3)`; *p* = `r round(hao_aov$Pr..F., 3)`). This increase corresponded to decreased soil ammonium levels and subsequent accumulation of nitrate (@chem-plot). Half of the topmost downregulated genes between days 58 and 86 were not assigned to a COG (*i.e.*, unclassified) or were of unknown function. 
+Multiple transcripts associated with the energy production and conversion COG, as well as transcripts annotated with the COGs inorganic transport and metabolism, and translation, ribosomal structure and biogenesis, increased between days 58 and 86 (`Fig~\ref{fig-top-day-bar}`{=latex}A). Two of the upregulated energy and production and conservation transcripts were associated with cytochrome c oxidase subunits in *Betaproteobacteria*, while another was annotated as *hao*, encoding the enzyme hydroxylamine dehydrogenase which is involved in conversion of hydroxylamine to nitrite during nitrification (@sup-t20-day-tbl). Further investigation into hydroxylamine dehydrogenase showed a significant increase in hao transcripts at day 86 followed by subsequent decreases at days 168 and 376 (F = `r round(hao_aov$F.value, 3)`; *p* = `r round(hao_aov$Pr..F., 3)`). This increase corresponded to decreased soil ammonium levels and subsequent accumulation of nitrate (@sup-chem-plot). Half of the topmost downregulated genes between days 58 and 86 were not assigned to a COG (*i.e.*, unclassified) or were of unknown function. 
 
 Differential expression comparing study days 86 and 168 and 168 and 376 identified genes across a variety of functional categories, with many unclassified in the COG database or with unknown function (`Fig~\ref{fig-top-day-bar}`{=latex}A). Expression of carbohydrate transport and metabolism genes associated with *Bacilli* decreased between day 168 and 376. Additionally, *Acidobacteria* transcripts increased in decomposition-impacted soils between study day 168 and 376 (`Fig~\ref{fig-top-day-bar}`{=latex}B). These transcripts were not associated with any single COG category, however.
 
@@ -239,7 +243,7 @@ bsh_f <- round(bsh_lmer[1, "F value"], 3)
 bsh_p <- if_else(bsh_lmer[1, "Pr(>F)"] < 0.001, "< 0.001", as.character(round(bsh_lmer[1, "Pr(>F)"], 2)))
 ```
 
-Expression of genes involved in metabolism of nitrogen and sulfur-containing compounds were also impacted by human decomposition. Specifically, four of the top ten genes whose expression decreased at day 12 were related to taurine metabolism, with their annotations associated with *tauD*, encoding taurine dioxygenase. (@t20-day-tbl). Further investigation into *tauD* showed that mean expression of these genes decreased steadily over one year, beginning at day 12 (`Fig~\ref{fig-taud-bsh}`{=latex}B); however, *tauD* expression in response to human decomposition was variable across taxonomic associations. Most *tauD* transcripts were associated with *Gammaproteobacteria*, *Actinobacteria*, *Betaproteobacteria*, *Alphaproteobacteria*, and fungi. While a majority of the *tauD* gene queries displayed reduced expression over time, expression of fungal-associated and a few *Betaproteobacteria*-associated *tauD* genes increased at day 58 (@taud-tax). Sources of taurine in the human body include taurine absorbed from the diet and taurine produced from anaerobic microbial deconjugation of bile salts via bile salt hydrolase (BSH) enzymes [@urdaneta_interactions_2017]. Therefore, we also looked at expression of genes encoding BSH enzymes in decomposition soils. Expression of these genes was elevated at days 12, 58, and 86 before converging toward pre-decomposition levels at days 168 and 376 (`Fig~\ref{fig-taud-bsh}`{=latex}A). Hierarchical liner mixed effects (HLM) models showed that both *tauD* (HLM F = `r taud_f`, *p* = `r taud_p`) and BSH (F = `r bsh_f`, *p* `r bsh_p`) gene expression was significantly different over time (`Fig~\ref{fig-taud-bsh}`{=latex}A,B).
+Expression of genes involved in metabolism of nitrogen and sulfur-containing compounds were also impacted by human decomposition. Specifically, four of the top ten genes whose expression decreased at day 12 were related to taurine metabolism, with their annotations associated with *tauD*, encoding taurine dioxygenase. (@sup-t20-day-tbl). Further investigation into *tauD* showed that mean expression of these genes decreased steadily over one year, beginning at day 12 (`Fig~\ref{fig-taud-bsh}`{=latex}B); however, *tauD* expression in response to human decomposition was variable across taxonomic associations. Most *tauD* transcripts were associated with *Gammaproteobacteria*, *Actinobacteria*, *Betaproteobacteria*, *Alphaproteobacteria*, and fungi. While a majority of the *tauD* gene queries displayed reduced expression over time, expression of fungal-associated and a few *Betaproteobacteria*-associated *tauD* genes increased at day 58 (@sup-taud-tax). Sources of taurine in the human body include taurine absorbed from the diet and taurine produced from anaerobic microbial deconjugation of bile salts via bile salt hydrolase (BSH) enzymes [@urdaneta_interactions_2017]. Therefore, we also looked at expression of genes encoding BSH enzymes in decomposition soils. Expression of these genes was elevated at days 12, 58, and 86 before converging toward pre-decomposition levels at days 168 and 376 (`Fig~\ref{fig-taud-bsh}`{=latex}A). Hierarchical liner mixed effects (HLM) models showed that both *tauD* (HLM F = `r taud_f`, *p* = `r taud_p`) and BSH (F = `r bsh_f`, *p* `r bsh_p`) gene expression was significantly different over time (`Fig~\ref{fig-taud-bsh}`{=latex}A,B).
 
 ```{=tex}
 % Place figure captions after the first paragraph in which they are cited.
@@ -325,7 +329,7 @@ Soil samples were transported back to the lab at the University of Tennessee (Kn
 
 RNA was extracted from 2 g of soil using Qiagen's RNeasy\textregistered\ PowerSoil\textregistered\ Total RNA kit (catalog no. 12866-25). Manufacturer’s instructions were followed with a few modifications. Soils became saline during decomposition; therefore, we followed manufacturer’s suggestion and incubated all extracts at -20&deg;C following addition of solution SR4 (step 9) to decrease salt precipitation. All RNA samples were resuspended in 40 \textmu l of Solution SR7. RNA concentrations were assessed fluorometrically using the Qubit\textregistered\ RNA HS assay (catalog no. Q32852) with 1 \textmu l of RNA. DNA contamination was removed by DNase treating RNA extracts twice using Qiagen’s DNase Max\textregistered\ kit in 50 \textmu l reactions. RNA concentrations were remeasured after DNase treatment. PCR with general V4 16S rRNA gene primers [@apprill_minor_2015; @parada_every_2016] was conducted using RNA extracts as the template to confirm removal of all DNA prior to sequencing. RNA aliquots were shipped to HudsonAlpha Discovery (Huntsville, AL) for library preparation and RNA sequencing. Dual-indexed libraries were prepared using the Illumina® Stranded Total RNA prep with ribosomal RNA depletion via ligation with Ribo-Zero Plus. Libraries were then pooled and sequenced on Illumina’s NovaSeq 6000 v4 platform, resulting in demultiplexed fastq files for each sample. 
 
-## Bioiformatics
+## Bioinformatics
 
 Read quality control (QC) was conducted in KBase [@arkin_kbase_2018] using Trimmomatic [@bolger_trimmomatic_2014]. Paired fastq files were imported to KBase through Globus. Poor quality reads were removed, and adapters trimmed via Trimmomatic (v0.36) using default settings and the TruSeq3-PE-2 adapter file. After QC check with FastQC, trimmed libraries were exported as fastq files from KBase through Globus. Remaining ribosomal RNA was filtered using bbmap (maxindel = 20, minid = 0.93) from the Joint Genome Institute’s (JGI) bbtools suite [@bushnell_bbmap_nodate]. After this step, all non-ribosomal reads from all 24 samples were merged into one file. This file was then used to co-assemble reads into contigs using the de novo assembler MEGAHIT (v1.2.9) [@li_megahit_2015] (--12 --k-min 23, --k-max 123, --k-step 10). 
 
@@ -340,117 +344,55 @@ Transcript counts from all samples were combined in a single workable data file 
 
 RNA sequence files from the Novoseq intrument can be found at XXXX. The datasets supporting the conclusions of this article are available at the GitHub repository [Mason_MetaT_XXX_2024](https://github.com/amason30/Mason_MetaT_XXX_2024)."
 
+# References
+<!-- the pattern below controls the placement of the references -->
+:::{#refs}
+:::
+
+
 # Acknowledgements
 
 We would like to thank the Forensic Anthropology Center at the University of Tennessee-Knoxville for their help in setting up field experiments. We would like to thank Mary Davis for her help in managing the field site and helping to obtain donors for this work. This research was funded by a National Institute of Justice Award (DOJ-NIJ-2017-R2-CX-0008) to LST and JMD.
 
-# Using this template {#sec-template}
+# Supplementary Information {.unnumbered}
 
-This Quarto template is unofficial and built out of Springer Nature's template. 
-Some examples of commonly used commands and features are listed below, to help you get started.
-
-As seen below, you can mix markdown and Latex with each other, though it's likely best to mostly use markdown.
-
-## Cross Referencing
-
-To reference a figure with example label "plot", use `@fig-plot`. 
-Analogously, to reference a table with example label "data", use `@tbl-data`.
-To reference a section, such as the Introduction (@sec-intro), use `@sec-intro`.
-
-For complete information on cross referencing with Quarto, see <https://quarto.org/docs/authoring/cross-references.html>.
-
-## Citations
-
-Quarto formats citations and references automatically using the bibliography records in your .bib file. For a citation in parentheses use [@singh_temporal_2018] and for a text citation: @singh_temporal_2018. Multiple citations can be given as [@singh_temporal_2018;@payne_summer_1965]. Drop the author like so [-@singh_temporal_2018].
-
-# Tables and Figures
-
-To include figures, you can use Quarto syntax.
-
-![An example figure (an empty plot)](fig.eps){#fig-plot}
-
-For both figures and tables, you can use LaTeX syntax if you need additional customizability. 
-
-For example, to use footnotes within a table, you may want to use LaTeX.
-
-\begin{table}[h]
-\caption{LaTeX caption text}\label{tbl-data}%
-\begin{tabular}{@{}llll@{}}
-\toprule
-Column 1 & Column 2  & Column 3 & Column 4\\
-\midrule
-row 1    & data 1   & data 2  & data 3  \\
-row 2    & data 4   & data 5\footnotemark[1]  & data 6  \\
-row 3    & data 7   & data 8  & data 9\footnotemark[2]  \\
-\botrule
-\end{tabular}
-\footnotetext{Source: This is an example of table footnote. This is an example of table footnote.}
-\footnotetext[1]{Example for a first table footnote. This is an example of table footnote.}
-\footnotetext[2]{Example for a second table footnote. This is an example of table footnote.}
-\end{table}
-
-# Supplementary Information
-
-::: {.supp}
-## Supplementary figure 1 {#chem-plot}
-Soil physiochemical parameters in decomposition soils during the one-year study. 
-
-Data is shown for each individual donor: SP1 (gold), SP2 (blue), and SP2 (black). Values for the full 16 cm core samples were estimated by summing values interface (0-1 cm) and core (0-16 cm) reported by Taylor et al, (2024) in 1:16 and 15:16 ratios, respectively. Controls reported here are means of three experimental controls that were unimpacted by decomposition and are represented by stars.
-
+::: {#sup-chem-plot}
 ![](../../figures/soilchem_summary.png)
+
+Figure S1. Soil physiochemical parameters in decomposition soils during the one-year study. Data is shown for each individual donor: SP1 (gold), SP2 (blue), and SP2 (black). Values for the full 16 cm core samples were estimated by summing values interface (0-1 cm) and core (0-16 cm) reported by Taylor et al, (2024) in 1:16 and 15:16 ratios, respectively. Controls reported here are means of three experimental controls that were unimpacted by decomposition and are represented by stars.
 :::
 
-::: (.supp)
-## Supplementary figure 2 {#heatmap-plot}
-Hierarchical clustering heatmap showing the log counts per million (CPM) of the top 500 most variable genes across samples.
-
-Variable genes were determined by selecting genes with the highest variance in gene expression. Samples are clustered along the x-axis using Euclidean distances between samples and colored by study day.
-
+::: {#sup-heatmap-plot}
 ![](../../figures/Fig_S2.png)
+
+Figure S2. Hierarchical clustering heatmap showing the log counts per million (CPM) of the top 500 most variable genes across samples. Variable genes were determined by selecting genes with the highest variance in gene expression. Samples are clustered along the x-axis using Euclidean distances between samples and colored by study day.
 :::
 
-:::{.supp}
-## Supplementary table 1 {#cca-panova-tbl}
-Permutational analysis of variance (PERMANOVA) results identifying significant environmental parameters which explain some of the variation in soil gene expression profiles.
-
-Environmental parameter data is from Taylor et al. (2024). Variables with p < 0.05 are indicated in bold.
+::: {#sup-tbl-cca-panova}
+Table S1. Permutational analysis of variance (PERMANOVA) results identifying significant environmental parameters which explain some of the variation in soil gene expression profiles. Environmental parameter data is from Taylor et al. (2024). Variables with p < 0.05 are indicated in bold.
 :::
 
-:::{.supp}
-## Supplementary figure 3 {#t30-trt-plot}
-Top 30 up- and down-regulated genes in controls relative to decomposition soils across all study days, colored by COG functional category (A) and taxonomic annotation (B).
-
-Positive values denote higher expression in controls, while negative values are higher in decomposition soils.
-
+::: {#sup-t30-trt-plot}
 ![](../../figures/Trt_DE_top20_barplot.png)
+
+Figure S3. Top 30 up- and down-regulated genes in controls relative to decomposition soils across all study days, colored by COG functional category (A) and taxonomic annotation (B). Positive values denote higher expression in controls, while negative values are higher in decomposition soils.
 :::
 
-:::{.supp}
-## Supplementary table 2 {#t30-trt-tbl}
-Top 15 most up- and down-regulated gene queries, determined by log2 fold change and adjusted p-values, in control relative to decomposition soils.
+::: {#sup-t30-trt-tbl}
 
-Positive log2 fold change values represent genes whose expression was higher in control soils, while negative log2 fold change values were higher in decomposition soils. Taxonomic annotation, COG categories, gene description, gene names, and EC were assigned via eggNOG-mapper.
+Table S2. Top 15 most up- and down-regulated gene queries, determined by log2 fold change and adjusted p-values, in control relative to decomposition soils. Positive log2 fold change values represent genes whose expression was higher in control soils, while negative log2 fold change values were higher in decomposition soils. Taxonomic annotation, COG categories, gene description, gene names, and EC were assigned via eggNOG-mapper.
 :::
 
-:::{.supp}
-## Supplementary table 3 {#t20-day-tbl}
-Top 10 most up- and down-regulated genes, determined by log2 fold change and adjusted p-values, for each sequential timepoint comparison.
 
-Positive log2 fold change values represent genes whose expression was higher in the later decomposition timepoint soils, while negative log2 fold change values are higher in earlier decomposition timepoint soils. Taxonomic annotation, COG categories, gene names, and EC were assigned via eggNOG-mapper. The comparison column distinguishes each timepoint comparison.
+::: {#sup-t20-day-tbl}
+Table S3. Top 10 most up- and down-regulated genes, determined by log2 fold change and adjusted p-values, for each sequential timepoint comparison. Positive log2 fold change values represent genes whose expression was higher in the later decomposition timepoint soils, while negative log2 fold change values are higher in earlier decomposition timepoint soils. Taxonomic annotation, COG categories, gene names, and EC were assigned via eggNOG-mapper. The comparison column distinguishes each timepoint comparison.
 :::
 
-:::{.supp}
-## Supplementary figure 4 {#taud-tax}
-Mean normalized log2 expression of *tauD* genes by taxonomic association (color) in control and decomposition soils at each study day.
 
-Each line represents one *tauD* gene query, while color denotes taxonomic association as determined by eggNOG-mapper.
-
+::: {#sup-taud-tax}
 ![](../../figures/tauD_nlog2_taxonomy.png)
-:::
 
-# References
-<!-- the pattern below controls the placement of the references -->
-:::{#refs}
+Figure S4. Mean normalized log2 expression of *tauD* genes by taxonomic association (color) in control and decomposition soils at each study day. Each line represents one *tauD* gene query, while color denotes taxonomic association as determined by eggNOG-mapper.
 :::
 
 
