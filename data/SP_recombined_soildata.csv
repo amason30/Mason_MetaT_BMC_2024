@@ -1,0 +1,193 @@
+"","Trt","Rep","Study_day","Stage","Donor","Study_con","Sample_name","ADH_ambient","ADH_internal","ADH_soil","parameter","value"
+"1","Control","CON","0","Initial","SP1","con","CON_0",0,0,0,"Gravimetric Moisture",0.4485975395625
+"2","Control","CON","0","Initial","SP1","con","CON_0",0,0,0,"pH",7.366875
+"3","Control","CON","0","Initial","SP1","con","CON_0",0,0,0,"EC",32.09
+"4","Control","CON","0","Initial","SP1","con","CON_0",0,0,0,"DO",97.7666666666667
+"5","Control","CON","0","Initial","SP1","con","CON_0",0,0,0,"NH~4~ (mg gdw<sup>-1</sup>)",0.00967926420833333
+"6","Control","CON","0","Initial","SP1","con","CON_0",0,0,0,"NO~3~ (mg gdw<sup>-1</sup>)",0.00732576435416667
+"7","Control","CON","0","Initial","SP1","con","CON_0",0,0,0,"Air Temperature",28.1
+"8","Control","CON","0","Initial","SP1","con","CON_0",0,0,0,"Soil Temperature",22.9
+"9","Decomposition","SP1","0","Initial","SP1","d.0","SP1_0",0,0,0,"Gravimetric Moisture",0.4083767205625
+"10","Decomposition","SP1","0","Initial","SP1","d.0","SP1_0",0,0,0,"pH",7.503125
+"11","Decomposition","SP1","0","Initial","SP1","d.0","SP1_0",0,0,0,"EC",18.748125
+"12","Decomposition","SP1","0","Initial","SP1","d.0","SP1_0",0,0,0,"DO",96.7
+"13","Decomposition","SP1","0","Initial","SP1","d.0","SP1_0",0,0,0,"NH~4~ (mg gdw<sup>-1</sup>)",0.0079988306875
+"14","Decomposition","SP1","0","Initial","SP1","d.0","SP1_0",0,0,0,"NO~3~ (mg gdw<sup>-1</sup>)",0.0066068098125
+"15","Decomposition","SP1","0","Initial","SP1","d.0","SP1_0",0,0,0,"Air Temperature",28.1
+"16","Decomposition","SP1","0","Initial","SP1","d.0","SP1_0",0,0,0,"Soil Temperature",15.8999996185303
+"17","Decomposition","SP2","0","Initial","SP2","d.0","SP2_0",0,0,0,"Gravimetric Moisture",0.3667178474375
+"18","Decomposition","SP2","0","Initial","SP2","d.0","SP2_0",0,0,0,"pH",7.364375
+"19","Decomposition","SP2","0","Initial","SP2","d.0","SP2_0",0,0,0,"EC",43.59
+"20","Decomposition","SP2","0","Initial","SP2","d.0","SP2_0",0,0,0,"DO",98
+"21","Decomposition","SP2","0","Initial","SP2","d.0","SP2_0",0,0,0,"NH~4~ (mg gdw<sup>-1</sup>)",0.0085369935
+"22","Decomposition","SP2","0","Initial","SP2","d.0","SP2_0",0,0,0,"NO~3~ (mg gdw<sup>-1</sup>)",0.008508159875
+"23","Decomposition","SP2","0","Initial","SP2","d.0","SP2_0",0,0,0,"Air Temperature",28.1
+"24","Decomposition","SP2","0","Initial","SP2","d.0","SP2_0",0,0,0,"Soil Temperature",7
+"25","Decomposition","SP3","0","Initial","SP3","d.0","SP3_0",0,0,0,"Gravimetric Moisture",0.4348213140625
+"26","Decomposition","SP3","0","Initial","SP3","d.0","SP3_0",0,0,0,"pH",7.150625
+"27","Decomposition","SP3","0","Initial","SP3","d.0","SP3_0",0,0,0,"EC",62.9875
+"28","Decomposition","SP3","0","Initial","SP3","d.0","SP3_0",0,0,0,"DO",97.1
+"29","Decomposition","SP3","0","Initial","SP3","d.0","SP3_0",0,0,0,"NH~4~ (mg gdw<sup>-1</sup>)",0.012885565875
+"30","Decomposition","SP3","0","Initial","SP3","d.0","SP3_0",0,0,0,"NO~3~ (mg gdw<sup>-1</sup>)",0.011531183375
+"31","Decomposition","SP3","0","Initial","SP3","d.0","SP3_0",0,0,0,"Air Temperature",28.1
+"32","Decomposition","SP3","0","Initial","SP3","d.0","SP3_0",0,0,0,"Soil Temperature",20.7000007629395
+"33","Control","CON","12","Active","SP1","con","CON_12",6036,5352,5362,"Gravimetric Moisture",0.344247474104167
+"34","Control","CON","12","Active","SP1","con","CON_12",6036,5352,5362,"pH",7.305625
+"35","Control","CON","12","Active","SP1","con","CON_12",6036,5352,5362,"EC",48.73
+"36","Control","CON","12","Active","SP1","con","CON_12",6036,5352,5362,"DO",100.1
+"37","Control","CON","12","Active","SP1","con","CON_12",6036,5352,5362,"NH~4~ (mg gdw<sup>-1</sup>)",0.0102299276458333
+"38","Control","CON","12","Active","SP1","con","CON_12",6036,5352,5362,"NO~3~ (mg gdw<sup>-1</sup>)",0.00816326747916667
+"39","Control","CON","12","Active","SP1","con","CON_12",6036,5352,5362,"Air Temperature",20
+"40","Control","CON","12","Active","SP1","con","CON_12",6036,5352,5362,"Soil Temperature",19.3999996185303
+"41","Decomposition","SP1","12","Active","SP1","d.12","SP1_12",6036,5352,5362,"Gravimetric Moisture",0.3407379515
+"42","Decomposition","SP1","12","Active","SP1","d.12","SP1_12",6036,5352,5362,"pH",6.535625
+"43","Decomposition","SP1","12","Active","SP1","d.12","SP1_12",6036,5352,5362,"EC",173.8006875
+"44","Decomposition","SP1","12","Active","SP1","d.12","SP1_12",6036,5352,5362,"DO",38.8
+"45","Decomposition","SP1","12","Active","SP1","d.12","SP1_12",6036,5352,5362,"NH~4~ (mg gdw<sup>-1</sup>)",0.710172691
+"46","Decomposition","SP1","12","Active","SP1","d.12","SP1_12",6036,5352,5362,"NO~3~ (mg gdw<sup>-1</sup>)",0.0026274008125
+"47","Decomposition","SP1","12","Active","SP1","d.12","SP1_12",6036,5352,5362,"Air Temperature",20
+"48","Decomposition","SP1","12","Active","SP1","d.12","SP1_12",6036,5352,5362,"Soil Temperature",28.7
+"49","Decomposition","SP2","12","Active","SP2","d.12","SP2_12",6036,5352,5362,"Gravimetric Moisture",0.15865458325
+"50","Decomposition","SP2","12","Active","SP2","d.12","SP2_12",6036,5352,5362,"pH",6.610625
+"51","Decomposition","SP2","12","Active","SP2","d.12","SP2_12",6036,5352,5362,"EC",582.0130625
+"52","Decomposition","SP2","12","Active","SP2","d.12","SP2_12",6036,5352,5362,"DO",29
+"53","Decomposition","SP2","12","Active","SP2","d.12","SP2_12",6036,5352,5362,"NH~4~ (mg gdw<sup>-1</sup>)",0.6402323575625
+"54","Decomposition","SP2","12","Active","SP2","d.12","SP2_12",6036,5352,5362,"NO~3~ (mg gdw<sup>-1</sup>)",0.004677450125
+"55","Decomposition","SP2","12","Active","SP2","d.12","SP2_12",6036,5352,5362,"Air Temperature",20
+"56","Decomposition","SP2","12","Active","SP2","d.12","SP2_12",6036,5352,5362,"Soil Temperature",30.1000003814697
+"57","Decomposition","SP3","12","Active","SP3","d.12","SP3_12",6036,5352,5362,"Gravimetric Moisture",0.3637331768125
+"58","Decomposition","SP3","12","Active","SP3","d.12","SP3_12",6036,5352,5362,"pH",6.055
+"59","Decomposition","SP3","12","Active","SP3","d.12","SP3_12",6036,5352,5362,"EC",382.4098125
+"60","Decomposition","SP3","12","Active","SP3","d.12","SP3_12",6036,5352,5362,"DO",48.9
+"61","Decomposition","SP3","12","Active","SP3","d.12","SP3_12",6036,5352,5362,"NH~4~ (mg gdw<sup>-1</sup>)",0.9496824866875
+"62","Decomposition","SP3","12","Active","SP3","d.12","SP3_12",6036,5352,5362,"NO~3~ (mg gdw<sup>-1</sup>)",0.001602000375
+"63","Decomposition","SP3","12","Active","SP3","d.12","SP3_12",6036,5352,5362,"Air Temperature",20
+"64","Decomposition","SP3","12","Active","SP3","d.12","SP3_12",6036,5352,5362,"Soil Temperature",27.2000007629395
+"65","Control","CON","58","Advanced4","SP1","con","CON_58",31864,40296,41581,"Gravimetric Moisture",0.410862540583333
+"66","Control","CON","58","Advanced4","SP1","con","CON_58",31864,40296,41581,"pH",7.314375
+"67","Control","CON","58","Advanced4","SP1","con","CON_58",31864,40296,41581,"EC",39.6652083333333
+"68","Control","CON","58","Advanced4","SP1","con","CON_58",31864,40296,41581,"DO",96.8333333333333
+"69","Control","CON","58","Advanced4","SP1","con","CON_58",31864,40296,41581,"NH~4~ (mg gdw<sup>-1</sup>)",0.0043463856875
+"70","Control","CON","58","Advanced4","SP1","con","CON_58",31864,40296,41581,"NO~3~ (mg gdw<sup>-1</sup>)",0.00834153554166667
+"71","Control","CON","58","Advanced4","SP1","con","CON_58",31864,40296,41581,"Air Temperature",21.5
+"72","Control","CON","58","Advanced4","SP1","con","CON_58",31864,40296,41581,"Soil Temperature",21.6
+"73","Decomposition","SP1","58","Advanced4","SP1","d.58","SP1_58",31864,40296,41581,"Gravimetric Moisture",0.4484675693125
+"74","Decomposition","SP1","58","Advanced4","SP1","d.58","SP1_58",31864,40296,41581,"pH",6.33
+"75","Decomposition","SP1","58","Advanced4","SP1","d.58","SP1_58",31864,40296,41581,"EC",663.21875
+"76","Decomposition","SP1","58","Advanced4","SP1","d.58","SP1_58",31864,40296,41581,"DO",63
+"77","Decomposition","SP1","58","Advanced4","SP1","d.58","SP1_58",31864,40296,41581,"NH~4~ (mg gdw<sup>-1</sup>)",0.8669895139375
+"78","Decomposition","SP1","58","Advanced4","SP1","d.58","SP1_58",31864,40296,41581,"NO~3~ (mg gdw<sup>-1</sup>)",0.0062539654375
+"79","Decomposition","SP1","58","Advanced4","SP1","d.58","SP1_58",31864,40296,41581,"Air Temperature",21.5
+"80","Decomposition","SP1","58","Advanced4","SP1","d.58","SP1_58",31864,40296,41581,"Soil Temperature",28.3999996185303
+"81","Decomposition","SP2","58","Advanced4","SP2","d.58","SP2_58",31864,40296,41581,"Gravimetric Moisture",0.4764435093125
+"82","Decomposition","SP2","58","Advanced4","SP2","d.58","SP2_58",31864,40296,41581,"pH",6.389375
+"83","Decomposition","SP2","58","Advanced4","SP2","d.58","SP2_58",31864,40296,41581,"EC",337.3
+"84","Decomposition","SP2","58","Advanced4","SP2","d.58","SP2_58",31864,40296,41581,"DO",71.6
+"85","Decomposition","SP2","58","Advanced4","SP2","d.58","SP2_58",31864,40296,41581,"NH~4~ (mg gdw<sup>-1</sup>)",0.1127916713125
+"86","Decomposition","SP2","58","Advanced4","SP2","d.58","SP2_58",31864,40296,41581,"NO~3~ (mg gdw<sup>-1</sup>)",0.0004135965
+"87","Decomposition","SP2","58","Advanced4","SP2","d.58","SP2_58",31864,40296,41581,"Air Temperature",21.5
+"88","Decomposition","SP2","58","Advanced4","SP2","d.58","SP2_58",31864,40296,41581,"Soil Temperature",28.8999996185303
+"89","Decomposition","SP3","58","Advanced4","SP3","d.58","SP3_58",31864,40296,41581,"Gravimetric Moisture",0.4345413809375
+"90","Decomposition","SP3","58","Advanced4","SP3","d.58","SP3_58",31864,40296,41581,"pH",6.4325
+"91","Decomposition","SP3","58","Advanced4","SP3","d.58","SP3_58",31864,40296,41581,"EC",272.3
+"92","Decomposition","SP3","58","Advanced4","SP3","d.58","SP3_58",31864,40296,41581,"DO",87
+"93","Decomposition","SP3","58","Advanced4","SP3","d.58","SP3_58",31864,40296,41581,"NH~4~ (mg gdw<sup>-1</sup>)",0.0954840015
+"94","Decomposition","SP3","58","Advanced4","SP3","d.58","SP3_58",31864,40296,41581,"NO~3~ (mg gdw<sup>-1</sup>)",0.0036189848125
+"95","Decomposition","SP3","58","Advanced4","SP3","d.58","SP3_58",31864,40296,41581,"Air Temperature",21.5
+"96","Decomposition","SP3","58","Advanced4","SP3","d.58","SP3_58",31864,40296,41581,"Soil Temperature",26.8999996185303
+"97","Control","CON","86","Advanced6","SP1","con","CON_86",48562,60190,61203,"Gravimetric Moisture",0.3733934581875
+"98","Control","CON","86","Advanced6","SP1","con","CON_86",48562,60190,61203,"pH",7.175625
+"99","Control","CON","86","Advanced6","SP1","con","CON_86",48562,60190,61203,"EC",41.0029166666667
+"100","Control","CON","86","Advanced6","SP1","con","CON_86",48562,60190,61203,"DO",97.7666666666667
+"101","Control","CON","86","Advanced6","SP1","con","CON_86",48562,60190,61203,"NH~4~ (mg gdw<sup>-1</sup>)",0.007111052625
+"102","Control","CON","86","Advanced6","SP1","con","CON_86",48562,60190,61203,"NO~3~ (mg gdw<sup>-1</sup>)",0.0082503671875
+"103","Control","CON","86","Advanced6","SP1","con","CON_86",48562,60190,61203,"Air Temperature",20.8
+"104","Control","CON","86","Advanced6","SP1","con","CON_86",48562,60190,61203,"Soil Temperature",21.5
+"105","Decomposition","SP1","86","Advanced6","SP1","d.86","SP1_86",48562,60190,61203,"Gravimetric Moisture",0.4700395618125
+"106","Decomposition","SP1","86","Advanced6","SP1","d.86","SP1_86",48562,60190,61203,"pH",6.230625
+"107","Decomposition","SP1","86","Advanced6","SP1","d.86","SP1_86",48562,60190,61203,"EC",542.28125
+"108","Decomposition","SP1","86","Advanced6","SP1","d.86","SP1_86",48562,60190,61203,"DO",72
+"109","Decomposition","SP1","86","Advanced6","SP1","d.86","SP1_86",48562,60190,61203,"NH~4~ (mg gdw<sup>-1</sup>)",0.84917616425
+"110","Decomposition","SP1","86","Advanced6","SP1","d.86","SP1_86",48562,60190,61203,"NO~3~ (mg gdw<sup>-1</sup>)",0.0251504526875
+"111","Decomposition","SP1","86","Advanced6","SP1","d.86","SP1_86",48562,60190,61203,"Air Temperature",20.8
+"112","Decomposition","SP1","86","Advanced6","SP1","d.86","SP1_86",48562,60190,61203,"Soil Temperature",26.1000003814697
+"113","Decomposition","SP2","86","Advanced6","SP2","d.86","SP2_86",48562,60190,61203,"Gravimetric Moisture",0.4484804486875
+"114","Decomposition","SP2","86","Advanced6","SP2","d.86","SP2_86",48562,60190,61203,"pH",6.715625
+"115","Decomposition","SP2","86","Advanced6","SP2","d.86","SP2_86",48562,60190,61203,"EC",216.71875
+"116","Decomposition","SP2","86","Advanced6","SP2","d.86","SP2_86",48562,60190,61203,"DO",88.2
+"117","Decomposition","SP2","86","Advanced6","SP2","d.86","SP2_86",48562,60190,61203,"NH~4~ (mg gdw<sup>-1</sup>)",0.123448368375
+"118","Decomposition","SP2","86","Advanced6","SP2","d.86","SP2_86",48562,60190,61203,"NO~3~ (mg gdw<sup>-1</sup>)",0.0372659473125
+"119","Decomposition","SP2","86","Advanced6","SP2","d.86","SP2_86",48562,60190,61203,"Air Temperature",20.8
+"120","Decomposition","SP2","86","Advanced6","SP2","d.86","SP2_86",48562,60190,61203,"Soil Temperature",24.2000007629395
+"121","Decomposition","SP3","86","Advanced6","SP3","d.86","SP3_86",48562,60190,61203,"Gravimetric Moisture",0.4626546668125
+"122","Decomposition","SP3","86","Advanced6","SP3","d.86","SP3_86",48562,60190,61203,"pH",6.5075
+"123","Decomposition","SP3","86","Advanced6","SP3","d.86","SP3_86",48562,60190,61203,"EC",259.71875
+"124","Decomposition","SP3","86","Advanced6","SP3","d.86","SP3_86",48562,60190,61203,"DO",94.3
+"125","Decomposition","SP3","86","Advanced6","SP3","d.86","SP3_86",48562,60190,61203,"NH~4~ (mg gdw<sup>-1</sup>)",0.237978755875
+"126","Decomposition","SP3","86","Advanced6","SP3","d.86","SP3_86",48562,60190,61203,"NO~3~ (mg gdw<sup>-1</sup>)",0.007667035125
+"127","Decomposition","SP3","86","Advanced6","SP3","d.86","SP3_86",48562,60190,61203,"Air Temperature",20.8
+"128","Decomposition","SP3","86","Advanced6","SP3","d.86","SP3_86",48562,60190,61203,"Soil Temperature",27
+"129","Control","CON","168","Advanced11","SP1","con","CON_168",93873,107592,107850,"Gravimetric Moisture",0.4595514710625
+"130","Control","CON","168","Advanced11","SP1","con","CON_168",93873,107592,107850,"pH",7.16270833333333
+"131","Control","CON","168","Advanced11","SP1","con","CON_168",93873,107592,107850,"EC",48.5541666666667
+"132","Control","CON","168","Advanced11","SP1","con","CON_168",93873,107592,107850,"DO",100.466666666667
+"133","Control","CON","168","Advanced11","SP1","con","CON_168",93873,107592,107850,"NH~4~ (mg gdw<sup>-1</sup>)",0.00619462764583333
+"134","Control","CON","168","Advanced11","SP1","con","CON_168",93873,107592,107850,"NO~3~ (mg gdw<sup>-1</sup>)",0.00886313264583333
+"135","Control","CON","168","Advanced11","SP1","con","CON_168",93873,107592,107850,"Air Temperature",11.8
+"136","Control","CON","168","Advanced11","SP1","con","CON_168",93873,107592,107850,"Soil Temperature",14.1
+"137","Decomposition","SP1","168","Advanced11","SP1","d.168","SP1_168",93873,107592,107850,"Gravimetric Moisture",0.4640031381875
+"138","Decomposition","SP1","168","Advanced11","SP1","d.168","SP1_168",93873,107592,107850,"pH",6.25875
+"139","Decomposition","SP1","168","Advanced11","SP1","d.168","SP1_168",93873,107592,107850,"EC",268.575
+"140","Decomposition","SP1","168","Advanced11","SP1","d.168","SP1_168",93873,107592,107850,"DO",96.1
+"141","Decomposition","SP1","168","Advanced11","SP1","d.168","SP1_168",93873,107592,107850,"NH~4~ (mg gdw<sup>-1</sup>)",0.1433452426875
+"142","Decomposition","SP1","168","Advanced11","SP1","d.168","SP1_168",93873,107592,107850,"NO~3~ (mg gdw<sup>-1</sup>)",0.0687639060625
+"143","Decomposition","SP1","168","Advanced11","SP1","d.168","SP1_168",93873,107592,107850,"Air Temperature",11.8
+"144","Decomposition","SP1","168","Advanced11","SP1","d.168","SP1_168",93873,107592,107850,"Soil Temperature",14.8000001907349
+"145","Decomposition","SP2","168","Advanced11","SP2","d.168","SP2_168",93873,107592,107850,"Gravimetric Moisture",0.378754237
+"146","Decomposition","SP2","168","Advanced11","SP2","d.168","SP2_168",93873,107592,107850,"pH",5.994375
+"147","Decomposition","SP2","168","Advanced11","SP2","d.168","SP2_168",93873,107592,107850,"EC",337.2375
+"148","Decomposition","SP2","168","Advanced11","SP2","d.168","SP2_168",93873,107592,107850,"DO",101.4
+"149","Decomposition","SP2","168","Advanced11","SP2","d.168","SP2_168",93873,107592,107850,"NH~4~ (mg gdw<sup>-1</sup>)",0.0458355956875
+"150","Decomposition","SP2","168","Advanced11","SP2","d.168","SP2_168",93873,107592,107850,"NO~3~ (mg gdw<sup>-1</sup>)",0.098073868375
+"151","Decomposition","SP2","168","Advanced11","SP2","d.168","SP2_168",93873,107592,107850,"Air Temperature",11.8
+"152","Decomposition","SP2","168","Advanced11","SP2","d.168","SP2_168",93873,107592,107850,"Soil Temperature",14.6999998092651
+"153","Decomposition","SP3","168","Advanced11","SP3","d.168","SP3_168",93873,107592,107850,"Gravimetric Moisture",0.642081332625
+"154","Decomposition","SP3","168","Advanced11","SP3","d.168","SP3_168",93873,107592,107850,"pH",6.453125
+"155","Decomposition","SP3","168","Advanced11","SP3","d.168","SP3_168",93873,107592,107850,"EC",141.1375
+"156","Decomposition","SP3","168","Advanced11","SP3","d.168","SP3_168",93873,107592,107850,"DO",101.4
+"157","Decomposition","SP3","168","Advanced11","SP3","d.168","SP3_168",93873,107592,107850,"NH~4~ (mg gdw<sup>-1</sup>)",0.0290137491875
+"158","Decomposition","SP3","168","Advanced11","SP3","d.168","SP3_168",93873,107592,107850,"NO~3~ (mg gdw<sup>-1</sup>)",0.0362353058125
+"159","Decomposition","SP3","168","Advanced11","SP3","d.168","SP3_168",93873,107592,107850,"Air Temperature",11.8
+"160","Decomposition","SP3","168","Advanced11","SP3","d.168","SP3_168",93873,107592,107850,"Soil Temperature",16.5
+"161","Control","CON","376","Skeletonization4","SP1","con","CON_376",143017,156051,159517,"Gravimetric Moisture",0.531303082
+"162","Control","CON","376","Skeletonization4","SP1","con","CON_376",143017,156051,159517,"pH",7.41583333333333
+"163","Control","CON","376","Skeletonization4","SP1","con","CON_376",143017,156051,159517,"EC",33.2145833333333
+"164","Control","CON","376","Skeletonization4","SP1","con","CON_376",143017,156051,159517,"DO",NA
+"165","Control","CON","376","Skeletonization4","SP1","con","CON_376",143017,156051,159517,"NH~4~ (mg gdw<sup>-1</sup>)",0.00439352979166667
+"166","Control","CON","376","Skeletonization4","SP1","con","CON_376",143017,156051,159517,"NO~3~ (mg gdw<sup>-1</sup>)",0.00484431589583333
+"167","Control","CON","376","Skeletonization4","SP1","con","CON_376",143017,156051,159517,"Air Temperature",13.6
+"168","Control","CON","376","Skeletonization4","SP1","con","CON_376",143017,156051,159517,"Soil Temperature",15.2
+"169","Decomposition","SP1","376","Skeletonization4","SP1","d.376","SP1_376",143017,156051,159517,"Gravimetric Moisture",0.6230155526875
+"170","Decomposition","SP1","376","Skeletonization4","SP1","d.376","SP1_376",143017,156051,159517,"pH",7.42875
+"171","Decomposition","SP1","376","Skeletonization4","SP1","d.376","SP1_376",143017,156051,159517,"EC",77.088125
+"172","Decomposition","SP1","376","Skeletonization4","SP1","d.376","SP1_376",143017,156051,159517,"DO",NA
+"173","Decomposition","SP1","376","Skeletonization4","SP1","d.376","SP1_376",143017,156051,159517,"NH~4~ (mg gdw<sup>-1</sup>)",0.0360227095
+"174","Decomposition","SP1","376","Skeletonization4","SP1","d.376","SP1_376",143017,156051,159517,"NO~3~ (mg gdw<sup>-1</sup>)",0.0012740409375
+"175","Decomposition","SP1","376","Skeletonization4","SP1","d.376","SP1_376",143017,156051,159517,"Air Temperature",13.6
+"176","Decomposition","SP1","376","Skeletonization4","SP1","d.376","SP1_376",143017,156051,159517,"Soil Temperature",14.8999996185303
+"177","Decomposition","SP2","376","Skeletonization4","SP2","d.376","SP2_376",143017,156051,159517,"Gravimetric Moisture",0.527602755875
+"178","Decomposition","SP2","376","Skeletonization4","SP2","d.376","SP2_376",143017,156051,159517,"pH",5.935625
+"179","Decomposition","SP2","376","Skeletonization4","SP2","d.376","SP2_376",143017,156051,159517,"EC",171.75125
+"180","Decomposition","SP2","376","Skeletonization4","SP2","d.376","SP2_376",143017,156051,159517,"DO",NA
+"181","Decomposition","SP2","376","Skeletonization4","SP2","d.376","SP2_376",143017,156051,159517,"NH~4~ (mg gdw<sup>-1</sup>)",0.008731245125
+"182","Decomposition","SP2","376","Skeletonization4","SP2","d.376","SP2_376",143017,156051,159517,"NO~3~ (mg gdw<sup>-1</sup>)",0.0514451695625
+"183","Decomposition","SP2","376","Skeletonization4","SP2","d.376","SP2_376",143017,156051,159517,"Air Temperature",13.6
+"184","Decomposition","SP2","376","Skeletonization4","SP2","d.376","SP2_376",143017,156051,159517,"Soil Temperature",15.5
+"185","Decomposition","SP3","376","Skeletonization4","SP3","d.376","SP3_376",143017,156051,159517,"Gravimetric Moisture",0.5990122611875
+"186","Decomposition","SP3","376","Skeletonization4","SP3","d.376","SP3_376",143017,156051,159517,"pH",6.368125
+"187","Decomposition","SP3","376","Skeletonization4","SP3","d.376","SP3_376",143017,156051,159517,"EC",80.93125
+"188","Decomposition","SP3","376","Skeletonization4","SP3","d.376","SP3_376",143017,156051,159517,"DO",NA
+"189","Decomposition","SP3","376","Skeletonization4","SP3","d.376","SP3_376",143017,156051,159517,"NH~4~ (mg gdw<sup>-1</sup>)",0.12938152275
+"190","Decomposition","SP3","376","Skeletonization4","SP3","d.376","SP3_376",143017,156051,159517,"NO~3~ (mg gdw<sup>-1</sup>)",0.0401779900625
+"191","Decomposition","SP3","376","Skeletonization4","SP3","d.376","SP3_376",143017,156051,159517,"Air Temperature",13.6
+"192","Decomposition","SP3","376","Skeletonization4","SP3","d.376","SP3_376",143017,156051,159517,"Soil Temperature",16.2999992370605

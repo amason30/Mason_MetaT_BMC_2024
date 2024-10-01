@@ -45,14 +45,48 @@ days <- c(0, 12, 58, 86, 168, 376)
 #     select(Sample, Trt, Depth, Donor) %>%
 #     head()
 
-dat <- read_excel(here("data/SP_metadata.xlsx"), 
-    sheet = "R") %>%
+temps <- read_excel(here("data/SP_metadata.xlsx"), sheet = "R") %>%
+    select(Sample_name, temp_ambient, temp_soil)
+
+dat <- read_csv("https://github.com/jdebruyn/ARF-seasonal/raw/refs/heads/main/pH_EC_etc_SP.csv") %>%
+    rename(Study_day = `Study day`,
+           Gravimetric_moisture = `Gravimetric moisture`,
+           CO2_umol_gdw = `CO2 umol gdw soil-1 day-1`,
+           CO2_ug_gdw = `CO2 ug C gdw soil-1 day-1`,
+           NH4_mg_gdw = `NH4 mg per gdw`,
+           NH4_ug_gdw = `NH4 ug per gdw`,
+           NO3_mg_gdw = `NO3 mg per gdw`,
+           NO3_ug_gdw = `NO3 ug per gdw`) %>%
+    # mutate(Sample_name = Sample) %>%
+    separate(Sample, c("Trt", "Depth", "Rep"), sep = "_") %>%
+    mutate(Trt = if_else(str_detect(Trt, "con"), "Control","Decomposition"),
+           Donor = toupper(Rep),
+           Rep = if_else(Trt == "Control", "CON", Donor),
+           Study_con = if_else(Rep == "CON", "con", str_c("d", Study_day, sep = "."))) %>%
     mutate(Trt = as.factor(Trt),
            Study_day = as.factor(Study_day),
            Stage = factor(Stage, 
                           ordered = TRUE,
                           levels = c("Initial", "Active", "Advanced4","Advanced6","Advanced11","Skeletonization4"))) %>%
-    pivot_longer(c(-Sample_name, -Date, -MetaT, -Trt, -Rep, -Study_con, -Study_day, -ADH_ambient, -ADH_internal, -ADH_soil, -Stage, -TBS, -timepoint), names_to = "parameter") %>%
+    select(-Location, -Date, -TBS, -Sorting) %>%
+    filter(Study_day %in% days) %>% 
+    # select(-Sample_name) %>%
+    pivot_longer(c( -Trt, -Depth, -Rep, -Study_day, -Stage, -Donor, -Study_con), names_to = "parameter") %>%
+    nest(.by = c(Trt, Depth, Rep, Study_day, Stage, Donor, Study_con)) %>%
+    pivot_wider(names_from = Depth, values_from = data)%>%
+    mutate(data = map2(int, `15`, inner_join, by = "parameter", suffix = c(".int", ".15"))) %>%
+    mutate(data = map(data, ~.x %>% mutate(full = ((1/16)*value.int) + ((15/16)*value.15))))%>% 
+    unnest(cols = data) %>%
+    select(-int, -`15`) %>%
+    mutate(full = if_else(parameter == "DO", value.15, full)) %>%
+    select(-value.int, -value.15) %>%
+    mutate(pooled = mean(full), .by = c("Rep", "Study_day", "parameter")) %>%
+    select(-full) %>%
+    mutate(Sample_name = str_c(Rep, Study_day, sep = "_")) %>%
+    distinct(parameter, pooled, Sample_name, .keep_all = TRUE) %>%
+    pivot_wider(names_from = parameter, values_from = pooled) %>%
+    left_join(temps, by = "Sample_name") %>%
+    pivot_longer(c(-Trt, -Rep, -Study_day, -Stage, -Donor, -Study_con, -Sample_name, -ADH_ambient, -ADH_internal, -ADH_soil), names_to = "parameter") %>%
     filter(parameter %in% c("temp_ambient", "temp_soil", "Gravimetric_moisture", "pH", "EC" , "DO", "CO2_μg C_gdw", "NH4_mg_gdw", "NO3_mg_gdw", "N_percent", "C_percent", "CN_ratio")) %>%
     mutate(parameter = factor(parameter, 
                               levels =  c("temp_ambient", "temp_soil", "Gravimetric_moisture", "pH", "EC" , "DO", "CO2_μg C_gdw", "NH4_mg_gdw", "NO3_mg_gdw", "N_percent", "C_percent", "CN_ratio"),
@@ -60,6 +94,10 @@ dat <- read_excel(here("data/SP_metadata.xlsx"),
 
 # dat_long_donor = dat_long %>% filter(Trt != "CON") #create a dataset with decompostion soils only
 # dat_long_con = dat_long %>% filter(Trt == "CON") #create a dataset with control soils only - these two datasets will be used to plot controls as stars while decompostion soils will be normal line plots
+```
+
+```{r}
+write.csv(dat, here::here("data/SP_recombined_soildata.csv"))
 ```
 
 ```{r}
