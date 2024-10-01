@@ -47,6 +47,18 @@ days <- c(0, 12, 58, 86, 168, 376)
 
 temps <- read_excel(here("data/SP_metadata.xlsx"), sheet = "R") %>%
     select(Sample_name, temp_ambient, temp_soil)
+    
+c_n <- read_csv("https://raw.githubusercontent.com/jdebruyn/ARF-seasonal/refs/heads/main/CN_updatable.csv") %>%
+    rename(Study_day = `Study day`,
+           Weight_mg = `Weight mg`,
+           N_percent = `N  percent`,
+           C_percent = `C  percent`,
+           CN_ratio = `CN  ratio`) %>%
+    filter(Season == "spring",
+           Study_day %in% days) %>%
+    separate(Name, c("Num", "Donor", "donor_depth"), sep = "_") %>%
+    select(Location, Study_day, Donor, N_percent, C_percent, CN_ratio) %>%
+    mutate(Study_day = as.factor(Study_day))
 
 dat <- read_csv("https://github.com/jdebruyn/ARF-seasonal/raw/refs/heads/main/pH_EC_etc_SP.csv") %>%
     rename(Study_day = `Study day`,
@@ -68,12 +80,13 @@ dat <- read_csv("https://github.com/jdebruyn/ARF-seasonal/raw/refs/heads/main/pH
            Stage = factor(Stage, 
                           ordered = TRUE,
                           levels = c("Initial", "Active", "Advanced4","Advanced6","Advanced11","Skeletonization4"))) %>%
-    select(-Location, -Date, -TBS, -Sorting) %>%
-    filter(Study_day %in% days) %>% 
+    filter(Study_day %in% days) %>%
+    left_join(c_n, by = c("Location", "Study_day", "Donor")) %>%
+    select(-Location, -Date, -TBS, -Sorting) %>% 
     # select(-Sample_name) %>%
     pivot_longer(c( -Trt, -Depth, -Rep, -Study_day, -Stage, -Donor, -Study_con), names_to = "parameter") %>%
     nest(.by = c(Trt, Depth, Rep, Study_day, Stage, Donor, Study_con)) %>%
-    pivot_wider(names_from = Depth, values_from = data)%>%
+    pivot_wider(names_from = Depth, values_from = data) %>%
     mutate(data = map2(int, `15`, inner_join, by = "parameter", suffix = c(".int", ".15"))) %>%
     mutate(data = map(data, ~.x %>% mutate(full = ((1/16)*value.int) + ((15/16)*value.15))))%>% 
     unnest(cols = data) %>%
@@ -86,18 +99,22 @@ dat <- read_csv("https://github.com/jdebruyn/ARF-seasonal/raw/refs/heads/main/pH
     distinct(parameter, pooled, Sample_name, .keep_all = TRUE) %>%
     pivot_wider(names_from = parameter, values_from = pooled) %>%
     left_join(temps, by = "Sample_name") %>%
-    pivot_longer(c(-Trt, -Rep, -Study_day, -Stage, -Donor, -Study_con, -Sample_name, -ADH_ambient, -ADH_internal, -ADH_soil), names_to = "parameter") %>%
-    filter(parameter %in% c("temp_ambient", "temp_soil", "Gravimetric_moisture", "pH", "EC" , "DO", "CO2_μg C_gdw", "NH4_mg_gdw", "NO3_mg_gdw", "N_percent", "C_percent", "CN_ratio")) %>%
-    mutate(parameter = factor(parameter, 
-                              levels =  c("temp_ambient", "temp_soil", "Gravimetric_moisture", "pH", "EC" , "DO", "CO2_μg C_gdw", "NH4_mg_gdw", "NO3_mg_gdw", "N_percent", "C_percent", "CN_ratio"),
-                              labels = c("Air Temperature", "Soil Temperature", "Gravimetric Moisture", "pH", "EC" , "DO", "CO~2~ (μg gdw<sup>-1</sup>)", "NH~4~ (mg gdw<sup>-1</sup>)", "NO~3~ (mg gdw<sup>-1</sup>)", "% N", "% C", "C:N")))
-
+    pivot_longer(c(-Trt, -Rep, -Study_day, -Stage, -Donor, -Study_con, -Sample_name, -ADH_ambient, -ADH_internal, -ADH_soil), names_to = "parameter")
+    
 # dat_long_donor = dat_long %>% filter(Trt != "CON") #create a dataset with decompostion soils only
 # dat_long_con = dat_long %>% filter(Trt == "CON") #create a dataset with control soils only - these two datasets will be used to plot controls as stars while decompostion soils will be normal line plots
 ```
 
 ```{r}
-write.csv(dat, here::here("data/SP_recombined_soildata.csv"))
+write.csv(dat, here::here("data/SP_recombined_soildata.csv"), row.names = FALSE)
+```
+
+```{r}
+dat <- dat %>%
+    filter(parameter %in% c("temp_ambient", "temp_soil", "Gravimetric_moisture", "pH", "EC" , "DO", "CO2_μg C_gdw", "NH4_mg_gdw", "NO3_mg_gdw", "N_percent", "C_percent", "CN_ratio")) %>%
+    mutate(parameter = factor(parameter, 
+                              levels =  c("temp_ambient", "temp_soil", "Gravimetric_moisture", "pH", "EC" , "DO", "CO2_μg C_gdw", "NH4_mg_gdw", "NO3_mg_gdw", "N_percent", "C_percent", "CN_ratio"),
+                              labels = c("Air Temperature", "Soil Temperature", "Gravimetric Moisture", "pH", "EC" , "DO", "CO~2~ (μg gdw<sup>-1</sup>)", "NH~4~ (mg gdw<sup>-1</sup>)", "NO~3~ (mg gdw<sup>-1</sup>)", "% N", "% C", "C:N")))
 ```
 
 ```{r}
