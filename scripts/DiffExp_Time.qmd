@@ -817,17 +817,23 @@ all_top <- rbind(ts_top20_12.0,
                  ts_top20_168.86,
                  ts_top20_376.168) %>% 
   mutate(tax = str_split_i(max_annot_lvl, "\\|", 2),
-         p = ifelse(p < 0.001, "< 0.001", p))
+         p = ifelse(p < 0.001, "< 0.001", p)) %>%
+  mutate(comp = case_when(comp == "C.12v0" ~ "0-12",
+                          comp == "C.58v12" ~ "12-58",
+                          comp == "C.86v58" ~ "58-86",
+                          comp == "C.168v86" ~ "86-168",
+                          comp == "C.376v168" ~ "168-376",
+                          TRUE ~ "NA"))
   
 all_top %>%
-  select(query, coeff, p, tax, COG_category, Description, Preferred_name, EC) %>%
+  select(query, comp, coeff, p, tax, COG_category, Description, Preferred_name, EC) %>%
   kbl(.,
       format = "latex",
       digits = 3,
-      col.names = c("Query", "Coefficient", "p-Value", "Taxonomic Annotation", "COG Category", "Description", "Gene Name", "EC"),
+      col.names = c("Query", "Comparison", "Coefficient", "p-Value", "Taxonomic Annotation", "COG Category", "Description", "Gene Name", "EC"),
       booktabs = TRUE) %>%
-  column_spec(6, width = "10em") %>%
-  column_spec(4, width = "10em") %>%
+  column_spec(7, width = "10em") %>%
+  column_spec(5, width = "10em") %>%
   save_kable(., file = here::here("figures/Top20_DE_genes_study.con.pdf"))
 ```
 
