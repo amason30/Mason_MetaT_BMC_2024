@@ -39,7 +39,7 @@ gene_ref = NIJ_all_counts %>% select(Gene, Gene_length)
 ```{r}
 #| include: false
 # load sample metadata
-metadata = read_xlsx(here::here("data/SP_metadata.xlsx"), sheet = "R") #metadata
+metadata = read_csv(here::here("data/SP_recombined_soildata.csv")) #metadata
 metadata$Sample_name = as.factor(metadata$Sample_name)
 metadata$Trt = as.factor(metadata$Trt)
 metadata$Rep = as.factor(metadata$Rep)
@@ -92,22 +92,23 @@ countdata = NIJ_all_counts %>%
   select(-Gene_length)
   
 #check colnames in counts file is in the same order as sample ID in metadata file
-all(colnames(countdata)==metadata$Sample_name)
+md <- metadata %>% pivot_wider(names_from = parameter, values_from = value)
+all(colnames(countdata)==md$Sample_name)
 
 #convert counts into DGElist object to be used by edgeR
 y = DGEList(countdata)
 
 names(y) #what is stored in y
 
-trt = paste(metadata$Trt) #make an object for the variable trt
+trt = paste(md$Trt) #make an object for the variable trt
 trt = factor(trt) #make sure trt is a factor
 y$samples$trt = trt #add trt to the DGElist object under the samples tab
 
-study_day = paste(metadata$Study_day)
+study_day = paste(md$Study_day)
 study_day = factor(study_day)
 y$samples$study_day = study_day
 
-study_con = paste(metadata$Study_con)
+study_con = paste(md$Study_con)
 study_con = factor(study_con)
 y$samples$study_con = study_con
 
@@ -388,8 +389,9 @@ ADH_ambient, ADH_internal, ADH_soil, Gravimetric_moisture, pH, EC, DO, CO2_μmol
 #| include: false
 
 CCA_meta = metadata %>% 
+  pivot_wider(names_from = parameter, values_from = value) %>%
   select(Sample_name, ADH_ambient, ADH_internal, ADH_soil, temp_ambient, temp_soil,
-         Gravimetric_moisture, pH, EC, CO2_μmol_gdw,  NH4_mg_gdw, NO3_mg_gdw, N_percent, C_percent,
+         Gravimetric_moisture, pH, EC, CO2_umol_gdw,  NH4_mg_gdw, NO3_mg_gdw, N_percent, C_percent,
          CN_ratio)
 
 #Canonical Correlation analysis (CCA) is a dimentionality reduction technique similar to PCA or SVD, however CCA deals with two high dimensional datasets at the same time and aims to find projections that account for most of co-variance between two datasets
@@ -508,14 +510,45 @@ df_all_arrows <- as.data.frame(scrs_all$biplot*multiplier) %>%
          CCA2 = if_else(CCA2 >= 0, CCA2 + 0.1, CCA2 - 0.1)) %>%
   mutate(CCA2 = if_else(variable == "EC", CCA2 + 0.09, CCA2))
 
+# these label positions are for Fig1.png below
+text_labs <- as.data.frame(df_all_arrows)[, c("CCA1", "CCA2", "sig", "labels")] %>%
+  mutate(CCA1 = case_when(labels == "pH" ~ CCA1 - 0.15,
+                          labels == "EC" ~ CCA1 + 0.15,
+                          labels == "T[S]" ~ CCA1 + 0.13,
+                          labels == "GWC" ~ CCA1 + 0.13,
+                          labels == "C:N" ~ CCA1 - 0.15,
+                          labels == "T[A]" ~ CCA1 - 0.1,
+                          labels == "CO[2]" ~ CCA1 + 0.13,
+                          labels == "N*'%'" ~ CCA1 + 0.1,
+                          labels == "NH[4]" ~ CCA1 + 0.1,
+                          labels == "C*'%'" ~ CCA1 + 0.25,
+                          labels == "NO[3]" ~ CCA1 + 0.2,
+                          TRUE ~ CCA1),
+         CCA2 = case_when(labels == "pH" ~ CCA2 + 0.1,
+                          # labels == "EC" ~ CCA2 - 0.04,
+                          labels == "T[S]" ~ CCA2 - 0.13,
+                          labels == "GWC" ~ CCA2 + 0.13,
+                          labels == "C:N" ~ CCA2 - 0.03,
+                          labels == "T[A]" ~ CCA2 - 0.1,
+                          labels == "CO[2]" ~ CCA2 - 0.05,
+                          labels == "N*'%'" ~ CCA2 - 0.1,
+                          # labels == "NH[4]" ~ CCA2 - 0.15,
+                          labels == "C*'%'" ~ CCA2 - 0.3,
+                          labels == "NO[3]" ~ CCA2 - 0.25,
+                          TRUE ~ CCA2)) 
+text_labs
+
 
 cca <- p2 +
   geom_segment(data = df_all_arrows, aes(x = 0, y= 0, xend = CCA1, yend = CCA2), arrow = arrow(length = unit(0.2, "cm")), color = "black", alpha = 0.5) + 
-  geom_text(data = as.data.frame(df_all_arrows[df_all_arrows$sig == "sig", 2:3]*1.1), aes(CCA1, CCA2, label = df_all_arrows[df_all_arrows$sig == "sig", "labels"]), color="red", parse = TRUE) +
-  geom_text(data = as.data.frame(df_all_arrows[df_all_arrows$sig == "not_sig", 2:3]*1.1), aes(CCA1, CCA2, label = df_all_arrows[df_all_arrows$sig == "not_sig", "labels"]), color="black", parse = TRUE) + 
+  geom_text(data = text_labs[text_labs$sig == "sig", ], aes(CCA1, CCA2, label = text_labs[text_labs$sig == "sig", "labels"]), color = "red", parse = TRUE) +
+  geom_text(data = text_labs[text_labs$sig == "not_sig", ], aes(CCA1, CCA2, label = text_labs[text_labs$sig == "not_sig", "labels"]), color = "black", parse = TRUE) + 
   theme(panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()) 
 
+# + 
+#   geom_text(data = as.data.frame(df_all_arrows[df_all_arrows$sig == "sig", 2:3]*1.1), aes(CCA1, CCA2, label = df_all_arrows[df_all_arrows$sig == "sig", "labels"]), color="red", parse = TRUE) +
+#   geom_text(data = as.data.frame(df_all_arrows[df_all_arrows$sig == "not_sig", 2:3]*1.1), aes(CCA1, CCA2, label = df_all_arrows[df_all_arrows$sig == "not_sig", "labels"]), color="black", parse = TRUE)
 ```
 
 ```{r}
@@ -531,11 +564,13 @@ cca + labs(title = "CCA for NIJ ARF Spring")
 # maximum height of 225 mm for figure and legend
 # image resolution of approximately 300 dpi (dots per inch) at the final size
 
-png(here::here("figures/Fig1.png"), units = "mm", width = 170, height = 200, res = 300)
+png(here::here("figures/Fig1.png"), units = "mm", width = 170, height = 225, res = 300)
 ggarrange(mds_day, cca, labels = c("A", "B"), nrow = 2, common.legend = TRUE, legend = "right")
+dev.off()
 
 tiff(here::here("figures/Fig1.tiff"), units = "mm", width = 170, height = 200, res = 300)
 ggarrange(mds_day, cca, labels = c("A", "B"), nrow = 2, common.legend = TRUE, legend = "right")
+dev.off()
 ```
 
 ## Top 500 most variable genes (heatmaps)
@@ -2094,20 +2129,6 @@ trt_top_up.down = rbind(trt_15_sig_up, trt_15_sig_down)
 
 A majority of the genes that are down regulated in control soils (therefore display higher expression in decomposition soils are related to heat shock response): 11/15 genes.
 
-```{r}
-#| include: false
-#| eval: false
-trt_top_up.down %>% 
-mutate(tax = str_split_i(max_annot_lvl, "\\|", 2)) %>%
-select(query, trt_coeff, trt_p, tax, COG_category, Description, Preferred_name, EC) %>%
-  kbl(.,
-      format = "latex",
-      digits = 3,
-      col.names = c("Query", "Coefficient", "p-Value", "Taxonomic Annotation", "COG Category", "Description", "Gene Name", "EC"),
-      booktabs = TRUE) %>%
-  column_spec(6, width = "10em") %>%
-  save_kable(., file = here::here("figures/Top15_DE_genes_trt.pdf"))
-```
 
 Differentially expressed genes between controls
 
@@ -2120,6 +2141,7 @@ trt_sig_up.20 = trt_DE_summary %>% arrange(desc(log_p))%>% filter(trt_cont == "1
 trt_sig_down.20 = trt_DE_summary %>% arrange(desc(log_p))%>% filter(trt_cont == "-1") %>%top_n(20, log_p) #top 10 significant and downregulated genes in control soils
 
 trt_top_up.down.20 = rbind(trt_sig_up.20, trt_sig_down.20)
+write.csv(trt_top_up.down.20, here::here("data/top_40_DE_trt.csv"), row.names = FALSE)
 
 length(unique(trt_sig_up.20$Ann)) #10 unique COGs
 length(unique(trt_sig_down.20$Ann)) #4 unique COGs
@@ -2188,6 +2210,21 @@ dev.off()
 tiff(here::here("figures/Trt_DE_top20_barplot.tiff"), units = "mm", width = 170, height = 225, res = 300)
 ggarrange(addSmallLegend_bottom(trt), addSmallLegend_bottom(trt_tax), ncol = 2, labels = "AUTO", align = "h")
 dev.off()
+```
+
+```{r}
+#| include: false
+#| eval: false
+trt_top_up.down.20 %>% 
+mutate(tax = str_split_i(max_annot_lvl, "\\|", 2)) %>%
+select(query, trt_coeff, trt_p, tax, COG_category, Description, Preferred_name, EC) %>%
+  kbl(.,
+      format = "latex",
+      digits = 3,
+      col.names = c("Query", "Coefficient", "p-Value", "Taxonomic Annotation", "COG Category", "Description", "Gene Name", "EC"),
+      booktabs = TRUE) %>%
+  column_spec(6, width = "10em") %>%
+  save_kable(., file = here::here("figures/Top20_DE_genes_trt.pdf"))
 ```
 
 #### Heat Shock Proteins
