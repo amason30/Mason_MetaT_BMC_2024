@@ -391,7 +391,7 @@ ADH_ambient, ADH_internal, ADH_soil, Gravimetric_moisture, pH, EC, DO, CO2_μmol
 CCA_meta = metadata %>% 
   pivot_wider(names_from = parameter, values_from = value) %>%
   select(Sample_name, ADH_ambient, ADH_internal, ADH_soil, temp_ambient, temp_soil,
-         Gravimetric_moisture, pH, EC, CO2_umol_gdw,  NH4_mg_gdw, NO3_mg_gdw, N_percent, C_percent,
+         Gravimetric_moisture, pH, EC, DO, CO2_umol_gdw,  NH4_mg_gdw, NO3_mg_gdw, N_percent, C_percent,
          CN_ratio)
 
 #Canonical Correlation analysis (CCA) is a dimentionality reduction technique similar to PCA or SVD, however CCA deals with two high dimensional datasets at the same time and aims to find projections that account for most of co-variance between two datasets
@@ -468,7 +468,7 @@ p
 ```{r}
 #| include: false
 #cca with all chosen environmental parameters
-y_meta <- y_meta %>% select(-ADH_ambient, -ADH_internal, -ADH_soil)
+y_meta <- CCA_meta %>% select(-Sample_name, -ADH_ambient, -ADH_internal, -ADH_soil)
 r_all_cca <- cca(x_counts ~ ., data=y_meta)
 r_all_cca
 
@@ -500,7 +500,7 @@ multiplier = vegan:::ordiArrowMul(scrs_all$biplot)
 cca_aov_df <- cca_aov %>%
   rownames_to_column(var = "variable")
 
-labels <- c("T[A]", "T[S]", "GWC", "pH", "EC", "CO[2]", "NH[4]", "NO[3]", "N*'%'", "C*'%'", "C:N")
+labels <- c("T[A]", "T[S]", "GWC", "pH", "EC", "DO", "CO[2]", "NH[4]", "NO[3]", "N*'%'", "C*'%'", "C:N")
 df_all_arrows <- as.data.frame(scrs_all$biplot*multiplier) %>% 
   rownames_to_column(var = "variable") %>%
   add_column(labels = labels) %>%
@@ -526,6 +526,7 @@ text_labs <- as.data.frame(df_all_arrows)[, c("CCA1", "CCA2", "sig", "labels")] 
                           TRUE ~ CCA1),
          CCA2 = case_when(labels == "pH" ~ CCA2 + 0.1,
                           # labels == "EC" ~ CCA2 - 0.04,
+                          labels == "DO" ~ CCA2 + 0.13,
                           labels == "T[S]" ~ CCA2 - 0.13,
                           labels == "GWC" ~ CCA2 + 0.13,
                           labels == "C:N" ~ CCA2 - 0.03,
@@ -571,6 +572,36 @@ dev.off()
 tiff(here::here("figures/Fig1.tiff"), units = "mm", width = 170, height = 200, res = 300)
 ggarrange(mds_day, cca, labels = c("A", "B"), nrow = 2, common.legend = TRUE, legend = "right")
 dev.off()
+```
+
+```{r}
+#| include: false
+
+# save all env variables PERMANOVA as a table
+labels
+
+rows <- c("ADH\\textsubscript{A}", "ADH\\textsubscript{I}", "ADH\\textsubscript{S}", "T\\textsubscript{A}", "T\\textsubscript{S}", "GWC", "pH", "EC", "DO", "CO\\textsubscript{2}", "NH\\textsubscript{4}", "NO\\textsubscript{3}", "N \\%", "C \\%", "C:N", "Residuals", "Total")
+
+cca_aov_tbl <- cca_aov
+rownames(cca_aov_tbl) <- rows
+
+kbl(cca_aov_tbl,
+    format = "latex",
+    row.names = TRUE,
+    digits = 3,
+    booktabs = TRUE,
+    escape = FALSE) %>%
+save_kable(here::here("tables/cca_permanova.pdf"), keep_tex = FALSE)
+
+
+# rownames(mae_marker_anova_p)[1] <- "biologicalMarker"
+# kbl(mae_marker_anova_p,
+#     format = "latex",
+#     row.names = TRUE,
+#     # caption = "Model mean absoulte error (MAE) varies due to biological marker as reported by analysis of Variance (ANOVA). Model parameter biologicalMarker refers whether 16S, ITS, or both organisms were used in model construction.",
+#     digits = 3,
+#     booktabs = TRUE) %>% 
+# save_kable(here::here("Mason_SoilMicrobe-PMI_PLoS_2024/figures/S4Table.pdf"), keep_tex = FALSE)
 ```
 
 ## Top 500 most variable genes (heatmaps)
