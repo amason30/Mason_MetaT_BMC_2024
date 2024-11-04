@@ -384,7 +384,9 @@ taud_p <- taud_nlog2_sum %>%
   geom_text(data = Tukey.labels, 
             aes(x = Study_day, 
                 y = max + 0.1, label = Letters),
-            size=5)
+            size=5) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
 ```
 
 ```{r}
@@ -563,7 +565,9 @@ bsh_p <- bsh_nlog2_sum %>%
   geom_text(data = Tukey.labels, 
             aes(x = Study_day, 
                 y = max + 0.3, label = Letters),
-            size=5)
+            size=5) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
 ```
 
 ```{r}
@@ -879,7 +883,8 @@ all_cog <- addSmallLegend(all_cog, pointSize = 0.2, textSize = 6, spaceLegend = 
 all_tax <- all_top %>%
   mutate(query = as.factor(query),
          Ann = as.factor(Ann),
-         tax = as.factor(tax)) %>%
+         tax = as.factor(tax),
+         comp = factor(comp, levels = c())) %>%
   ggplot() +
   aes(x = query, y = coeff, fill = tax) + 
   geom_col(width = 0.5) +
