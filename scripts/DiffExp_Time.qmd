@@ -852,7 +852,8 @@ expanded_cols = colorRampPalette(colpalette2)(nb.cols)
 all_cog <- all_top %>%
   mutate(query = as.factor(query),
          Ann = as.factor(Ann),
-         tax = as.factor(tax)) %>%
+         tax = as.factor(tax),
+         comp = factor(comp, levels = c( "0-12", "12-58","58-86", "86-168", "168-376"), labels = c("12 v 0", "58 v 12", "86 v 58", "168 v 86", "376 v 168"))) %>%
   ggplot() +
   aes(x = query, y = coeff, fill = Ann) + 
   geom_col(width = 0.5) +
@@ -884,7 +885,7 @@ all_tax <- all_top %>%
   mutate(query = as.factor(query),
          Ann = as.factor(Ann),
          tax = as.factor(tax),
-         comp = factor(comp, levels = c())) %>%
+         comp = factor(comp, levels = c( "0-12", "12-58","58-86", "86-168", "168-376"), labels = c("12 v 0", "58 v 12", "86 v 58", "168 v 86", "376 v 168"))) %>%
   ggplot() +
   aes(x = query, y = coeff, fill = tax) + 
   geom_col(width = 0.5) +
