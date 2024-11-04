@@ -373,7 +373,7 @@ taud_p <- taud_nlog2_sum %>%
             color = "darkgoldenrod2",
             size = 6) +
   labs(x = "Study Day",
-       y = "Average Normalized<br>log2 expression (*tauD*)") +
+       y = "Mean Normalized<br>log2 expression (*tauD*)") +
   theme_bw() +
   theme(axis.title = element_markdown()) +
   annotate("text",
@@ -554,7 +554,7 @@ bsh_p <- bsh_nlog2_sum %>%
             color = "darkgoldenrod2",
             size = 6) +
   labs(x = "Study Day",
-       y = "Average Normalized<br>log2 expression (*BSH*)") +
+       y = "Mean Normalized<br>log2 expression (*BSH*)") +
   theme_bw() +
   theme(axis.title = element_markdown()) +
   annotate("text",
