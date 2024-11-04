@@ -59,6 +59,32 @@ c_n <- read_csv("https://raw.githubusercontent.com/jdebruyn/ARF-seasonal/refs/he
     separate(Name, c("Num", "Donor", "donor_depth"), sep = "_") %>%
     select(Location, Study_day, Donor, N_percent, C_percent, CN_ratio) %>%
     mutate(Study_day = as.factor(Study_day))
+    
+DO <- read_csv("https://github.com/jdebruyn/ARF-seasonal/raw/refs/heads/main/pH_EC_etc_SP.csv") %>%
+    rename(Study_day = `Study day`,
+           Gravimetric_moisture = `Gravimetric moisture`,
+           CO2_umol_gdw = `CO2 umol gdw soil-1 day-1`,
+           CO2_ug_gdw = `CO2 ug C gdw soil-1 day-1`,
+           NH4_mg_gdw = `NH4 mg per gdw`,
+           NH4_ug_gdw = `NH4 ug per gdw`,
+           NO3_mg_gdw = `NO3 mg per gdw`,
+           NO3_ug_gdw = `NO3 ug per gdw`) %>%
+    # mutate(Sample_name = Sample) %>%
+    separate(Sample, c("Trt", "Depth", "Rep"), sep = "_") %>%
+    mutate(Trt = if_else(str_detect(Trt, "con"), "Control","Decomposition"),
+           Donor = toupper(Rep),
+           Rep = if_else(Trt == "Control", "CON", Donor),
+           Study_con = if_else(Rep == "CON", "con", str_c("d", Study_day, sep = "."))) %>%
+    mutate(Trt = as.factor(Trt),
+           Study_day = as.factor(Study_day),
+           Stage = factor(Stage, 
+                          ordered = TRUE,
+                          levels = c("Initial", "Active", "Advanced4","Advanced6","Advanced11","Skeletonization4"))) %>%
+    filter(Study_day %in% days) %>%
+    select(Location, Study_day, Depth, Donor, Rep, DO) %>%
+    filter(Depth == "15") %>%
+    summarise(DO = mean(DO), .by = c("Study_day", "Rep")) %>%
+    mutate(DO = if_else(Study_day == 376, 100, DO)) # this is the impute step
 
 dat <- read_csv("https://github.com/jdebruyn/ARF-seasonal/raw/refs/heads/main/pH_EC_etc_SP.csv") %>%
     rename(Study_day = `Study day`,
@@ -82,7 +108,7 @@ dat <- read_csv("https://github.com/jdebruyn/ARF-seasonal/raw/refs/heads/main/pH
                           levels = c("Initial", "Active", "Advanced4","Advanced6","Advanced11","Skeletonization4"))) %>%
     filter(Study_day %in% days) %>%
     left_join(c_n, by = c("Location", "Study_day", "Donor")) %>%
-    select(-Location, -Date, -TBS, -Sorting) %>% 
+    select(-Location, -Date, -TBS, -Sorting, -DO) %>%
     # select(-Sample_name) %>%
     pivot_longer(c( -Trt, -Depth, -Rep, -Study_day, -Stage, -Donor, -Study_con), names_to = "parameter") %>%
     nest(.by = c(Trt, Depth, Rep, Study_day, Stage, Donor, Study_con)) %>%
@@ -99,6 +125,7 @@ dat <- read_csv("https://github.com/jdebruyn/ARF-seasonal/raw/refs/heads/main/pH
     distinct(parameter, pooled, Sample_name, .keep_all = TRUE) %>%
     pivot_wider(names_from = parameter, values_from = pooled) %>%
     left_join(temps, by = "Sample_name") %>%
+    left_join(DO, by = c("Study_day", "Rep")) %>%
     pivot_longer(c(-Trt, -Rep, -Study_day, -Stage, -Donor, -Study_con, -Sample_name, -ADH_ambient, -ADH_internal, -ADH_soil), names_to = "parameter")
     
 # dat_long_donor = dat_long %>% filter(Trt != "CON") #create a dataset with decompostion soils only
