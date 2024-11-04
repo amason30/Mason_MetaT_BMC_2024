@@ -1764,7 +1764,9 @@ ngenes_TPM <- TPM_long %>%
   filter(EC %in% n_genes$EC_2018) %>%
   rename(Sample_name = name,
          TPM = value) %>%
-  left_join(metadata, by = "Sample_name")
+  left_join(md, by = "Sample_name")
+
+library(plotrix)
 
 ngenes_TPM_day_avg <- ngenes_TPM %>%
   summarise(sum_TPM = sum(TPM),
@@ -1811,9 +1813,10 @@ nc = ggplot(ngenes_TPM_avg_con) +
   theme_bw()+ 
   # theme(legend.position = "None") + 
   theme(panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank())
+        panel.grid.minor = element_blank()) +
+  scale_y_continuous(limits = c(0, 190), breaks = c(0, 50, 100, 150))
 
-nc
+nc 
 
 ### Decomp soils
 ngenes_TPM_avg_decomp <- ngenes_TPM_day_avg %>%
