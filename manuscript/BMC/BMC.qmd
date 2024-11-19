@@ -134,17 +134,28 @@ Illumina sequencing of the 24 libraries yielded a total of 5,073,476,730 reads, 
 
 Gene expression profiles in decomposition-impacted soils shifted away from controls and day zero samples as decomposition progressed (`Fig~\ref{fig-mds}`{=latex}A). Expression was most different from controls on study days 58, 86, 168 (@sup-heatmap-plot), before shifting back toward control conditions on study day 376. After one year of decomposition, soil gene expression profiles had not returned to pre-decomposition conditions, as evidenced by their clustering away from controls and day zero samples in the MDS plot (`Fig~\ref{fig-mds}`{=latex}A).
 
+```{r}
+#| include: false
+
+cca <- readRDS(here::here("data/cca_subset"))
+
+cca1 <- round(((cca$CCA$eig[[1]] / sum(cca$CCA$eig)) * 100), 1)
+cca2 <- round(((cca$CCA$eig[[2]] / sum(cca$CCA$eig)) * 100), 1)
+
+first_2 <- cca1 + cca2
+```
+
 ```{=tex}
 % Place figure captions after the first paragraph in which they are cited.
 \begin{figure}[!h]
 \caption{{\bf Microbial gene expression profiles are altered during human decomposition.}
-Multidimensional scaling (MDS) shows gene expression within soils changed as decomposition progressed (A). Additionally, canonical correspondence analysis (CCA) shows that environmental variables explained 64.3\% of the variation in gene expression profiles (B). Variables in bold red type significantly (p < 0.05) explained some of the variation in gene expression profiles as assessed by Permutational Analysis of Variance (PERMANOVA). In both panels soils from controls (CON) and the three donors (SP1, SP2, SP3) are denoted by symbol shape, while color represents study day. In B, soil physiochemical variable loadings are reporesented by arrows: Gravimetric water content (GWC), electrical conductivity (EC), pH (pH), dissolved oxygen (DO), respiration (evolved CO\textsubscript{2}\ \textmu mol gdw\textsuperscript{-1}), ammonium (NH\textsubscript{4}), and nitrate (NO\textsubscript{3}) concentrations (mg gdw\textsuperscript{-1}), percent carbon (\%C), percent nitrogen (\%N), carbon:nitrogen ratio (C:N), ambient temperature (T\textsubscript{A}), and soil temperature (T\textsubscript{S}).}
+Multidimensional scaling (MDS) shows gene expression within soils changed as decomposition progressed (A). Additionally, canonical correspondence analysis (CCA) shows that environmental variables explained `r first_2`\% of the variation in gene expression profiles (B). Variables in bold red type significantly (p < 0.05) explained some of the variation in gene expression profiles as assessed by Permutational Analysis of Variance (PERMANOVA). In both panels soils from controls (CON) and the three donors (SP1, SP2, SP3) are denoted by symbol shape, while color represents study day. In B, soil physiochemical variable loadings are reporesented by arrows: Gravimetric water content (GWC), electrical conductivity (EC), pH (pH), dissolved oxygen (DO), respiration (evolved CO\textsubscript{2}\ \textmu mol gdw\textsuperscript{-1}), ammonium (NH\textsubscript{4}), and nitrate (NO\textsubscript{3}) concentrations (mg gdw\textsuperscript{-1}), percent carbon (\%C), percent nitrogen (\%N), carbon:nitrogen ratio (C:N), ambient temperature (T\textsubscript{A}), and soil temperature (T\textsubscript{S}).}
 \label{fig-mds}
 \end{figure}
 ```
 ![](../../figures/Fig1.png)
 
-Some correlations were observed between gene expression shifts and soil physiochemical data at decomposition timepoints. Canonical correspondence analysis (CCA) was used to constrain gene expression data with soil physiochemical data (`Fig~\ref{fig-mds}`{=latex}B). CCA1 and CCA2 explained 36.2\% and 20.9\% of the variance in gene expression, respectively. Transcript profiles at day 12 were associated with an increase in soil carbon to nitrogen ratio (C:N). Gene expression profiles at days 58 to 86 were positively correlated with increased soil temperature, EC, and evolved CO~2~, while study day 168 was associated with elevated levels of soil NO~3~. Further, Permutational Analysis of Variance (PERMANOVA) revealed that internal accumulated degree hours (ADH), soil temperature, pH, and EC significantly explained some of the variation in gene expression profiles (p < 0.05). No other soil chemical variables were significant at \textalpha\ = 0.05 (@sup-tbl-cca-panova).
+Some correlations were observed between gene expression shifts and soil physiochemical data at decomposition timepoints. Canonical correspondence analysis (CCA) was used to constrain gene expression data with soil physiochemical data (`Fig~\ref{fig-mds}`{=latex}B). CCA1 and CCA2 explained `r cca1`\% and `r cca2`\% of the variance in gene expression, respectively. Transcript profiles at day 12 were associated with an increase in soil carbon to nitrogen ratio (C:N). Gene expression profiles at days 58 to 86 were positively correlated with increased soil temperature, EC, and evolved CO~2~, while study day 168 was associated with elevated levels of soil NO~3~. Further, Permutational Analysis of Variance (PERMANOVA) revealed that internal accumulated degree hours (ADH), soil temperature, pH, and EC significantly explained some of the variation in gene expression profiles (p < 0.05). No other soil chemical variables were significant at \textalpha\ = 0.05 (@sup-tbl-cca-panova).
 
 ```{r}
 #| include: false
@@ -359,11 +370,6 @@ RNA was extracted from 2 g of soil using Qiagen's RNeasy\textregistered\ PowerSo
 Read quality control (QC) was conducted in KBase [@arkin_kbase_2018] using Trimmomatic [@bolger_trimmomatic_2014]. Paired fastq files were imported to KBase through Globus. Poor quality reads were removed, and adapters trimmed via Trimmomatic (v0.36) using default settings and the TruSeq3-PE-2 adapter file. After QC check with FastQC, trimmed libraries were exported as fastq files from KBase through Globus. Remaining ribosomal RNA was filtered using bbmap (maxindel = 20, minid = 0.93) from the Joint Genome Institute’s (JGI) bbtools suite [@bushnell_bbmap_nodate]. After this step, all non-ribosomal reads from all 24 samples were merged into one file. This file was then used to co-assemble reads into contigs using the de novo assembler MEGAHIT (v1.2.9) [@li_megahit_2015] (--12 --k-min 23, --k-max 123, --k-step 10). 
 
 Gene identification and annotation from co-assembled contigs was performed using Prodigal [@hyatt_prodigal_2010] and eggNOG mapper [@cantalapiedra_eggnog-mapper_2021], respectively. Briefly, the fastq containing all contigs was summitted to Prodigal (v2.6.3) for protein coding gene predication for a meta-sample (-p meta -f gff). Next, predicated genes were functionally and taxonomically annotated using eggNOG mapper (v2.1.6) using basic settings to perform a diamond blastp search [@buchfink_sensitive_2021]. Only genes that were both functionally and taxonomically annotated by one of the databases used by eggNOG mapper and identified as bacterial, archaeal, or fungal were chosen as genes of interest. Transcript counts for all genes of interest were obtained by mapping reads from each respective sample to genes of interest obtained from co-assembly using QIAGEN CLC Genomics Workbench 20.0 (https://digitalinsights.qiagen.com/).
-
-To evalute transriptomes between samples, first lowley expressed genes were filtered using the edgeR function filterByExpr(). 
-
-
-edgeR has the function `filterByExpr()`, which will keep rows (genes) that meet the threshold in a minimum number of samples. The minimum number of samples is determined by the group factor in the `DGElist`. edgeR will assess the smallest sample size within the groups defined and make this the threshold. If you added metadata under a name other than 'group', you can specify the experimental varible you want edgR to consider. I will use day as groups.
 
 ## Differential Expression
 

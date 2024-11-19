@@ -471,6 +471,13 @@ p
 y_meta <- CCA_meta %>% select(-Sample_name, -ADH_ambient, -ADH_internal, -ADH_soil)
 r_all_cca <- cca(x_counts ~ ., data=y_meta)
 r_all_cca
+saveRDS(r_all_cca, here::here("data/cca_subset"))
+
+cca1 <- round(((r_all_cca$CCA$eig[[1]] / sum(r_all_cca$CCA$eig)) * 100), 1)
+cca2 <- round(((r_all_cca$CCA$eig[[2]] / sum(r_all_cca$CCA$eig)) * 100), 1)
+x_lab <- paste0("CCA1 (", cca1, "%)")
+y_lab <- paste0("CCA2 (", cca2, "%)")
+
 
 vif <- as.data.frame(vif.cca(r_all_cca))
 
@@ -491,10 +498,18 @@ p2 <- ggplot(df_all_sites) +
   geom_point(size = 5, aes(color = Study_day, shape = Rep)) +
   scale_shape_manual(values=c(15,16,17,18)) + 
   scale_color_manual(values = cols2) + 
-  labs(color = "Study day") +
+  labs(x = x_lab, y = y_lab, color = "Study Day") +
   theme_bw()
 
 #add biplot
+r_all_cca$biplot
+mul <- ggvegan:::arrowMul(r_all_cca$biplot,
+                          rbind(r_all_cca$sites,
+                                r_all_cca$species))
+mul <- ggvegan:::arrowMul(cca.res$biplot,
+                          rbind(cca.sites, cca.species))
+cca.benthos <- data.frame(cca.res$biplot * mul)
+
 multiplier = vegan:::ordiArrowMul(scrs_all$biplot)
 
 cca_aov_df <- cca_aov %>%
@@ -512,7 +527,7 @@ df_all_arrows <- as.data.frame(scrs_all$biplot*multiplier) %>%
 
 # these label positions are for Fig1.png below
 text_labs <- as.data.frame(df_all_arrows)[, c("CCA1", "CCA2", "sig", "labels")] %>%
-  mutate(CCA1 = case_when(labels == "pH" ~ CCA1 - 0.15,
+  mutate(CCA1 = case_when(labels == "pH" ~ CCA1 - 0.1,
                           labels == "EC" ~ CCA1 + 0.15,
                           labels == "T[S]" ~ CCA1 + 0.13,
                           labels == "GWC" ~ CCA1 + 0.13,
@@ -521,7 +536,7 @@ text_labs <- as.data.frame(df_all_arrows)[, c("CCA1", "CCA2", "sig", "labels")] 
                           labels == "CO[2]" ~ CCA1 + 0.13,
                           labels == "N*'%'" ~ CCA1 + 0.1,
                           labels == "NH[4]" ~ CCA1 + 0.1,
-                          labels == "C*'%'" ~ CCA1 + 0.25,
+                          labels == "C*'%'" ~ CCA1 + 0.075,
                           labels == "NO[3]" ~ CCA1 + 0.2,
                           TRUE ~ CCA1),
          CCA2 = case_when(labels == "pH" ~ CCA2 + 0.1,
@@ -533,14 +548,14 @@ text_labs <- as.data.frame(df_all_arrows)[, c("CCA1", "CCA2", "sig", "labels")] 
                           labels == "T[A]" ~ CCA2 - 0.1,
                           labels == "CO[2]" ~ CCA2 - 0.05,
                           labels == "N*'%'" ~ CCA2 - 0.1,
-                          # labels == "NH[4]" ~ CCA2 - 0.15,
-                          labels == "C*'%'" ~ CCA2 - 0.3,
-                          labels == "NO[3]" ~ CCA2 - 0.25,
+                          labels == "NH[4]" ~ CCA2 - 0.15,
+                          labels == "C*'%'" ~ CCA2 - 0.1,
+                          labels == "NO[3]" ~ CCA2 - 0.1,
                           TRUE ~ CCA2)) 
 text_labs
 
 
-cca <- p2 +
+cca_p <- p2 +
   geom_segment(data = df_all_arrows, aes(x = 0, y= 0, xend = CCA1, yend = CCA2), arrow = arrow(length = unit(0.2, "cm")), color = "black", alpha = 0.5) + 
   geom_text(data = text_labs[text_labs$sig == "sig", ], aes(CCA1, CCA2, label = text_labs[text_labs$sig == "sig", "labels"]), color = "red", parse = TRUE) +
   geom_text(data = text_labs[text_labs$sig == "not_sig", ], aes(CCA1, CCA2, label = text_labs[text_labs$sig == "not_sig", "labels"]), color = "black", parse = TRUE) + 
@@ -555,7 +570,7 @@ cca <- p2 +
 ```{r}
 #| echo: false
 #| warning: false
-cca + labs(title = "CCA for NIJ ARF Spring")
+cca_p + labs(title = "CCA for NIJ ARF Spring")
 ```
 
 ```{r}
@@ -566,11 +581,11 @@ cca + labs(title = "CCA for NIJ ARF Spring")
 # image resolution of approximately 300 dpi (dots per inch) at the final size
 
 png(here::here("figures/Fig1.png"), units = "mm", width = 170, height = 225, res = 300)
-ggarrange(mds_day, cca, labels = c("A", "B"), nrow = 2, common.legend = TRUE, legend = "right")
+ggarrange(mds_day, cca_p, labels = c("A", "B"), nrow = 2, common.legend = TRUE, legend = "right")
 dev.off()
 
 tiff(here::here("figures/Fig1.tiff"), units = "mm", width = 170, height = 200, res = 300)
-ggarrange(mds_day, cca, labels = c("A", "B"), nrow = 2, common.legend = TRUE, legend = "right")
+ggarrange(mds_day, cca_p, labels = c("A", "B"), nrow = 2, common.legend = TRUE, legend = "right")
 dev.off()
 ```
 

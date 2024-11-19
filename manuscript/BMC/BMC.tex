@@ -421,7 +421,7 @@ clustering away from controls and day zero samples in the MDS plot
 % Place figure captions after the first paragraph in which they are cited.
 \begin{figure}[!h]
 \caption{{\bf Microbial gene expression profiles are altered during human decomposition.}
-Multidimensional scaling (MDS) shows gene expression within soils changed as decomposition progressed (A). Additionally, canonical correspondence analysis (CCA) shows that environmental variables explained 64.3\% of the variation in gene expression profiles (B). Variables in bold red type significantly (p < 0.05) explained some of the variation in gene expression profiles as assessed by Permutational Analysis of Variance (PERMANOVA). In both panels soils from controls (CON) and the three donors (SP1, SP2, SP3) are denoted by symbol shape, while color represents study day. In B, soil physiochemical variable loadings are reporesented by arrows: Gravimetric water content (GWC), electrical conductivity (EC), pH (pH), dissolved oxygen (DO), respiration (evolved CO\textsubscript{2}\ \textmu mol gdw\textsuperscript{-1}), ammonium (NH\textsubscript{4}), and nitrate (NO\textsubscript{3}) concentrations (mg gdw\textsuperscript{-1}), percent carbon (\%C), percent nitrogen (\%N), carbon:nitrogen ratio (C:N), ambient temperature (T\textsubscript{A}), and soil temperature (T\textsubscript{S}).}
+Multidimensional scaling (MDS) shows gene expression within soils changed as decomposition progressed (A). Additionally, canonical correspondence analysis (CCA) shows that environmental variables explained 47.3\% of the variation in gene expression profiles (B). Variables in bold red type significantly (p < 0.05) explained some of the variation in gene expression profiles as assessed by Permutational Analysis of Variance (PERMANOVA). In both panels soils from controls (CON) and the three donors (SP1, SP2, SP3) are denoted by symbol shape, while color represents study day. In B, soil physiochemical variable loadings are reporesented by arrows: Gravimetric water content (GWC), electrical conductivity (EC), pH (pH), dissolved oxygen (DO), respiration (evolved CO\textsubscript{2}\ \textmu mol gdw\textsuperscript{-1}), ammonium (NH\textsubscript{4}), and nitrate (NO\textsubscript{3}) concentrations (mg gdw\textsuperscript{-1}), percent carbon (\%C), percent nitrogen (\%N), carbon:nitrogen ratio (C:N), ambient temperature (T\textsubscript{A}), and soil temperature (T\textsubscript{S}).}
 \label{fig-mds}
 \end{figure}
 
@@ -431,7 +431,7 @@ Some correlations were observed between gene expression shifts and soil
 physiochemical data at decomposition timepoints. Canonical
 correspondence analysis (CCA) was used to constrain gene expression data
 with soil physiochemical data (Fig~\ref{fig-mds}B). CCA1 and CCA2
-explained 36.2\% and 20.9\% of the variance in gene expression,
+explained 29.2\% and 18.1\% of the variance in gene expression,
 respectively. Transcript profiles at day 12 were associated with an
 increase in soil carbon to nitrogen ratio (C:N). Gene expression
 profiles at days 58 to 86 were positively correlated with increased soil
@@ -1110,17 +1110,6 @@ chosen as genes of interest. Transcript counts for all genes of interest
 were obtained by mapping reads from each respective sample to genes of
 interest obtained from co-assembly using QIAGEN CLC Genomics Workbench
 20.0 (https://digitalinsights.qiagen.com/).
-
-To evalute transriptomes between samples, first lowley expressed genes
-were filtered using the edgeR function filterByExpr().
-
-edgeR has the function \texttt{filterByExpr()}, which will keep rows
-(genes) that meet the threshold in a minimum number of samples. The
-minimum number of samples is determined by the group factor in the
-\texttt{DGElist}. edgeR will assess the smallest sample size within the
-groups defined and make this the threshold. If you added metadata under
-a name other than `group', you can specify the experimental varible you
-want edgR to consider. I will use day as groups.
 
 \subsection{Differential Expression}\label{differential-expression}
 
