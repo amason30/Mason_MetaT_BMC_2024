@@ -2251,7 +2251,9 @@ trt <- trt_top_up.down.20 %>%
       fill = "COG Category") +
   theme_bw() + 
   coord_flip() + 
-  theme(axis.text.y = element_text(size = 6), 
+  theme(axis.text.y = element_blank(),  #remove y axis labels
+        axis.ticks.y = element_blank(),
+        # axis.text.y = element_text(size = 6), 
         axis.text.x = element_text(size = 6),
         aspect.ratio = 2/1)
 
@@ -2279,7 +2281,9 @@ trt_tax <- trt_top_up.down.20 %>%
      fill = "Taxonomy") +
   theme_bw() + 
   coord_flip() + 
-  theme(axis.text.y = element_text(size = 6),
+  theme(axis.text.y = element_blank(),  #remove y axis labels
+        axis.ticks.y = element_blank(),
+        # axis.text.y = element_text(size = 6),
         axis.text.x = element_text(size = 6), 
         aspect.ratio = 2/1)
 
