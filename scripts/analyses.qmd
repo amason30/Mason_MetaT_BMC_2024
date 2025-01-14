@@ -981,7 +981,7 @@ lipase_TPM <- TPM_long  %>%
   filter(EC == "3.1.1.3") %>%
   rename("Sample_name" = "name",
          "TPM" = "value") %>% 
-  left_join(metadata, by = "Sample_name") %>% #merge counts dataset with metadata 
+  left_join(metadata_wide, by = "Sample_name") %>% #merge counts dataset with metadata 
   mutate(query = as.factor(query),
          tax = if_else(str_detect(max_annot_lvl, "Fungi"), "Fungi", "Bacteria"))
 
@@ -1326,7 +1326,7 @@ lipase_TPM_sum_donor <- lipase_TPM %>%
   # filter(tax == "Fungi") %>%
   summarise(sum_TPM = sum(TPM),
             .by = c("Sample_name", "tax")) %>%
-  left_join(metadata, by = "Sample_name") %>%
+  left_join(metadata_wide, by = "Sample_name") %>%
   filter(Rep != "CON")
 
 lipase_TPM_avg_donor <- lipase_TPM_sum_donor %>%
@@ -1337,7 +1337,7 @@ lipase_TPM_avg_donor <- lipase_TPM_sum_donor %>%
 lipase_TPM_sum_control <- lipase_TPM %>%
   summarise(sum_TPM = sum(TPM),
             .by = c("Sample_name", "tax")) %>%
-  left_join(metadata, by = "Sample_name") %>%
+  left_join(metadata_wide, by = "Sample_name") %>%
   filter(Rep == "CON") %>%
   rename(avg_TPM = sum_TPM)
 ```
@@ -1406,7 +1406,7 @@ lipase_b <- ggplot(filter(lipase_TPM_avg_donor, tax == "Bacteria")) +
   geom_star(data = filter(lipase_TPM_sum_control, tax == "Bacteria"), aes(x = Study_day, y = avg_TPM), fill = "darkgoldenrod2", color = "darkgoldenrod2", size = 3) + 
   geom_text(data = Tukey, aes(x = Study_day, y = ymax + 5, label = Letters) , size = 3) + 
   labs(x = "Study Day", y = "Mean TPM Gene Expression") +
-  annotate(geom = "text", x = 1.5, y = 95, label = aov, size = 2) +
+  # annotate(geom = "text", x = 1.5, y = 95, label = aov, size = 2) +
   theme_bw() +
   theme(panel.grid.major = element_blank(),
         panel.grid.minor = element_blank())
@@ -1488,6 +1488,7 @@ write_xlsx(TOI_table, here("data/Fungal_lipase_taxa_abundance.xlsx"))
 #| include: false
 
 TOI_table <- read_xlsx(here("data/Fungal_lipase_taxa_abundance.xlsx"))
+metadata_wide <- metadata %>% pivot_wider(names_from = parameter, values_from = value)
 
 # need to calculate relative values based on how we did DNA extractions (1/16th soil from interface, 15/16 from core)
 TOI_adj_donor <- TOI_table %>%
@@ -1508,7 +1509,7 @@ TOI_adj_donor <- TOI_table %>%
   rename(c__Sordariomycetes = Sordariomycetes,
          c__Saccharomycetes = Saccharomycetes,
          c__Eurotiomycetes = Eurotiomycetes) %>%
-  inner_join(metadata, by = c("Study_day", "Rep"))
+  inner_join(metadata_wide, by = c("Study_day", "Rep"))
 
 # need to adjust controls (1/16th soil from interface, 15/16 from core)
 TOI_adj_control <- TOI_table %>%
@@ -1529,7 +1530,7 @@ TOI_adj_control <- TOI_table %>%
   rename(c__Sordariomycetes = Sordariomycetes,
          c__Saccharomycetes = Saccharomycetes,
          c__Eurotiomycetes = Eurotiomycetes) %>%
-  inner_join(metadata, by = c("Study_day", "Rep"))
+  inner_join(metadata_wide, by = c("Study_day", "Rep"))
 
 
 TOI_adj <- TOI_adj_donor %>%
@@ -1558,7 +1559,21 @@ ggplot(filter(TOI_adj, Rep != "CON")) +
 ```{r}
 #| echo: false
 #| warning: false
-  
+# v %>%
+#   mutate(names = str_remove(names, "c__"))
+fl <- aov(lm(sum_TPM ~ Study_day, data = filter(lipase_TPM_sum_donor, tax == "Fungi"))) 
+fl_t = TukeyHSD(fl)
+
+#eztract p-values and labels
+Tukey.levels <- fl_t$Study_day[,4]
+Tukey.labels <- data.frame(multcompLetters(Tukey.levels)['Letters'])
+
+#I need to put the labels in the same order as in the boxplot :
+Tukey.labels$Study_day=rownames(Tukey.labels)
+Tukey.labels$Study_day = factor(Tukey.labels$Study_day, ordered = TRUE, levels = c(0, 12, 58, 86, 168, 376))
+Tukey.labels=Tukey.labels[order(Tukey.labels$Study_day) , ]
+
+max(lipase_TPM_avg_donor$avg_TPM)
 # get the maximum y value for tukey label placement
 max_y <- TOI_adj_donor %>%
   bind_rows(TOI_adj_control) %>%
@@ -1575,7 +1590,10 @@ Tukey <- Tukey.labels %>%
   left_join(max_y, by = "Study_day")
 
 #line plot of fungal lipase TPM over the three fungal classes relative abundance 
-flp = ggplot(filter(TOI_adj, Rep != "CON")) + 
+flp = filter(TOI_adj, Rep != "CON") %>%
+  mutate(Study_day = factor(Study_day, levels = c("0", "12", "58", "86", "168", "376")),
+         name = str_remove(name, "c__")) %>%
+  ggplot() + 
   geom_col(aes(x = Study_day, y = abundance, fill = name), position=position_dodge()) +
   scale_fill_manual(values = c("#882255", "#661100", "#6699CC"))+
   geom_line(data = filter(lipase_TPM_avg_donor, tax == "Fungi"), aes(x = Study_day, y = avg_TPM/2, group = 1), size = 1) +
@@ -1584,7 +1602,7 @@ flp = ggplot(filter(TOI_adj, Rep != "CON")) +
                      sec.axis = sec_axis(~.*2, name = "Mean TPM Gene Expression")) +
   geom_star(data = filter(lipase_TPM_sum_control, tax == "Fungi") , aes(x=Study_day, y=avg_TPM/2), shape = 8, fill = "darkgoldenrod2", color = "darkgoldenrod2", size = 3) +
   geom_text(data = Tukey, aes(x = Study_day, y = (max_y + 0.05), label = Letters), size = 3) + 
-  stat_compare_means(data = filter(lipase_TPM_avg_day_rep, tax == "Fungi"), aes(x = Study_day, y = avg_TPM), method = "anova", size = 2) +
+  # stat_compare_means(data = filter(lipase_TPM_avg_day_rep, tax == "Fungi"), aes(x = Study_day, y = avg_TPM), method = "anova", size = 2) +
   labs(x = "Study Day", y = "Relative Abundance", fill = "Class" ) +
   theme_bw() +
   theme(panel.grid.major = element_blank(),
@@ -1667,7 +1685,7 @@ lipase_b <- ggplot(filter(lipase_TPM_avg_donor, tax == "Bacteria")) +
   geom_star(data = filter(lipase_TPM_sum_control, tax == "Bacteria"), aes(x = Study_day, y = avg_TPM), fill = "darkgoldenrod2", color = "darkgoldenrod2", size = 3) + 
   geom_text(data = Tukey, aes(x = Study_day, y = ymax + 5, label = Letters) , size = 3) + 
   labs(x = "Study Day", y = "Mean TPM Gene Expression") +
-  annotate(geom = "text", x = 1.5, y = 95, label = aov, size = 2) +
+  # annotate(geom = "text", x = 1.5, y = 95, label = aov, size = 2) +
   theme_bw() +
   theme(panel.grid.major = element_blank(),
         panel.grid.minor = element_blank())
