@@ -864,17 +864,20 @@ all_cog <- all_top %>%
   theme_bw() + 
   coord_flip() + 
   facet_wrap(~ comp, nrow = 1, scales = "free_y") +
-  theme(panel.grid.major = element_blank(),
+  theme(axis.text.y = element_blank(),  #remove y axis labels
+        axis.ticks.y = element_blank(),
+        panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         strip.background = element_rect(fill = "white"),
-        axis.text.y = element_text(size = 6), 
+        # axis.text.y = element_text(size = 6), 
         axis.text.x = element_text(size = 6),
         aspect.ratio = 2/1)
   
 all_cog <- addSmallLegend(all_cog, pointSize = 0.2, textSize = 6, spaceLegend = 0.2) +
-  guides(fill=guide_legend(ncol = 3)) +
-  theme(legend.title.position = "top",
-        legend.position = "top",
+  guides(fill=guide_legend(ncol = 1)) +
+  theme(legend.justification = "left",
+        legend.title.position = "top",
+        legend.position = "right",
         legend.key.spacing = unit(.1, "cm"))
 ```
 
@@ -896,17 +899,20 @@ all_tax <- all_top %>%
   theme_bw() + 
   coord_flip() + 
   facet_wrap(~ comp, nrow = 1, scales = "free_y") +
-  theme(panel.grid.major = element_blank(),
+  theme(axis.text.y = element_blank(),  #remove y axis labels
+        axis.ticks.y = element_blank(),
+        panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         strip.background = element_rect(fill = "white"),
-        axis.text.y = element_text(size = 6), 
+        # axis.text.y = element_text(size = 6), 
         axis.text.x = element_text(size = 6),
         aspect.ratio = 2/1)
   
 all_tax <- addSmallLegend(all_tax, pointSize = 0.2, textSize = 6, spaceLegend = 0.2) +
-  guides(fill=guide_legend(ncol = 6)) +
-  theme(legend.title.position = "top",
-        legend.position = "top",
+  guides(fill=guide_legend(ncol = 1)) +
+  theme(legend.justification = "left",
+        legend.title.position = "top",
+        legend.position = "right",
         legend.key.spacing = unit(.1, "cm"))
 ```
 
@@ -922,10 +928,10 @@ plot_grid(all_cog, all_tax, ncol = 1, labels = "AUTO", align = "h")
 # width of 170 mm for full page width figure
 # maximum height of 225 mm for figure and legend
 png(here::here("figures/Study.con_DE_top20_barplot.png"), units = "mm", width = 225, height = 170, res = 300)
-plot_grid(all_cog, all_tax, ncol = 1, labels = "AUTO", align = "h")
+plot_grid(all_cog, all_tax, ncol = 1, labels = "AUTO", align = "v")
 dev.off()
 
 tiff(here::here("figures/Study.con_DE_top20_barplot.tiff"), units = "mm", width = 225, height = 170, res = 300)
-plot_grid(all_cog, all_tax, ncol = 1, labels = "AUTO", align = "h")
+plot_grid(all_cog, all_tax, ncol = 1, labels = "AUTO", align = "v")
 dev.off()
 ```
