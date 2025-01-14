@@ -417,7 +417,12 @@ x.adonis <- adonis(x_counts ~ ., data=y_meta)
 x.adonis$aov.tab #significant variables:  ADH_internal, soil temmp,pH, EC; ADH_ambient, ambient temp, ADH_soil < 0.2
 cca_aov <- as.data.frame(x.adonis$aov.tab)
 
-write_xlsx(cca_aov, here::here("data/allvar_cca_permanova_aov.xlsx"))
+write.csv(cca_aov, here::here("data/allvar_cca_permanova.csv"), row.names = TRUE)
+
+cca_aov_df <- cca_aov %>%
+  rownames_to_column(var = "variable")
+
+# write_xlsx(cca_aov, here::here("data/allvar_cca_permanova_aov.xlsx"))
 
 #library(CCA)
 #cc_results = cancor(x_counts,y_meta) Note: this is canonical correlation analysis, which differs from canonical correspondence analysis!
@@ -428,50 +433,9 @@ bestEnv = rownames(x.adonis$aov.tab)[x.adonis$aov.tab$`Pr(>F)`<=0.2]
 #last two are NA, need to remove
 bestEnv = bestEnv[!is.na(bestEnv)]
 
-#run cca using only the variables in bestEnv
-eval(parse(text=paste("r_cca <- cca(x_counts ~ ", do.call(paste,c(as.list(bestEnv), sep=" + ")),",data=y_meta)",sep="")))
-
-scrs = scores(r_cca,display =c("sp","wa","lc","bp","cn"))
-attributes(scrs) #check attributes
-
-#extract site data first: this dataset contains one row for each observation and coordinates for CCA1 and CCA2. 
-scrs$sites
-df_sites = data.frame(scrs$sites)
-df_sites$Sample_name = TMM_count_table$Sample_name
-df_sites = df_sites %>% left_join(metadata, by = "Sample_name")
-
-#plot sites
-p = ggplot(df_sites) + 
-  aes(CCA1, CCA2) + 
-  geom_point(size = 5, aes(color = Study_day, shape = Rep))+
-  scale_shape_manual(values = c(15,16,17,18)) + 
-  scale_color_manual(values = c("#1B9E77", "#D95F02", "#7570B3", "#E7298A", "#66A61E", "#E6AB02", "#A6761D")) + 
-  theme_bw()
-
-#add biplot
-multiplier = vegan:::ordiArrowMul(scrs$biplot)
-
-df_arrows = scrs$biplot*multiplier
-df_arrows=as.data.frame(df_arrows)
-
-p <- p + 
-  geom_segment(data = df_arrows, aes(x = 0, y= 0, xend = CCA1, yend = CCA2), arrow = arrow(length = unit(0.2, "cm")), color="black",alpha=0.5)
-```
-
-
-```{r}
-#| include: false
-p <- p + geom_text(data=as.data.frame(df_arrows*1.1), aes(CCA1, CCA2, label = rownames(df_arrows)), color="black")
-p
-```
-
-```{r}
-#| include: false
-#cca with all chosen environmental parameters
-y_meta <- CCA_meta %>% select(-Sample_name, -ADH_ambient, -ADH_internal, -ADH_soil)
 r_all_cca <- cca(x_counts ~ ., data=y_meta)
 r_all_cca
-saveRDS(r_all_cca, here::here("data/cca_subset"))
+saveRDS(r_all_cca, here::here("data/cca_all"))
 
 cca1 <- round(((r_all_cca$CCA$eig[[1]] / sum(r_all_cca$CCA$eig)) * 100), 1)
 cca2 <- round(((r_all_cca$CCA$eig[[2]] / sum(r_all_cca$CCA$eig)) * 100), 1)
@@ -501,25 +465,99 @@ p2 <- ggplot(df_all_sites) +
   labs(x = x_lab, y = y_lab, color = "Study Day") +
   theme_bw()
 
+multiplier = vegan:::ordiArrowMul(scrs_all$biplot)
+
+labels <- c("ADH[A]", "ADH[I]", "ADH[S]", "T[A]", "T[S]", "GWC", "pH", "EC", "DO", "CO[2]", "NH[4]", "NO[3]", "N*'%'", "C*'%'", "C:N")
+df_all_arrows <- as.data.frame(scrs_all$biplot*multiplier) %>% 
+  rownames_to_column(var = "variable") %>%
+  add_column(labels = labels) %>%
+  left_join(cca_aov_df, by = "variable") %>%
+  mutate(sig = if_else(`Pr(>F)` <= 0.05, "sig", "not_sig")) %>%
+  mutate(CCA1 = if_else(CCA1 >= 0, CCA1 + 0.1, CCA1 - 0.1),
+         CCA2 = if_else(CCA2 >= 0, CCA2 + 0.1, CCA2 - 0.1)) %>%
+  mutate(CCA2 = if_else(variable == "EC", CCA2 + 0.09, CCA2))
+
+text_labs <- as.data.frame(df_all_arrows)[, c("CCA1", "CCA2", "sig", "labels")]
+text_labs  
+
+p2 +
+  geom_segment(data = df_all_arrows, aes(x = 0, y= 0, xend = CCA1, yend = CCA2), arrow = arrow(length = unit(0.2, "cm")), color = "black", alpha = 0.5) + 
+  geom_text(data = text_labs[text_labs$sig == "sig", ], aes(CCA1, CCA2, label = text_labs[text_labs$sig == "sig", "labels"]), color = "red", parse = TRUE) +
+  geom_text(data = text_labs[text_labs$sig == "not_sig", ], aes(CCA1, CCA2, label = text_labs[text_labs$sig == "not_sig", "labels"]), color = "black", parse = TRUE) + 
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())   
+```
+
+
+```{r}
+#| include: false
+p <- p + geom_text(data=as.data.frame(df_arrows*1.1), aes(CCA1, CCA2, label = rownames(df_arrows)), color="black")
+p
+```
+
+```{r}
+#| include: false
+
+#cca with all chosen environmental parameters
+y_meta <- CCA_meta %>% select(-Sample_name, -ADH_ambient, -ADH_internal, -ADH_soil)
+
+x_sub_adonis <- adonis(x_counts ~ ., data=y_meta)
+x_sub_adonis$aov.tab #significant variables:  ADH_internal, soil temmp,pH, EC; ADH_ambient, ambient temp, ADH_soil < 0.2
+cca_sub_aov <- as.data.frame(x_sub_adonis$aov.tab)
+
+write.csv(cca_sub_aov, here::here("data/cca_sub_permanova.csv"), row.names = TRUE)
+
+r_sub_cca <- cca(x_counts ~ ., data=y_meta)
+r_sub_cca
+saveRDS(r_sub_cca, here::here("data/cca_subset"))
+
+cca1 <- round(((r_sub_cca$CCA$eig[[1]] / sum(r_sub_cca$CCA$eig)) * 100), 1)
+cca2 <- round(((r_sub_cca$CCA$eig[[2]] / sum(r_sub_cca$CCA$eig)) * 100), 1)
+x_lab <- paste0("CCA1 (", cca1, "%)")
+y_lab <- paste0("CCA2 (", cca2, "%)")
+
+
+vif <- as.data.frame(vif.cca(r_sub_cca))
+
+scrs_all = scores(r_sub_cca, display =c("sp","wa","lc","bp","cn"))
+attributes(scrs_all) #check attributes
+
+#extract site data first: this dataset contains one row for each observation and coordinates for CCA1 and CCA2. 
+scrs_all$sites
+df_all_sites <- data.frame(scrs_all$sites)
+df_all_sites$Sample_name <- TMM_count_table$Sample_name
+df_all_sites <- df_all_sites %>% left_join(metadata, by = "Sample_name")
+
+#plot sites
+p2 <- ggplot(df_all_sites) + 
+  aes(CCA1, CCA2) +
+  geom_hline(yintercept= 0, color = "grey95") + 
+  geom_vline(xintercept = 0, color = "grey95") +
+  geom_point(size = 5, aes(color = Study_day, shape = Rep)) +
+  scale_shape_manual(values=c(15,16,17,18)) + 
+  scale_color_manual(values = cols2) + 
+  labs(x = x_lab, y = y_lab, color = "Study Day") +
+  theme_bw()
+
 #add biplot
-r_all_cca$biplot
-mul <- ggvegan:::arrowMul(r_all_cca$biplot,
-                          rbind(r_all_cca$sites,
-                                r_all_cca$species))
-mul <- ggvegan:::arrowMul(cca.res$biplot,
-                          rbind(cca.sites, cca.species))
-cca.benthos <- data.frame(cca.res$biplot * mul)
+r_sub_cca$biplot
+# mul <- ggvegan:::arrowMul(r_sub_cca$biplot,
+#                           rbind(r_sub_cca$sites,
+#                                 r_sub_cca$species))
+# mul <- ggvegan:::arrowMul(cca.res$biplot,
+#                           rbind(cca.sites, cca.species))
+# cca.benthos <- data.frame(cca.res$biplot * mul)
 
 multiplier = vegan:::ordiArrowMul(scrs_all$biplot)
 
-cca_aov_df <- cca_aov %>%
+cca_sub_aov_df <- cca_aov %>%
   rownames_to_column(var = "variable")
 
 labels <- c("T[A]", "T[S]", "GWC", "pH", "EC", "DO", "CO[2]", "NH[4]", "NO[3]", "N*'%'", "C*'%'", "C:N")
 df_all_arrows <- as.data.frame(scrs_all$biplot*multiplier) %>% 
   rownames_to_column(var = "variable") %>%
   add_column(labels = labels) %>%
-  left_join(cca_aov_df, by = "variable") %>%
+  left_join(cca_aov_df, by = "variable") %>% # show full permanova results
   mutate(sig = if_else(`Pr(>F)` <= 0.05, "sig", "not_sig")) %>%
   mutate(CCA1 = if_else(CCA1 >= 0, CCA1 + 0.1, CCA1 - 0.1),
          CCA2 = if_else(CCA2 >= 0, CCA2 + 0.1, CCA2 - 0.1)) %>%

@@ -149,7 +149,13 @@ Multidimensional scaling (MDS) shows gene expression within soils changed as dec
 ```
 ![](../../figures/Fig1.png)
 
-Some correlations were observed between gene expression shifts and soil physiochemical data at decomposition timepoints. Canonical correspondence analysis (CCA) was used to constrain gene expression data with soil physiochemical data (`Fig~\ref{fig-mds}`{=latex}B). CCA1 and CCA2 explained `r cca1`\% and `r cca2`\% of the variance in gene expression, respectively. Transcript profiles at day 12 were associated with an increase in soil carbon to nitrogen ratio (C:N). Gene expression profiles at days 58 to 86 were positively correlated with increased soil temperature, EC, and evolved CO~2~, while study day 168 was associated with elevated levels of soil NO~3~. Further, Permutational Analysis of Variance (PERMANOVA) revealed that internal accumulated degree hours (ADH), soil temperature, pH, and EC significantly explained some of the variation in gene expression profiles (p < 0.05). No other soil chemical variables were significant at \textalpha\ = 0.05 (@sup-tbl-cca-panova).
+```{r}
+#| include: false
+
+cca_permanova <- read_csv(here("data/allvar_cca_permanova.csv"), col_names = c("var", "Df", "SumsofSqs", "MeanSqs", "F.Model", "R2", "pval"), skip =1)
+```
+
+Some correlations were observed between gene expression shifts and soil physiochemical data at decomposition timepoints. Canonical correspondence analysis (CCA) was used to constrain gene expression data with soil physiochemical data (`Fig~\ref{fig-mds}`{=latex}B). CCA1 and CCA2 explained `r cca1`\% and `r cca2`\% of the variance in gene expression, respectively. Transcript profiles at day 12 were associated with an increase in soil carbon to nitrogen ratio (C:N). Gene expression profiles at days 58 to 86 were positively correlated with increased soil temperature, EC, and evolved CO~2~, while study day 168 was associated with elevated levels of soil NO~3~. Further, Permutational Analysis of Variance (PERMANOVA) revealed that internal accumulated degree hours (ADH) (p = `r round(cca_permanova[[which(cca_permanova$var == "ADH_internal"), "pval"]], 3)`), soil temperature (p = `r round(cca_permanova[[which(cca_permanova$var == "temp_soil"), "pval"]], 3)`), pH (p = `r round(cca_permanova[[which(cca_permanova$var == "pH"), "pval"]], 3)`), and EC (p = `r round(cca_permanova[[which(cca_permanova$var == "EC"), "pval"]], 3)`) significantly explained some of the variation in gene expression profiles (p < 0.05). No other soil chemical variables were significant at \textalpha\ = 0.05 (@sup-tbl-cca-panova).
 
 ```{r}
 #| include: false
