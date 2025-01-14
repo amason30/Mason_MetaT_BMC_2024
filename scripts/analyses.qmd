@@ -2018,7 +2018,9 @@ ggplot(aminopep_TPM_avg_day_rep) +
 #limma includes voom, which will transform read counts into logCPMs while also accounting for mean-variance in the data
 y_norm <- readRDS(here("data/NIJ_DGEList_TMM.rds"))
 y.con.log <- readRDS(here("data/NIJ_filter_log2.rds"))
-trt = paste(metadata$Trt) #make an object for the variable trt
+
+metadata_wide <- metadata %>% pivot_wider(names_from = parameter, values_from = value)
+trt = paste(metadata_wide %>% pull(Trt)) #make an object for the variable trt
 trt = factor(trt) #make sure trt is a factor
 
 #specify a design matrix without an intercept term (variable options: trt, study day, study con)
@@ -2063,7 +2065,7 @@ trt_sum = summary(summa.fit) #in theory up should be upreg in control and down s
 trt_nlog2 <-  as.data.frame(v$E) %>%
   rownames_to_column(var = "query") %>%
   pivot_longer(-query, names_to = "Sample_name", values_to = "nlog2") %>%
-  left_join(metadata, by = "Sample_name") 
+  left_join(metadata_wide, by = "Sample_name") 
 ```
 
 Number of genes whose expression was higher in the control samples (Up), lower in control samples (Down), or not significantly different.
@@ -2319,37 +2321,94 @@ select(query, trt_coeff, trt_p, tax, COG_category, Description, Preferred_name, 
 
 ```{r}
 #| echo: false
-hs = c("k123_4681706_1","k123_2129273_1","k123_2784358_1","k123_2453574_1","k123_2580989_1","k123_784972_1","k123_1897324_1","k123_1119824_1","k123_3023451_1","k123_1018246_1","k123_4142344_1")
 
+
+# hs = c("k123_4681706_1","k123_2129273_1","k123_2784358_1","k123_2453574_1","k123_2580989_1","k123_784972_1","k123_1897324_1","k123_1119824_1","k123_3023451_1","k123_1018246_1","k123_4142344_1")
+# all COG O in top 20 are heat shock/stress proteins 
+hs <- trt_sig_down.20 %>%
+  filter(COG_category == "O") %>%
+  pull(query)
 
 #average fold change of hsp
 hs_fc = trt_DE_summary %>% 
-  filter(query %in% hs) %>% 
+  filter(query %in% hs) 
+
+top_hsp <- hs_fc %>% 
+  distinct(Preferred_name) %>% 
+  pull(Preferred_name)
+  
+hs_fc %>% 
   summarise(avg_fc = mean(trt_coeff))
 
 # white banners
-
+library(plotrix)
 trt_nlog2 %>% 
+  left_join(gene_an, by = ("query")) %>%
   filter(query %in% hs) %>%
+  summarize(mean = mean(nlog2),
+            se = std.error(nlog2),
+            .by = c("Preferred_name", "Study_day", "Rep")) %>%
   ggplot() +
-  aes(x = Study_day, y = nlog2, group = Rep, color = Rep) + 
-  geom_point(size =1 ) +
+  aes(x = Study_day, y = mean, group = Rep, color = Rep) + 
+  geom_point(size = 1) +
   geom_line() +
+  geom_errorbar(aes(ymin = mean - se, ymax = mean + se), width = 0.1) +
   scale_color_manual(values = nice.col) + 
-  facet_wrap( ~ query) + 
+  facet_wrap( ~ Preferred_name) + 
   labs(title = "Expression of Top Downregulated Heat Shock Genes")+ 
   xlab("Study Day") + 
   ylab("Normalized log2 Expression") + 
   theme_bw() +
   theme(legend.position = "inside",
-        legend.position.inside = c(0.9, 0.15),
+        legend.position.inside = c(0.95, 0.05),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         strip.background = element_rect(fill = "white"))
+
+  # ggplot() +
+  # aes(x = Study_day, y = nlog2, group = Rep, color = Rep) + 
+  # geom_point(size =1 ) +
+  # geom_line() +
+  # scale_color_manual(values = nice.col) + 
+  # facet_wrap( ~ query) + 
+  # labs(title = "Expression of Top Downregulated Heat Shock Genes")+ 
+  # xlab("Study Day") + 
+  # ylab("Normalized log2 Expression") + 
+  # theme_bw() +
+  # theme(legend.position = "inside",
+  #       legend.position.inside = c(0.9, 0.15),
+  #       panel.grid.major = element_blank(),
+  #       panel.grid.minor = element_blank(),
+  #       strip.background = element_rect(fill = "white"))
 ```
 
 ```{r}
 #| include: false
+
+png(here::here("figures/Trt_DE_top15_mean_heatshockTPM.png"), units = "mm", width = 170, height = 225, res = 300)
+trt_nlog2 %>% 
+  filter(query %in% hs) %>%
+  left_join(gene_an, by = ("query")) %>%
+  summarize(mean = mean(nlog2),
+            se = std.error(nlog2),
+            .by = c("Preferred_name", "Study_day", "Rep")) %>%
+  ggplot() +
+  aes(x = Study_day, y = mean, group = Rep, color = Rep) + 
+  geom_point(size = 1) +
+  geom_line() +
+  geom_errorbar(aes(ymin = mean - se, ymax = mean + se), width = 0.1) +
+  scale_color_manual(values = nice.col) + 
+  facet_wrap( ~ Preferred_name) + 
+  xlab("Study Day") + 
+  ylab("Normalized log2 Expression") + 
+  theme_bw() +
+  # guides(color = guide_legend(ncol = 2)) +
+  theme(legend.position = "inside",
+        legend.position.inside = c(0.85, 0.2),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        strip.background = element_rect(fill = "white"))
+dev.off()
 
 png(here::here("figures/Trt_DE_top15_heatshockTPM.png"), units = "mm", width = 170, height = 225, res = 300)
 trt_nlog2 %>% 
