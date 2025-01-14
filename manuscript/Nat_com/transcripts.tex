@@ -172,7 +172,7 @@
 \urlstyle{same} % disable monospaced font for URLs
 \hypersetup{
   pdftitle={Soil Microbial Functional Succession Over One Year of Human Decomposition},
-  pdfauthor={Allison R. Mason; Lois S. Taylor; Naomi Gilbert; Steven W. Wilhelm; Jennifer M. DeBruyn},
+  pdfauthor={Allison R. Mason; Lois S. Taylor; Naomi E. Gilbert; Steven W. Wilhelm; Jennifer M. DeBruyn},
   pdfkeywords={Human Decomposition, Microbial
 Succession, Metatranscriptomics, Soil Microbial Ecology},
   colorlinks=true,
@@ -188,7 +188,7 @@ Decomposition]{Soil Microbial Functional Succession Over One Year of
 Human Decomposition}
 
 % author setup
-\author[1]{\fnm{Allison R.} \sur{Mason}}\author[2]{\fnm{Lois S.} \sur{Taylor}}\author[1]{\fnm{Naomi} \sur{Gilbert}}\author[1]{\fnm{Steven W.} \sur{Wilhelm}}\author*[1,2]{\fnm{Jennifer M.} \sur{DeBruyn}}\email{jdebruyn@utk.edu}
+\author[1]{\fnm{Allison R.} \sur{Mason}}\author[2]{\fnm{Lois S.} \sur{Taylor}}\author[1]{\fnm{Naomi E.} \sur{Gilbert}}\author[1]{\fnm{Steven W.} \sur{Wilhelm}}\author*[1,2]{\fnm{Jennifer M.} \sur{DeBruyn}}\email{jdebruyn@utk.edu}
 % affil setup
 \affil[1]{\orgdiv{Department of Microbiology}, \orgname{University of
 Tennessee-Knoxville}, \orgaddress{\street{1311 Cumberland
@@ -200,28 +200,29 @@ Drive}, \city{Knoxville}, \postcode{37996}}}
 
 % abstract 
 
-\abstract{During terrestrial vertebrate decomposition, a mix of host and
-environmental microbial communities drive biogeochemical cycling of
-carbon and nutrients. These mixed communities undergo dramatic
-restructuring in the decomposition hotspots. To reveal the succession of
-active microbial members and the metabolic pathways they use, we
-generated metatranscriptomes from soil samples collected over one year
-from below three decomposing human bodies. Microbes in decomposition
-soils increased expression of heat shock proteins in response to
-decomposition products changing physiochemical conditions (\emph{i.e.},
-reduced oxygen, high salt). Fungal lipase expression increased
-implicating fungi as key decomposers of fat tissue. Expression of
-nitrogen cycling genes was phased based on soil oxygen concentrations:
-during hypoxic soil conditions, genes catalyzing N reducing processes
-(\emph{e.g.}, hydroxylamine to nitric oxide, nitrous oxide to nitrogen
-gas during reduce oxygen conditions) were increased, followed by
-increased expression of nitrification genes once oxygen diffused back
+\abstract{During terrestrial vertebrate decomposition, host and
+environmental microbial communities work together to drive
+biogeochemical cycling of carbon and nutrients. These mixed communities
+undergo dramatic restructuring in the resulting decomposition hotspots.
+To reveal the succession of both the active microbial members and the
+metabolic pathways they use, we generated metatranscriptomes from soil
+samples collected over one year from below three decomposing human
+bodies. Soil microbes increased expression of ``heat shock'' proteins in
+response to decomposition products changing physiochemical conditions
+(\emph{i.e.}, reduced oxygen, high salt). Increased fungal lipase
+expression implicated fungi as key decomposers of fat tissue. Expression
+of nitrogen cycling genes was phased with soil oxygen concentrations:
+during hypoxic soil conditions, genes catalyzing N-reducing processes
+(\emph{e.g.}, hydroxylamine to nitric oxide and nitrous oxide to
+nitrogen gas during reduced oxygen conditions) were increased, followed
+by increased expression of nitrification genes once oxygen diffused back
 into the soil. Increased expression of bile salt hydrolases implicated a
 microbial source for the high concentrations of taurine typically
-observed during vertebrate decomposition. Overall, gene expression
-profiles remained altered after one year. Together, we show how human
-decomposition alters soil microbial gene expression, revealing both
-ephemeral and lasting effects on soil microbial communities.}
+observed during vertebrate decomposition. Collectively, microbial gene
+expression profiles remained altered even after one year. Together, we
+show how human decomposition alters soil microbial gene expression,
+revealing both ephemeral and lasting effects on soil microbial
+communities.}
 
 % keywords
 \keywords{Human Decomposition,  Microbial
@@ -234,13 +235,12 @@ Succession,  Metatranscriptomics,  Soil Microbial Ecology}
 \section{Introduction}\label{introduction}
 
 Soil microbial communities are important drivers of ecosystem processes
-in terrestrial environments. Many soil microbes are decomposers that are
-involved in the degradation of complex organic matter and drive nutrient
-cycling in terrestrial ecosystems. Environmental disturbances can impact
-the presence and/or activity of soil microorganisms that are involved in
-these cycles, ultimately affecting nutrient availability and the release
-of greenhouse gas emissions, such as CO\textsubscript{2} and
-N\textsubscript{2}O
+in terrestrial environments. Many soil microbes are decomposers that
+degrade complex organic matter and drive nutrient cycling in terrestrial
+ecosystems. Environmental disturbances can impact the presence and/or
+activity of soil microorganisms involved in these cycles, ultimately
+affecting nutrient availability and greenhouse gas emissions, such as
+CO\textsubscript{2} and N\textsubscript{2}O
 \citep{benninger_biochemical_2008, towne_prairie_2000}. Vertebrate death
 and subsequent carcass deposition in terrestrial ecosystems is one
 disturbance resulting in the deposition of large quantities of organic C
@@ -261,93 +261,92 @@ decomposition processes (\emph{e.g.}, organic nitrogen mineralization)
 While C and N transformations have been documented during decomposition,
 the functional response of microbes and their roles in nutrient cycles
 remain unclear. The composition and structure of decomposition-impacted
-soil microbial communities have been investigated using amplicon
-sequencing of marker genes (\emph{i.e.}, 16S rRNA, 18S rRNA, ITS). This
-has allowed us to investigate changes in microbial biodiversity and
+soil microbial communities have been investigated using sequencing of
+marker genes amplicons (\emph{i.e.}, 16S rRNA, 18S rRNA, ITS). This has
+allowed for the identification of changes in microbial biodiversity and
 taxonomic succession in response to vertebrate decomposition, revealing
-patterns such as increases in the anaerobic taxa \emph{Firmicutes} and
-\emph{Bacteroidetes} \citep{mason_microbial_2023}. However, few studies
-have integrated soil biogeochemistry with microbial community
+patterns that include increases in the anaerobic taxa \emph{Firmicutes}
+and \emph{Bacteroidetes} \citep{mason_microbial_2023}. However, few
+studies have integrated soil biogeochemistry with microbial community
 composition, which can further help to describe microbial ecology in
-human and animal decomposition systems. Taylor et al.~(2024)
+these decomposition systems. Taylor et al.~(2024)
 \citep{taylor_transient_2024} showed that fungal community shifts were
 linked to changes in soil dissolved oxygen, highlighting interactions
 between soil microbes and changes in the surrounding environment. While
 insightful for making potential connections between taxa and
-environment, these analyses cannot inform which taxa are active members
-of the community responsible for chemical transformations, which
-functional pathways/genes are expressed, and how these pathways are
-altered in response to decomposition.
+environment, these analyses do not inform which taxa are active members
+of the community, which functional pathways/genes are expressed, and how
+these pathways facilitate decomposition processes.
 
-Methods such as RNA sequencing (\emph{i.e.}, metatranscriptomics) and
-metabolomics can be used to investigate microbial community functional
-succession in response to decomposition by measuring gene expression and
-metabolites, respectively. This can inform how ecological functions,
-including C and N cycling, are impacted by decomposition events in
-terrestrial ecosystems. To date, applications of metatranscriptomics to
-vertebrate decomposition samples have been limited to internal host
-communities \citep{burcham_total_2019, ashe_characterization_2021}:
-Burcham et al.~(2019) \citep{burcham_total_2019} revealed differential
-expression of amino acid and carbohydrate metabolism in the heart during
-mouse decomposition, while Ashe et al.~(2021)
+RNA sequencing (\emph{i.e.}, metatranscriptomics) and metabolomics can
+be used to investigate microbial community functional succession during
+decomposition. They can identigy how ecological functions, including C
+and N cycling, are impacted by decomposition events in terrestrial
+ecosystems. To date, applications of metatranscriptomics to vertebrate
+decomposition samples have been limited to internal host communities
+\citep{burcham_total_2019, ashe_characterization_2021}: Burcham et
+al.~(2019) \citep{burcham_total_2019} revealed differential expression
+of amino acid and carbohydrate metabolism in the heart during mouse
+decomposition, while Ashe et al.~(2021)
 \citep{ashe_characterization_2021} documented taxonomic shifts in gene
 expression of oral microbial communities during human decomposition.
 
 We expected that the impacted soil microbial community, which includes a
 mix of host and environmental taxa, would also have altered gene
-expression profiles. The decomposition-impacted soil metabolome was
-assessed by DeBruyn et al.~(2021) \citep{debruyn_comparative_2021},
-showing a prevalence of amino acids, suggesting upregulation of organic
-nitrogen metabolic pathways. Additionally, DeBruyn et al.~(2021)
-\citep{debruyn_comparative_2021} showed the soil metabolome was still
-altered compared to starting conditions at the end of the 21-week study,
-suggesting long-term impacts of decomposition on soil microbial
-functioning.
+expression profiles, given the release of decomposition byproducts into
+the soil during terrestrial decomposition. We previously assessed the
+decomposition-impacted soil metabolome \citep{debruyn_comparative_2021},
+demostrating a prevalence of amino acids and suggesting upregulation of
+organic nitrogen metabolic pathways. Additionally, DeBruyn et al.~(2021)
+\citep{debruyn_comparative_2021} showed the soil metabolome was
+surprisingly still altered compared to starting conditions at the end of
+that 21-week study, suggesting long-term impacts of decomposition on
+soil microbial functioning.
 
-Here, we investigate soil microbial gene expression during a one-year
+Here, we investigated soil microbial gene expression during a one-year
 period of human decomposition. The overarching goal of this work was to
-assess the impacts of vertebrate decomposition on ecosystem functioning
-by characterizing community-level shifts in soil microbial function. We
-hypothesize that: (i) gene expression would shift over time as resources
-are used and transformed and soil chemical and physical conditions
-change due to the influx of decomposition products during soft tissue
-degradation
+assess the effects of vertebrate decomposition on ecosystem function by
+characterizing community-level shifts in soil microbial function. We
+hypothesized that: (i) gene expression would shift over time as
+resources were consumed and transformed and soil chemical and physical
+conditions changed due to the influx of decomposition products during
+soft tissue degradation
 \citep{keenan_mortality_2018, fancher_evaluation_2017, debruyn_comparative_2021};
-(ii) expression of genes encoding enzymes involved in nitrogen cycling
-would be altered, as changes in nitrogen pools have been previously
-described in decomposition soils \citep{keenan_mortality_2018}; (iii)
-expression of genes involved in lipid metabolism would increase, as we
-expect lipids from the body to enter the soil during decomposition and
-previous studies identified lipolytic organisms in decomposition soils
-\citep{howard_characterization_2010, mason_body_2022}; (iv) soil
-expression profiles would not return to pre-decomposition conditions
-after a year, as previous studies have shown that microbial community
-composition \citep{cobaugh_functional_2015, singh_temporal_2018} can
-remain altered longer than one year. We analyzed metatranscriptomes of
-soil samples collected at six key timepoints over one year of human
-decomposition to determine the active populations and expression of
-genes and pathways relevant to the enhanced biogeochemical cycling
-observed in decomposition hotspots. We compared gene expression between
+(ii) gene expression for enzymes involved in nitrogen cycling would be
+altered, as changes in nitrogen pools have been previously described in
+decomposition soils \citep{keenan_mortality_2018}; (iii) expression of
+genes involved in lipid metabolism would increase, as lipids from the
+body entered the soil during decomposition and previous studies
+identified lipolytic organisms in decomposition soils
+\citep{howard_characterization_2010, mason_body_2022}; (iv) microbial
+expression profiles in the impacted soil would remain altered even after
+a year, as previous studies have shown that community composition
+\citep{cobaugh_functional_2015, singh_temporal_2018} can remain altered
+longer than a year. We analyzed metatranscriptomes of soil samples
+collected at six key timepoints over one year of human decomposition to
+determine the identity of active populations and the expression of genes
+and pathways relevant to the enhanced biogeochemical cycling observed in
+decomposition hotspots. We compared gene expression between
 decomposition timepoints and control soils that were unexposed to
 decomposition products to identify functions or functional pathways of
 interest. We show: (i) decomposition shifts soil microbial community
-gene expression, with measurable impacts remainig after one year; (ii)
+gene expression, with the effects still measurable after one year; (ii)
 expression of genes related to stress response are elevated in
 decomposition soils; (iii) expression of genes encoding triacylglycerol
 lipase differed between fungi (increased) and bacteria (decreased); (iv)
 evidence for phased nitrification and denitrification, driven by changes
 in soil dissolved oxygen; (v) evidence for organic sulfur processing
-(taurine) via bile salt hydrolases. This assessment of functional
-profiles within decomposition-impacted soils provides insight into the
-microbial response(s) to vertebrate decomposition in terrestrial
-settings and biogeochemical cycling within these hotspots.
+(taurine) via bile salt hydrolases. This direct assessment of function
+expands the fudamental understanding of terrestrial vertebrate
+decomposition, providing insight into pathways of biogeochemical cycling
+within these hotsopts.
 
 \section{Results}\label{results}
 
 \subsection{Soil Physiochemistry}\label{soil-physiochemistry}
 
-Soil chemistry was altered in response to human decomposition, with
-multiple parameters still impacted after one year
+Soil chemistry was altered in response to the presence of a decomposing
+human cadaver, with multiple parameters still impacted after one year
 \citep{taylor_transient_2024}. Generally, soil pH decreased and remained
 low in decomposition soils of all but one individual. Soil electrical
 conductivity (EC) increased in response to decomposition, remaining
@@ -369,11 +368,10 @@ Gene expression profiles in decomposition-impacted soils shifted away
 from controls and day zero samples as decomposition progressed
 (Fig~\ref{fig-mds}A). Expression was most different from controls on
 study days 58, 86, 168 (Supplementary Material~\ref{sup-heatmap-plot}),
-before shifting back toward control conditions on study day 376. After
-one year of decomposition, soil gene expression profiles had not
-returned to pre-decomposition conditions, as evidenced by their
-clustering away from controls and day zero samples in the MDS plot
-(Fig~\ref{fig-mds}A).
+before returning toward control conditions on study day 376. After one
+year of decomposition, soil gene expression profiles had not returned to
+pre-decomposition conditions, as evidenced by their clustering away from
+controls and day zero samples in the MDS plot (Fig~\ref{fig-mds}A).
 
 % Place figure captions after the first paragraph in which they are cited.
 \begin{figure}[!h]
@@ -419,13 +417,13 @@ decomposition soils (80\% of the top 20 genes) was post-translational
 modification, protein turnover, and chaperones. Within this category,
 several heat shock stress response genes were identified, including
 SSA2, HSP82, and clpB (Supplementary Material~\ref{sup-t30-trt-tbl}).
-Further investigation into these genes shows that their expression
-increased in response to decomposition, typically reaching maximum
-transcript levels around study days 58 and 86 (Fig~\ref{fig-heatshock}).
-This corresponded to elevated soil temperatures below decomposing bodies
-between study days 12-80, with soil temperatures increasing to
-approximately 43°C \citep{taylor_transient_2024}, and maximum soil EC
-and minimum dissolved oxygen measurements between days 12 and 58
+Further investigation of these genes over time shows that their
+expression increased, typically reaching maximum transcript levels
+around study days 58 and 86 (Fig~\ref{fig-heatshock}). This corresponded
+to elevated soil temperatures below decomposing bodies between study
+days 12-80, with soil temperatures increasing to approximately 43°C
+\citep{taylor_transient_2024}, as well as maximum soil EC and minimum
+dissolved oxygen measurements between days 12 and 58
 (Supplementary Material~\ref{sup-chem-plot}).
 
 % Place figure captions after the first paragraph in which they are cited.
@@ -437,11 +435,11 @@ Each panel represents a single heat shock transcript, labeled with query ID. Sym
 
 \pandocbounded{\includegraphics[keepaspectratio]{../../figures/Trt_DE_top15_heatshockTPM.png}}
 
-Taxonomy associated with topmost differentially expressed gene
-transcripts also differed between control and decomposition soils. The
-top 40 significantly differentially expressed gene transcripts in
-decomposition soils were associated with Fungi, \emph{Actinobacteria},
-and \emph{Xanthomonadales}, while gene transcripts in controls were
+Taxonomy associated with top differentially expressed gene transcripts
+also differed between control and decomposition soils. The top 40
+significantly differentially expressed gene transcripts in decomposition
+soils were associated with Fungi, \emph{Actinobacteria}, and
+\emph{Xanthomonadales}, while gene transcripts in controls were
 associated with \emph{Acidobacteria}, \emph{Cyanobacteria},
 \emph{Proteobacteria} (\textalpha, \textdelta, \textgamma), and
 \emph{Planctomycetes} (Supplementary Material~\ref{sup-t30-trt-plot} B).
@@ -449,14 +447,14 @@ The greatest number of differentially expressed genes relative to
 control samples was observed at day 86, where we saw 145,460 and 124,883
 up- and down-regulated genes, respectively.
 
-\subsection{Temporal gene expression show shifts in decomposer
-functions}\label{temporal-gene-expression-show-shifts-in-decomposer-functions}
+\subsection{Temporal gene expression shows shifted in decomposer
+functions}\label{temporal-gene-expression-shows-shifted-in-decomposer-functions}
 
-Differential expression analysis between respective sequential study
-days further revealed which genes were altered between decomposition
-timepoints. The top ten significantly up- and down-regulated genes,
-determined by the lowest p-values from differential expression analysis
-(\textalpha~\textless{} 0.05), are reported in
+Differential expression analysis between sequential study days revealed
+which genes were altered during decomposition time. The top ten
+significantly up- and down-regulated genes, determined by the lowest
+p-values from differential expression analysis (cutoff =
+\textalpha~\textless{} 0.05), are reported in
 Supplementary Material~\ref{sup-t20-day-tbl} and
 Fig~\ref{fig-top-day-bar}.
 
@@ -471,15 +469,15 @@ Positive values denote increased expression compared to the preceding timepoint,
 
 Expression of genes annotated with the COG categories cell
 wall/membrane/envelope biogenesis, inorganic ion transport and
-metabolism, and carbohydrate transport and metabolism increased from day
-0 to 12. In contrast, expression of secondary metabolite biosynthesis,
-transport, and catabolism genes decreased during this period
-(Fig~\ref{fig-top-day-bar}A). Transcripts from \emph{Bacilli} and
-\emph{Clostridia} increased, while transcripts from
+metabolism, and carbohydrate transport and metabolism increased
+proporitionally from day 0 to 12. In contrast, expression of secondary
+metabolite biosynthesis, transport, and catabolism genes decreased
+during this period (Fig~\ref{fig-top-day-bar}A). Transcripts from
+\emph{Bacilli} and \emph{Clostridia} increased, while transcripts from
 \emph{Actinobacteria} decreased between study days zero and 12
 (Fig~\ref{fig-top-day-bar}).
 
-Between days 12 and 58, 90\% of the topmost upregulated genes were
+Between days 12 and 58, 90\% of the top 10 upregulated genes were
 associated with the translation, ribosomal structure and biogenesis COG
 and all were taxonomically associated with \emph{Betaproteobacteria}
 (Fig~\ref{fig-top-day-bar}A,B). Many of these genes were annotated as
@@ -518,8 +516,7 @@ metabolism genes associated with \emph{Bacilli} decreased between day
 decomposition-impacted soils between study day 168 and 376, but were not
 associated with any single COG category (Fig~\ref{fig-top-day-bar}B).
 
-\subsection{Carbon compound
-metabolism}\label{carbon-compound-metabolism}
+\subsection{Organic carbon metabolism}\label{organic-carbon-metabolism}
 
 We expected to observe increased expression of lipid metabolizing genes
 during active and advanced decomposition as microbes degraded lipids
@@ -548,27 +545,28 @@ Black lines (A, B) report mean and standard deviation of TPM from three individu
 transformations}\label{nitrogen--and-sulfur-compound-transformations}
 
 Expression of nitrogen cycling genes was impacted in response to human
-decomposition. Due to the detection of \emph{hao} in our differential
-expression analysis, and our hypotheses predicting changes to nitrogen
-transformation processes, the expression of genes encoding common
-enzymes involved in nitrogen cycling (\emph{nifH}, \emph{nirB},
-\emph{nirK}, \emph{norB}, \emph{nosZ}, \emph{nrfA}, \emph{nxrA}, and
-\emph{amoA}) were assessed using their enzyme commission numbers
-(Fig~\ref{fig-n-genes}A,B). \emph{nifH}, encoding a subunit of
-nitrogenase which is involved in nitrogen fixation, displayed little to
-no changes in gene expression between control and decomposition soils.
-Transcripts for two genes encoding enzymes contributing to the last two
-steps of denitrification, \emph{norB} (encodes nitric oxide reductase)
-and \emph{nosZ} (encodes nitrous oxide reductase), increased between
-study days 12 and 86, and decreased at study day 168 before increasing
-again at day 376. In contrast, expression of genes encoding nitrate
-reductase, \emph{narG}, and NO-forming nitrite reductase, \emph{nirK},
-remained low until day 376 when transcripts for both genes increased. As
-noted above, expression of \emph{hao}, encoding hydroxylamine
-dehydrogenase, increased at study day 86 before decreasing at remaining
-timepoints (Fig~\ref{fig-top-day-bar}A, Fig~\ref{fig-n-genes}B).
-Expression of \emph{amoA}, encoding a subunit of ammonia monooxygenase,
-and \emph{nxrA}, encoding a subunit of nitrite oxidoreductase, which are
+decomposition. Due to the detection of hydroxylamine oxidoreductase
+(\emph{hao}) transcripts in our differential expression analysis, and
+our hypotheses predicting changes to nitrogen transformation processes,
+the expression of genes encoding common enzymes involved in nitrogen
+cycling (\emph{nifH}, \emph{nirB}, \emph{nirK}, \emph{norB},
+\emph{nosZ}, \emph{nrfA}, \emph{nxrA}, and \emph{amoA}) were assessed
+using their enzyme commission numbers (Fig~\ref{fig-n-genes}A,B).
+\emph{nifH}, encoding a subunit of nitrogenase which is involved in
+nitrogen fixation, displayed little to no changes in gene expression
+between control and decomposition soils. Transcripts for two genes
+encoding enzymes contributing to the last two steps of denitrification,
+\emph{norB} (nitric oxide reductase) and \emph{nosZ} (nitrous oxide
+reductase), increased between study days 12 and 86, and decreased at
+study day 168 before increasing again at day 376. In contrast,
+expression of genes encoding nitrate reductase, \emph{narG}, and
+NO-forming nitrite reductase, \emph{nirK}, remained low until day 376
+when transcripts for both genes increased. As noted above, expression of
+\emph{hao}, encoding hydroxylamine dehydrogenase, increased at study day
+86 before decreasing at remaining timepoints
+(Fig~\ref{fig-top-day-bar}A, Fig~\ref{fig-n-genes}B). Expression of
+\emph{amoA}, encoding a subunit of ammonia monooxygenase, and
+\emph{nxrA}, encoding a subunit of nitrite oxidoreductase, which are
 involved in nitrification, changed in response to decomposition.
 \emph{amoA} transcripts initially decreased at day 12, remaining reduced
 until study day 376. Similarly, abundance of genes that encode for
@@ -604,7 +602,7 @@ over time, expression of fungal-associated and a few
 the human body include taurine absorbed from the diet and taurine
 produced from anaerobic microbial deconjugation of bile salts via bile
 salt hydrolase (BSH) enzymes \citep{urdaneta_interactions_2017}.
-Therefore, we also looked at expression of genes encoding BSH enzymes in
+Therefore, we examined expression for genes encoding BSH enzymes in
 decomposition soils. Expression of these genes was elevated at days 12,
 58, and 86 before converging toward pre-decomposition levels at days 168
 and 376 (Fig~\ref{fig-taud-bsh}A). Hierarchical liner mixed effects
@@ -623,22 +621,21 @@ Boxplots display the 25th and 75th quartiles and median log2 normalized values b
 
 \section{Discussion}\label{discussion}
 
-The goal of this study was to assess soil microbial gene expression in
-response to human decomposition. Metatranscriptomics were applied to
+The goal of this study was to assess microbial gene expression in soils
+responding to human decomposition. Metatranscriptomics were applied to
 soil samples collected over one year from below three decomposing human
-bodies. From this, we found that microbial gene expression shifted over
-time, with samples reproducible between individuals. Additionally, we
-showed that gene expression profiles had not recovered to
-pre-decomposition conditions after one year. Comparison of control and
-decomposition expression profiles revealed that heat-shock proteins were
-elevated in response to decomposition. We also described expression
-patterns between decomposition timepoints, noting changes in functional
-gene categories at certain timepoints, in particular with respect to
-lipid, nitrogen and sulfur metabolism.
+bodies. From this, we found that microbial gene expression reproducibly
+shifted over time. Additionally, we showed that gene expression profiles
+had not recovered to pre-decomposition conditions after one year.
+Comparison of control and decomposition expression profiles revealed
+that heat-shock proteins were elevated in response to decomposition. We
+also described expression patterns between decomposition timepoints,
+noting changes in functional gene categories at certain timepoints, in
+particular with respect to lipid, nitrogen and sulfur metabolism.
 
-\subsection{Decomposition impacted soil community gene expression, even
-after a
-year}\label{decomposition-impacted-soil-community-gene-expression-even-after-a-year}
+\subsection{Decomposition impacted soil community gene expression, for
+at least one
+year}\label{decomposition-impacted-soil-community-gene-expression-for-at-least-one-year}
 
 Gene expression profiles remained altered after one year of
 decomposition. It is unclear if soil microbial communities, in terms of
@@ -646,38 +643,39 @@ gene expression profiles, have reached a new steady state as a result of
 decomposition, or if they would eventually return to pre-decomposition
 conditions. The soil pH, EC, NH\textsubscript{4}\textsuperscript{+},
 NO\textsubscript{3}\textsuperscript{-}, and total nitrogen (TN)
-exhibited differences (although not statistical) in these soils
-following a year of decomposition, however bacterial and fungal
+exhibited differences (although not statistically significant) in these
+soils following a year of decomposition, however bacterial and fungal
 community structures, as assessed by rRNA amplicon libraries, were still
 altered \citep{taylor_transient_2024}. This indicates that decomposition
 can continue to structure microbial communities and impact their
 function for extended periods of time. While nutrient pools and
 communities both demonstrate less rapid change at later time points in
-the study, there is not evidence suggesting an arrival at a steady-state
-post-disturbance microbial community. In some studies, human
-decomposition can result in elevated carbon and nutrients (organic
+the study, there is no evidence suggesting an arrival at a steady-state
+post-disturbance microbial community within our study. In some studies,
+human decomposition can result in elevated carbon and nutrients (organic
 nitrogen, ammonium, nitrate, and phosphate) for longer than a year
 \citep{debruyn_carrion_2024}, suggesting decomposition events have
 long-lasting effects on the local ecosystem. Together, this has
 implications for terrestrial ecosystem processing (\emph{e.g.}, nutrient
 cycling, emission of greenhouse gasses, etc.), as we show that
 decomposition alters functional metabolism pathways within soil
-microbial communities. Further work with extended sample collections
-beyond one year are needed to address how long microbial communities and
-their functions are impacted.
+microbial communities. It is clear that extended sample collections
+beyond a single year are needed to address how long microbial
+communities are effected, and whether there is a return to the original
+state or some new altered community condition.
 
-Bacteria, fungi, and archaea were all represented in expressed genes
+Bacteria, fungi, and archaea were all represented by expressed genes
 throughout decomposition, suggesting that members of all three domains
 have the potential to contribute to decomposition processes and nutrient
 cycling. While a majority of annotated transcripts were identified as
-bacteria, fungal transcripts were the second most abundant group. Fungal
-transcripts made up almost half (seven of the top 15) of the
-significantly differentially expressed genes associated with
-decomposition-impacted soils. Additionally, with respect to expression
-shifts between decomposition timepoints, fungal transcripts were among
-the topmost upregulated genes at study day 86. The presence of fungal
-transcripts is not surprising as fungi are key decomposers, involved in
-the degradation of organic matter in terrestrial ecosystems
+bacterial, fungal transcripts were the second most abundant group.
+Fungal transcripts made up almost half (\emph{e.g.}, seven of the top
+fifteen) of the significantly differentially expressed genes associated
+with decomposition-impacted soils. Additionally, with respect to
+expression shifts between decomposition timepoints, fungal transcripts
+were among the topmost upregulated genes at study day 86. This is not
+surprising as fungi are key decomposers, involved in the degradation of
+organic matter in terrestrial ecosystems
 \citep{van_der_wal_thready_2013}. It was interesting to see an increase
 in certain fungal transcripts, such as lipase, at study days 58 and 86
 when soil oxygen began to recover. We would expect lipids to enter the
@@ -716,8 +714,8 @@ heat shock gene expression during salt stress in paddy soils
 stress genes in desert soils along a salt gradient
 \citep{pandit_snapshot_2015}, suggesting saline conditions can alter the
 expression of heat and/or osmotic stress genes. In our study we observed
-that stress response within soil microbial communities is stimulated
-during human decomposition, however, at this time, it is unclear if
+the stress response within soil microbial communities was stimulated
+during human decomposition. At this time, however, it is unclear if
 expression of these genes is in response to heat stress alone, or in
 combination with osmotic stress.
 
@@ -728,8 +726,8 @@ Human fat tissue contains lipids that are broken down during
 decomposition. Therefore, we assessed expression of triacylglycerol
 lipase genes in decomposition soils. Our results show that expression of
 triacylglycerol lipase genes was altered in response to decomposition,
-and these shifts differed between bacterial and fungal transcripts,
-specifically bacterial triacylglycerol lipase transcripts decreased in
+and these shifts differed between bacterial and fungal transcripts.
+Specifically, bacterial triacylglycerol lipase transcripts decreased in
 response to decomposition, while fungal triacylglycerol lipase
 transcripts increased. Further, expression of these genes corresponded
 to changes in relative abundance of the fungal classes
@@ -746,7 +744,7 @@ transcripts contrasts with previous work by Howard et al.~(2010)
 \citep{howard_characterization_2010}, who observed increased gene copy
 number of Group 1 lipase genes via qPCR during swine decomposition.
 Fatty acid composition differs in human compared to pig tissue
-\citep{notter_initial_2009}, potentially altering the lipid profile
+\citep{notter_initial_2009}, potentially altering the lipids profile
 available for microbes, leading to differences in decomposition products
 within the soil \citep{debruyn_comparative_2021}. These products can
 then directly or indirectly alter community composition and/or activity
@@ -769,64 +767,63 @@ to relative proportions of fat and muscle tissue.
 nitrification}\label{evidence-for-phased-denitrification-and-nitrification}
 
 The human body is a concentrated source of nitrogen that is released
-into the surrounding soil during decomposition, therefore we also
-evaluated expression of genes involved in nitrogen cycling. Expression
-of common marker genes for nitrogen cycling was altered in decomposition
-soil and suggested nitrogen transformations during human decomposition
-are driven by soil oxygen concentrations with hydroxylamine as an
-important intermediate. We observed low or reduced expression of the
-nitrification genes \emph{nxrA} and \emph{amoA} between days 12 and 86,
-during a period when oxygen was reduced to 39\% - 85\%. This was
-concomitant with an accumulation of ammonium, which reached a maximum on
-day 12, and low nitrate conditions indicating that nitrification was
-inhibited. This period of reduced soil oxygen constraining nitrification
-was also described in a decomposition experiment with beaver carcasses
-Keenan et al.~(2018) \citep{keenan_mortality_2018}.
+into the surrounding soil during decomposition. Expression of common
+marker genes for nitrogen cycling was altered in decomposition soil and
+suggested nitrogen transformations during human decomposition are driven
+by soil oxygen concentrations with hydroxylamine as an important
+intermediate. We observed low or reduced expression of the nitrification
+genes \emph{nxrA} and \emph{amoA} between days 12 and 86, during a
+period when oxygen was reduced to 39\% - 85\%. This was concomitant with
+an accumulation of ammonium, which reached a maximum on day 12, and low
+nitrate conditions indicating that nitrification was inhibited. This
+period of reduced soil oxygen constraining nitrification was also
+described in a decomposition experiment with beaver carcasses Keenan et
+al.~(2018) \citep{keenan_mortality_2018}.
 
-We observed increased expression of \emph{hao}, which encodes the enzyme
-hydroxylamine dehydrogenase (HAO) at day 86 while oxygen was reduced
+We observed increased gene expression for the enzyme hydroxylamine
+dehydrogenase (HAO) at day 86 while oxygen was reduced
 (\textasciitilde85\%). This corresponded to simultaneous increases in
 expression of genes encoding nitric oxide reductase (\emph{norB}) and
 nitrous oxide reductase (\emph{nosZ}). Traditionally HAO has been
 thought to process hydroxylamine to nitrite during nitrification, while
 NorB and NosZ are enzymes involved in the last two steps of
 denitrification converting nitric oxide (NO) to dinitrogen gas
-(N\textsubscript{2}). However, recent work has suggested hydroxylamine
-can be converted to nitric oxide (NO), as well as can interact with
-multiple phases of the nitrogen cycle
-\citep{soler-jofra_hydroxylamine_2021}. Even though \emph{amoA}
-expression was shown to decrease during reduced oxygen conditions,
-\emph{amoA} transcripts were still present and likely able to convert
-ammonium to hydroxylamine as soil oxygen was not completely depleted
-during decomposition. Additionally, a previous study reported that the
-growth of the ammonia oxidizing bacteria \emph{Nitrosomonas europaea}
-under anoxic conditions lead to accumulation of hydroxylamine in a
-chemostat bioreactor \citep{yu_nitrosomonas_2018}, suggesting anaerobic
-ammonium oxidation (anammox) may also be occurring in decomposition
-soils. However, we did not observe increases in \emph{nirK} expression,
-which might suggest conversion of nitrite to NO for use in the anammox
-pathway. NO produced via HAO activity may be used for anammox in these
-soils; however, the role of hydroxylamine as an intermediate in anammox
-is still debated \citep{soler-jofra_hydroxylamine_2021}. Therefore, our
-current hypothesis is that hydroxylamine accumulates under anaerobic
-conditions during decomposition, which can then be converted to NO by
-HAO. This NO would then be present for anaerobic denitrifying bacteria
-to convert to nitrous oxide (N\textsubscript{2}O) by NorB and finally to
+(N\textsubscript{2}). However, recent work suggested hydroxylamine can
+be converted to nitric oxide (NO), and can interact with multiple phases
+of the nitrogen cycle \citep{soler-jofra_hydroxylamine_2021}. Even
+though \emph{amoA} expression was shown to decrease during reduced
+oxygen conditions, \emph{amoA} transcripts were still present and likely
+able to convert ammonium to hydroxylamine as soil oxygen was not
+completely depleted during decomposition. Additionally, a previous study
+reported that the growth of the ammonia oxidizing bacteria
+\emph{Nitrosomonas europaea} under anoxic conditions lead to
+accumulation of hydroxylamine in a chemostat bioreactor
+\citep{yu_nitrosomonas_2018}, suggesting anaerobic ammonium oxidation
+(anammox) may also be occurring in decomposition soils. However, we did
+not observe increases in \emph{nirK} expression, which might suggest
+conversion of nitrite to NO for use in the anammox pathway. NO produced
+via HAO activity may be used for anammox in these soils; however, the
+role of hydroxylamine as an intermediate in anammox is still debated
+\citep{soler-jofra_hydroxylamine_2021}. Therefore, our current
+hypothesis is that hydroxylamine accumulates under anaerobic conditions
+during decomposition, which can then be converted to NO by HAO. This NO
+would then be present for anaerobic denitrifying bacteria to convert to
+nitrous oxide (N\textsubscript{2}O) by NorB and finally to
 N\textsubscript{2} by NosZ. Keenan et al.~(2018)
-\citep{keenan_mortality_2018} also noted a brief increase in
+\citep{keenan_mortality_2018} noted a brief increase in
 N\textsubscript{2}O emissions, which suggests denitrification was
 occurring during this phase of reduced soil oxygen concentrations.
 
 As soils fully reoxygenated by day 168, we observed increased expression
 of genes encoding enzymes involved in aerobic nitrification, \emph{amoA}
 and \emph{nxrR}. Nitrification is an oxygen-dependent process which
-would convert the accumulated ammonium to nitrate; the increase in
-nitrate concentrations may then serve as a substrate for
-denitrification. We observed increased expression of marker genes
-encoding all four enzymes in the complete dissimilatory denitrification
-pathway (\emph{narG}, \emph{nirK}, \emph{norB}, and \emph{nosZ}) at day
-376. Increased expression of nitrification and denitrification marker
-genes is consistent with the accumulation of nitrite, nitrate, and
+would convert accumulated ammonium to nitrate; the increase in nitrate
+concentrations may then serve as a substrate for denitrification. We
+observed increased expression of marker genes encoding all four enzymes
+in the complete dissimilatory denitrification pathway (\emph{narG},
+\emph{nirK}, \emph{norB}, and \emph{nosZ}) at day 376. Increased
+expression of nitrification and denitrification marker genes is
+consistent with the accumulation of nitrite, nitrate, and
 N\textsubscript{2}O after oxygen is reintroduced to soils described in
 Keenan et al.~(2018)
 \citep{keenan_mortality_2018, debruyn_carrion_2024}. Together, gene
@@ -838,22 +835,22 @@ important role of hydroxylamine.
 hydrolases}\label{increased-expression-of-bile-salt-hydrolases}
 
 Sulfur is present in various organic molecules, including taurine, a
-sulfur- and nitrogen-containing acid involved in bile acid formation
-\citep{urdaneta_interactions_2017}. Taurine is present in the human
-body, where it can be absorbed from the diet or synthesized in the liver
+sulfur- and nitrogen-rich compound involved in bile acid formation
+\citep{urdaneta_interactions_2017}. Taurine in the human body can be
+absorbed from the diet or synthesized in the liver
 \citep{seidel_taurine_2019}. However, taurine is also produced as a
 byproduct of the deconjugation of bile salts via bile salt hydrolases
-(BSH) present in the anaerobic gut taxa \emph{Lactobacillus} and
-\emph{Clostridium} \citep{urdaneta_interactions_2017}. In our study, we
-observed increased expression of genes encoding BSH enzymes between days
-12 and 86. Given that increased expression of BSH genes corresponded to
-the beginning of active decomposition, when decomposition products were
+(BSHs) present in the anaerobic gut taxa \emph{Lactobacillus} and
+\emph{Clostridium} \citep{urdaneta_interactions_2017}. We observed
+increased expression of genes encoding BSH enzymes between days 12 and
+86. Given that increased expression of BSH genes corresponded to the
+beginning of active decomposition, when decomposition products were
 observed to enter the soil, and the period of reduced dissolved oxygen
 in our study, it is likely that taurine accumulation is the result of
 BSH enzyme activity by anaerobic microorganisms. While we did not
-measure taurine concentrations in this study, our results correspond to
-previous decomposition studies that report accumulation of taurine in
-various organs and body regions
+measure taurine concentrations in the present study, our results
+correspond to previous decomposition studies that report accumulation of
+taurine in various organs and body regions
 \citep{mora-ortiz_thanatometabolomics_2019, locci_1h_2019, zelentsova_post-mortem_2016}
 and soils
 \citep{debruyn_comparative_2021, hoeland_katharina_investigating_2021}
@@ -864,7 +861,7 @@ and in decomposition soils \citep{cobaugh_functional_2015} via DNA
 sequencing methods, including in these soils
 \citep{taylor_transient_2024}.
 
-One pathway of taurine metabolism is through desulfurization via the
+Taurine can be metabolised through desulfurization via the
 \textalpha-ketoglutarate-dependent enzyme taurine dioxygenase (TauD).
 Specifically, this enzyme, encoded by the gene \emph{tauD}, converts
 2-oxoglutarate and taurine to produce aminoacetaldehyde, succinate,
@@ -881,12 +878,12 @@ abundance have been shown to remain consistent or increase during human
 decomposition \citep{cobaugh_functional_2015}, suggesting that
 \emph{tauD} expression is downregulated under decomposition conditions.
 However, we noted that expression of \emph{tauD} genes associated with
-fungi and a few \emph{Betaproteobacteria} displayed increased expression
-at day 58, corresponding to increased expression of bile salt hydrolases
-(BSH) between days 12 and 86. The reduction in \emph{tauD} expression
-may be due to increased sulfur availability. We did not measure sulfur
-species in this experiment; however, others have observed increased
-sulfur concentrations in decomposition-impacted soils
+fungi and a few \emph{Betaproteobacteria} displayed increased
+representation at day 58, corresponding to increased expression of bile
+salt hydrolases (BSH) between days 12 and 86. The reduction in
+\emph{tauD} expression may be due to increased sulfur availability. We
+did not measure sulfur species in this experiment; however, others have
+observed increased sulfur concentrations in decomposition-impacted soils
 \citep{aitkenhead-peterson_mapping_2012, taylor_soil_2023, debruyn_carrion_2024}.
 Thus, sulfur scavenging pathways such as taurine desulfurization by TauD
 \citep{kertesz_riding_2000}, whose genes are expressed under
@@ -903,9 +900,9 @@ impacts on soil sulfur biogeochemistry through deposition of inorganic
 
 This study investigated soil microbial gene expression during human
 decomposition. Metatranscriptomic analysis of soils from three human
-individuals over one year shows that decomposition impacted microbial
-community gene expression profiles, exhibiting functional shifts over
-time. This included altered expression of genes involved in lipid, N and
+individuals shows that decomposition impacted microbial community gene
+expression profiles, exhibiting functional shifts over time for over one
+year. This included altered expression of genes involved in lipid, N and
 S metabolism as microbes processed the nutrient-rich tissues of the
 human body. Additionally, we noted that functionality within
 decomposition-impacted soils was still affected after one year and had
@@ -1049,7 +1046,7 @@ settings and the TruSeq3-PE-2 adapter file, resulting in 4,834,123,062
 total reads. After QC check with FastQC, trimmed libraries were exported
 as fastq files from KBase through Globus. Remaining ribosomal RNA was
 filtered using bbmap (maxindel = 20, minid = 0.93) from the Joint Genome
-Institute's (JGI) bbtools suite \citep{bushnell_bbmap_nodate}. Filtering
+Institute's (JGI) bbtools suite \citep{bushnell_bbtools_2014}. Filtering
 of ribosomal RNA further removed 7.3\% of reads, leaving 4,479,804,360
 reads for assembly. Following this step, all non-ribosomal reads from
 all 24 samples were merged into one file. Reads were then co-assembled
@@ -1058,10 +1055,10 @@ into contigs using the de novo assembler MEGAHIT (v1.2.9)
 
 Gene identification and annotation from co-assembled contigs was
 performed using Prodigal \citep{hyatt_prodigal_2010} and eggNOG mapper
-\citep{cantalapiedra_eggnog-mapper_2021}, respectively. Briefly, the
-fastq containing all contigs was submitted to Prodigal (v2.6.3) for
+\citep{cantalapiedra_eggnog-mapper_2021}, respectively. Briefly, the DNA
+fasta containing all contigs was submitted to Prodigal (v2.6.3) for
 protein coding gene predication for a meta-sample (-p meta -f gff).
-After co-assembly, a total of 6,257,674 proteins were identified by
+After co-assembly, a total of 6,257,674 gene calls were identified by
 Prodigal. Next, predicated genes were functionally and taxonomically
 annotated using eggNOG mapper (v2.1.6) using basic settings to perform a
 diamond blastp search \citep{buchfink_sensitive_2021}. From this,
