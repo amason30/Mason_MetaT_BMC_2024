@@ -122,11 +122,11 @@ nh4_mag <- read_excel(here("data/SP_metadata.xlsx"),
     pull(diff)
 ```
 
-Soil chemistry was altered in response to the presence of a decomposing human cadaver, with multiple parameters still impacted after one year [@taylor_transient_2024]. Generally, soil pH decreased and remained low in decomposition soils of all but one individual. Soil electrical conductivity (EC) increased in response to decomposition, remaining elevated through approximately day 58 before gradually decreasing throughout the remainder of the study (@sup-chem-plot). Respiration (evolved CO~2~) increased by an order of magnitude beginning at day 12, which corresponded to a reduction in soil dissolved oxygen (DO) to `r min(do.12$value)`\% - `r max(do.12$value)`\%. Ammonium concentrations increased `r round(nh4_mag, 0)`-fold, reaching maximum concentrations between days 12 and 58. This was followed by decreased ammonium and increased nitrate concentrations at day 86, with nitrate concentrations reaching a maximum at day 168 (@sup-chem-plot).
+Soil chemistry was altered in response to the presence of a decomposing human cadaver, with multiple parameters still impacted after one year [@taylor_transient_2024]. Generally, soil pH decreased and remained low in decomposition soils of all but one individual. Soil electrical conductivity (EC) increased in response to decomposition, remaining elevated through approximately day 58 before gradually decreasing throughout the remainder of the study (Supplementary Fig. 1). Respiration (evolved CO~2~) increased by an order of magnitude beginning at day 12, which corresponded to a reduction in soil dissolved oxygen (DO) to `r min(do.12$value)`\% - `r max(do.12$value)`\%. Ammonium concentrations increased `r round(nh4_mag, 0)`-fold, reaching maximum concentrations between days 12 and 58. This was followed by decreased ammonium and increased nitrate concentrations at day 86, with nitrate concentrations reaching a maximum at day 168 (Supplementary Fig. 1).
 
 ## Microbial gene expression in response to human decomposition
 
-Gene expression profiles in decomposition-impacted soils shifted away from controls and day zero samples as decomposition progressed (`Fig~\ref{fig-mds}`{=latex}A). Expression was most different from controls on study days 58, 86, 168 (@sup-heatmap-plot), before returning toward control conditions on study day 376. After one year of decomposition, soil gene expression profiles had not returned to pre-decomposition conditions, as evidenced by their clustering away from controls and day zero samples in the MDS plot (`Fig~\ref{fig-mds}`{=latex}A).
+Gene expression profiles in decomposition-impacted soils shifted away from controls and day zero samples as decomposition progressed (`Fig~\ref{fig-mds}`{=latex}A). Expression was most different from controls on study days 58, 86, 168 (Supplementary Fig. 2), before returning toward control conditions on study day 376. After one year of decomposition, soil gene expression profiles had not returned to pre-decomposition conditions, as evidenced by their clustering away from controls and day zero samples in the MDS plot (`Fig~\ref{fig-mds}`{=latex}A).
 
 ```{r}
 #| include: false
@@ -139,15 +139,6 @@ cca2 <- round(((cca$CCA$eig[[2]] / sum(cca$CCA$eig)) * 100), 1)
 first_2 <- cca1 + cca2
 ```
 
-```{=tex}
-% Place figure captions after the first paragraph in which they are cited.
-\begin{figure}[!h]
-\caption{{\bf Microbial gene expression profiles are altered during human decomposition.}
-Multidimensional scaling (MDS) shows gene expression within soils changed as decomposition progressed (A). Additionally, canonical correspondence analysis (CCA) shows that environmental variables explained `r first_2`\% of the variation in gene expression profiles (B). Variables in bold red type significantly (p < 0.05) explained some of the variation in gene expression profiles as assessed by Permutational Analysis of Variance (PERMANOVA). In both panels soils from controls (CON) and the three donors (SP1, SP2, SP3) are denoted by symbol shape, while color represents study day. In B, soil physiochemical variable loadings are represented by arrows: Gravimetric water content (GWC), electrical conductivity (EC), pH (pH), dissolved oxygen (DO), respiration (evolved CO\textsubscript{2}\ \textmu mol gdw\textsuperscript{-1}), ammonium (NH\textsubscript{4}), and nitrate (NO\textsubscript{3}) concentrations (mg gdw\textsuperscript{-1}), percent carbon (\%C), percent nitrogen (\%N), carbon:nitrogen ratio (C:N), ambient temperature (T\textsubscript{A}), and soil temperature (T\textsubscript{S}).}
-\label{fig-mds}
-\end{figure}
-```
-![](../../figures/Fig1.png)
 
 ```{r}
 #| include: false
@@ -155,7 +146,7 @@ Multidimensional scaling (MDS) shows gene expression within soils changed as dec
 cca_permanova <- read_csv(here("data/allvar_cca_permanova.csv"), col_names = c("var", "Df", "SumsofSqs", "MeanSqs", "F.Model", "R2", "pval"), skip =1)
 ```
 
-Some correlations were observed between gene expression shifts and soil physiochemical data at decomposition timepoints. Canonical correspondence analysis (CCA) was used to constrain gene expression data with soil physiochemical data (`Fig~\ref{fig-mds}`{=latex}B). CCA1 and CCA2 explained `r cca1`\% and `r cca2`\% of the variance in gene expression, respectively. Transcript profiles at day 12 were associated with an increase in soil carbon to nitrogen ratio (C:N). Gene expression profiles at days 58 to 86 were positively correlated with increased soil temperature, EC, and evolved CO~2~, while study day 168 was associated with elevated levels of soil NO~3~. Further, Permutational Analysis of Variance (PERMANOVA) revealed that internal accumulated degree hours (ADH) (p = `r round(cca_permanova[[which(cca_permanova$var == "ADH_internal"), "pval"]], 3)`), soil temperature (p = `r round(cca_permanova[[which(cca_permanova$var == "temp_soil"), "pval"]], 3)`), pH (p = `r round(cca_permanova[[which(cca_permanova$var == "pH"), "pval"]], 3)`), and EC (p = `r round(cca_permanova[[which(cca_permanova$var == "EC"), "pval"]], 3)`) significantly explained some of the variation in gene expression profiles (p < 0.05). No other soil chemical variables were significant at \textalpha\ = 0.05 (@sup-tbl-cca-panova).
+Some correlations were observed between gene expression shifts and soil physiochemical data at decomposition timepoints. Canonical correspondence analysis (CCA) was used to constrain gene expression data with soil physiochemical data (`Fig~\ref{fig-mds}`{=latex}B). CCA1 and CCA2 explained `r cca1`\% and `r cca2`\% of the variance in gene expression, respectively. Transcript profiles at day 12 were associated with an increase in soil carbon to nitrogen ratio (C:N). Gene expression profiles at days 58 to 86 were positively correlated with increased soil temperature, EC, and evolved CO~2~, while study day 168 was associated with elevated levels of soil NO~3~. Further, Permutational Analysis of Variance (PERMANOVA) revealed that internal accumulated degree hours (ADH) (p = `r round(cca_permanova[[which(cca_permanova$var == "ADH_internal"), "pval"]], 3)`), soil temperature (p = `r round(cca_permanova[[which(cca_permanova$var == "temp_soil"), "pval"]], 3)`), pH (p = `r round(cca_permanova[[which(cca_permanova$var == "pH"), "pval"]], 3)`), and EC (p = `r round(cca_permanova[[which(cca_permanova$var == "EC"), "pval"]], 3)`) significantly explained some of the variation in gene expression profiles (p < 0.05). No other soil chemical variables were significant at \textalpha\ = 0.05 (Supplementary Table 1).
 
 ```{r}
 #| include: false
@@ -175,37 +166,17 @@ ppc_per <- downreg_dist %>%
 
 ```
 
-Overall, decomposition changed soil gene expression profiles over the one-year study relative to control soils. Differential expression analysis between decomposition and control soils identified 7,047 down-regulated and 38,425 up-regulated genes. Gene transcripts that were associated with control soils belonged to a wide variety of clusters of orthologous genes (COG) functional categories. Specifically, the top 20 genes whose expression was higher in control soils belonged to ten unique COG categories, including signal transduction mechanisms, transcription, and those of unknown function. In contrast, the top 20 genes whose expression was higher in decomposition soils only fell into four COG categories (@sup-t30-trt-plot A): 1) post-translational modification, protein turnover, and chaperones; 2) energy production and conversion; 3) cell motility; and 4) carbohydrate transport and metabolism. The most common COG category represented in decomposition soils (`r ppc_per`\% of the top 20 genes) was post-translational modification, protein turnover, and chaperones. Within this category, several heat shock stress response genes were identified, including clpB, dnaK, groL2, SSA2, HSP82, and clpB (@sup-t30-trt-tbl). Further investigation of these genes over time shows that their expression increased, typically reaching maximum transcript levels around study days 58 and 86 (`Fig~\ref{fig-heatshock}`{=latex}). This corresponded to elevated soil temperatures below decomposing bodies between study days 12-80, with soil temperatures increasing to approximately 43&deg;C [@taylor_transient_2024], as well as maximum soil EC and minimum dissolved oxygen measurements between days 12 and 58 (@sup-chem-plot).
+Overall, decomposition changed soil gene expression profiles over the one-year study relative to control soils. Differential expression analysis between decomposition and control soils identified 7,047 down-regulated and 38,425 up-regulated genes. Gene transcripts that were associated with control soils belonged to a wide variety of clusters of orthologous genes (COG) functional categories. Specifically, the top 20 genes whose expression was higher in control soils belonged to ten unique COG categories, including signal transduction mechanisms, transcription, and those of unknown function. In contrast, the top 20 genes whose expression was higher in decomposition soils only fell into four COG categories (Supplementary Fig. 3 A): 1) post-translational modification, protein turnover, and chaperones; 2) energy production and conversion; 3) cell motility; and 4) carbohydrate transport and metabolism. The most common COG category represented in decomposition soils (`r ppc_per`\% of the top 20 genes) was post-translational modification, protein turnover, and chaperones. Within this category, several heat shock stress response genes were identified, including clpB, dnaK, groL2, SSA2, HSP82, and clpB (Supplementary Table 2). Further investigation of these genes over time shows that their expression increased, typically reaching maximum transcript levels around study days 58 and 86 (`Fig~\ref{fig-heatshock}`{=latex}). This corresponded to elevated soil temperatures below decomposing bodies between study days 12-80, with soil temperatures increasing to approximately 43&deg;C [@taylor_transient_2024], as well as maximum soil EC and minimum dissolved oxygen measurements between days 12 and 58 (Supplementary Fig. 1).
 
-```{=tex}
-% Place figure captions after the first paragraph in which they are cited.
-\begin{figure}[!h]
-\caption{{\bf Mean normalized log2 expression of heat shock proteins identified by differential expression analysis comparing decomposition and control soils.}
-Each panel represents a single heat shock gene, labeled with gene names, identified via Prodigal. Symbol color denotes if the sample is a control (CON, green), or one of three individuals: SP1 (orange), SP2 (purple), or SP3 (pink). Error bars are standard error of individual query genes in the top 20 transcripts associated with decomposition soils.}
-\label{fig-heatshock}
-\end{figure}
-```
-![](../../figures/Trt_DE_top15_mean_heatshockTPM.png)
-
-Taxonomy associated with top differentially expressed gene transcripts also differed between control and decomposition soils. The top 40 significantly differentially expressed gene transcripts in decomposition soils were associated with Fungi, *Actinobacteria*, and *Xanthomonadales*, while gene transcripts in controls were associated with *Acidobacteria*, *Cyanobacteria*, *Proteobacteria* (\textalpha, \textdelta, \textgamma), and *Planctomycetes* (@sup-t30-trt-plot B). The greatest number of differentially expressed genes relative to control samples was observed at day 86, where we saw 145,460 and 124,883 up- and down-regulated genes, respectively.
+Taxonomy associated with top differentially expressed gene transcripts also differed between control and decomposition soils. The top 40 significantly differentially expressed gene transcripts in decomposition soils were associated with Fungi, *Actinobacteria*, and *Xanthomonadales*, while gene transcripts in controls were associated with *Acidobacteria*, *Cyanobacteria*, *Proteobacteria* (\textalpha, \textdelta, \textgamma), and *Planctomycetes* (Supplementary Fig. 3 B). The greatest number of differentially expressed genes relative to control samples was observed at day 86, where we saw 145,460 and 124,883 up- and down-regulated genes, respectively.
 
 ## Temporal gene expression shows shifted in decomposer functions
 
-Differential expression analysis between sequential study days revealed which genes were altered during decomposition time.  The top ten significantly up- and down-regulated genes, determined by the lowest p-values from differential expression analysis (cutoff = \textalpha\ < 0.05), are reported in @sup-t20-day-tbl and `Fig~\ref{fig-top-day-bar}`{=latex}. 
-
-```{=tex}
-% Place figure captions after the first paragraph in which they are cited.
-\begin{figure}[!h]
-\caption{{\bf Top twenty up- and down-regulated genes in decomposition soils comparing sequential study days (0, 12, 58, 86, 168, 376) colored by COG functional category (A) and taxonomic annotation (B).}
-Positive values denote increased expression compared to the preceding timepoint, while negative values denote a decrease.}
-\label{fig-top-day-bar}
-\end{figure}
-```
-![](../../figures/Study.con_DE_top20_barplot.png)
+Differential expression analysis between sequential study days revealed which genes were altered during decomposition time.  The top ten significantly up- and down-regulated genes, determined by the lowest p-values from differential expression analysis (cutoff = \textalpha\ < 0.05), are reported in Supplementary Table 3 and `Fig~\ref{fig-top-day-bar}`{=latex}. 
 
 Expression of genes annotated with the COG categories cell wall/membrane/envelope biogenesis, inorganic ion transport and metabolism, and carbohydrate transport and metabolism increased proporitionally from day 0 to 12. In contrast, expression of secondary metabolite biosynthesis, transport, and catabolism genes decreased during this period (`Fig~\ref{fig-top-day-bar}`{=latex}A). Transcripts from *Bacilli* and *Clostridia* increased, while transcripts from *Actinobacteria* decreased between study days zero and 12 (`Fig~\ref{fig-top-day-bar}`{=latex}). 
 
-Between days 12 and 58, 90\% of the top 10 upregulated genes were associated with the translation, ribosomal structure and biogenesis COG and all were taxonomically associated with *Betaproteobacteria* (`Fig~\ref{fig-top-day-bar}`{=latex}A,B). Many of these genes were annotated as ribosomal protein large (RPL), involved in ribosomal binding. Genes across multiple COG categories with taxonomic associations to *Bacilli* and *Clostridia* decreased between study days 12 and 58, six of which were transcripts that previously increased between days zero and 12 (`Fig~\ref{fig-top-day-bar}`{=latex}B, @sup-t20-day-tbl). 
+Between days 12 and 58, 90\% of the top 10 upregulated genes were associated with the translation, ribosomal structure and biogenesis COG and all were taxonomically associated with *Betaproteobacteria* (`Fig~\ref{fig-top-day-bar}`{=latex}A,B). Many of these genes were annotated as ribosomal protein large (RPL), involved in ribosomal binding. Genes across multiple COG categories with taxonomic associations to *Bacilli* and *Clostridia* decreased between study days 12 and 58, six of which were transcripts that previously increased between days zero and 12 (`Fig~\ref{fig-top-day-bar}`{=latex}B, Supplementary Table 3). 
 
 ```{r}
 #| include: false
@@ -213,7 +184,7 @@ Between days 12 and 58, 90\% of the top 10 upregulated genes were associated wit
 hao_aov <- read.csv(here("data/hao_lmer_anova.csv"))
 ```
 
-Multiple transcripts associated with the energy production and conversion COG, as well as transcripts annotated with the COGs inorganic transport and metabolism, and translation, ribosomal structure and biogenesis, increased between days 58 and 86 (`Fig~\ref{fig-top-day-bar}`{=latex}A). Two of the upregulated energy and production and conservation transcripts were associated with cytochrome c oxidase subunits in *Betaproteobacteria*, while another was annotated as *hao*, encoding the enzyme hydroxylamine dehydrogenase which is involved in conversion of hydroxylamine to nitrite during nitrification (@sup-t20-day-tbl). Further investigation into hydroxylamine dehydrogenase showed a significant increase in *hao* transcripts at day 86 followed by subsequent decreases at days 168 and 376 (F = `r round(hao_aov$F.value, 3)`; *p* = `r round(hao_aov$Pr..F., 3)`). This increase corresponded to decreased soil ammonium levels and subsequent accumulation of nitrate (@sup-chem-plot). Half of the topmost downregulated genes between days 58 and 86 were not assigned to a COG (*i.e.*, unclassified) or were of unknown function. 
+Multiple transcripts associated with the energy production and conversion COG, as well as transcripts annotated with the COGs inorganic transport and metabolism, and translation, ribosomal structure and biogenesis, increased between days 58 and 86 (`Fig~\ref{fig-top-day-bar}`{=latex}A). Two of the upregulated energy and production and conservation transcripts were associated with cytochrome c oxidase subunits in *Betaproteobacteria*, while another was annotated as *hao*, encoding the enzyme hydroxylamine dehydrogenase which is involved in conversion of hydroxylamine to nitrite during nitrification (Supplementary Table 3). Further investigation into hydroxylamine dehydrogenase showed a significant increase in *hao* transcripts at day 86 followed by subsequent decreases at days 168 and 376 (F = `r round(hao_aov$F.value, 3)`; *p* = `r round(hao_aov$Pr..F., 3)`). This increase corresponded to decreased soil ammonium levels and subsequent accumulation of nitrate (Supplementary Fig. 1). Half of the topmost downregulated genes between days 58 and 86 were not assigned to a COG (*i.e.*, unclassified) or were of unknown function. 
 
 Differential expression comparing study days 86 with 168 and 168 with 376 identified genes across a variety of functional categories, with many unclassified in the COG database or with unknown function (`Fig~\ref{fig-top-day-bar}`{=latex}A). Expression of carbohydrate transport and metabolism genes associated with *Bacilli* decreased between day 168 and 376. *Acidobacteria* transcripts increased in decomposition-impacted soils between study day 168 and 376, but were not associated with any single COG category (`Fig~\ref{fig-top-day-bar}`{=latex}B).
 
@@ -240,29 +211,9 @@ fung_p <- if_else(lipase_fung_aov[lipase_fung_aov$`...1` == "Study_day", "Pr(>F)
 
 We expected to observe increased expression of lipid metabolizing genes during active and advanced decomposition as microbes degraded lipids deposited in the soil [@howard_characterization_2010]. Therefore, we investigated changes in triacylglycerol lipase (enzyme commission number: 3.1.1.3) gene transcription in our soils. Generally, lipase transcripts decreased as decomposition progressed (HLM F = `r full_sd_f`, *p* `r full_sd_p`), however we also observed a significant interaction between study day and taxonomic annotation (F = `r full_i_f`; *p* `r full_i_p`). Specifically, lipase gene transcripts annotated as bacteria decreased with decomposition time (F = `r bact_f`; *p* = `r bact_p`), while fungal lipase transcripts increased, reaching a maximum at study day 58 (F = `r fung_f`; *p* = `r fung_p`) (`Fig~\ref{fig-lipase}`{=latex}). 
 
-```{=tex}
-% Place figure captions after the first paragraph in which they are cited.
-\begin{figure}[!h]
-\caption{{\bf Mean transcript abundance, in transcripts per million (TPM), of all bacterial (A) and fungal (B) triacylglycerol lipase (EC 3.1.1.3) genes over time.}
-Abundance of both bacterial (Anova p = `r bact_p`) and fungal (Anova p = `r fung_p`) lipase transcripts change significantly over time. Black lines (A, B) report mean and standard deviation of TPM from three individuals (black line), while gold stars denote mean TPM in control soils. Letters are the result of post-hoc Tukey tests between decomposition timepoints. In B, bars show the relative abundance of the fungal classes \textit{Saccharomycetes}, \textit{Sordariomycetes}, and \textit{Eurotiomycetes}, reported in Taylor et al. (2024).}
-\label{fig-lipase}
-\end{figure}
-```
-![](../../figures/Fig4.png)
-
 ## Nitrogen- and sulfur compound transformations
 
 Expression of nitrogen cycling genes was impacted in response to human decomposition. Due to the detection of hydroxylamine oxidoreductase (*hao*) transcripts in our differential expression analysis, and our hypotheses predicting changes to nitrogen transformation processes, the expression of genes encoding common enzymes involved in nitrogen cycling (*nifH*, *nirB*, *nirK*, *norB*, *nosZ*, *nrfA*, *nxrA*, and *amoA*) were assessed using their enzyme commission numbers (`Fig~\ref{fig-n-genes}`{=latex}A,B). *nifH*, encoding a subunit of nitrogenase which is involved in nitrogen fixation, displayed little to no changes in gene expression between control and decomposition soils. Transcripts for two genes encoding enzymes contributing to the last two steps of denitrification, *norB* (nitric oxide reductase) and *nosZ* (nitrous oxide reductase), increased between study days 12 and 86, and decreased at study day 168 before increasing again at day 376. In contrast, expression of genes encoding nitrate reductase, *narG*, and NO-forming nitrite reductase, *nirK*, remained low until day 376 when transcripts for both genes increased. As noted above, expression of *hao*, encoding hydroxylamine dehydrogenase, increased at study day 86 before decreasing at remaining timepoints (`Fig~\ref{fig-top-day-bar}`{=latex}A, `Fig~\ref{fig-n-genes}`{=latex}B). Expression of *amoA*, encoding a subunit of ammonia monooxygenase, and *nxrA*, encoding a subunit of nitrite oxidoreductase, which are involved in nitrification, changed in response to decomposition. *amoA* transcripts initially decreased at day 12, remaining reduced until study day 376. Similarly, abundance of genes that encode for enzymes involved in dissimilatory nitrate reduction, *nirB*, and *nrfA*, was low for the first 168 days, with *nrfA* expression increasing at day 376 (`Fig~\ref{fig-n-genes}`{=latex}B). 
-
-```{=tex}
-% Place figure captions after the first paragraph in which they are cited.
-\begin{figure}[!h]
-\caption{{\bf Mean gene expression, in transcripts per million (TPM), of commonly used marker genes for enzymes involved in nitrogen cycling over time in controls (A) and decomposition (B) soils.}
-Data in B represent mean and standard deviation of TPM from three individuals.}
-\label{fig-n-genes}
-\end{figure}
-```
-![](../../figures/Fig5.png)
 
 ```{r}
 #| include: false
@@ -276,17 +227,7 @@ bsh_f <- round(bsh_lmer[1, "F value"], 3)
 bsh_p <- if_else(bsh_lmer[1, "Pr(>F)"] < 0.001, "< 0.001", as.character(round(bsh_lmer[1, "Pr(>F)"], 2)))
 ```
 
-Expression of genes involved in metabolism of nitrogen and sulfur-containing compounds were also impacted by human decomposition. Specifically, four of the top ten genes whose expression decreased at day 12 were related to taurine metabolism, with their annotations associated with *tauD*, encoding taurine dioxygenase. (@sup-t20-day-tbl). Further investigation into *tauD* showed that mean expression of these genes decreased steadily over one year, beginning at day 12 (`Fig~\ref{fig-taud-bsh}`{=latex}B); however, *tauD* expression in response to human decomposition was variable across taxonomic associations. Most *tauD* transcripts were associated with *Gammaproteobacteria*, *Actinobacteria*, *Betaproteobacteria*, *Alphaproteobacteria*, and fungi. While a majority of the *tauD* gene queries displayed reduced expression over time, expression of fungal-associated and a few *Betaproteobacteria*-associated *tauD* genes increased at day 58 (@sup-taud-tax). Sources of taurine in the human body include taurine absorbed from the diet and taurine produced from anaerobic microbial deconjugation of bile salts via bile salt hydrolase (BSH) enzymes [@urdaneta_interactions_2017]. Therefore, we examined expression for genes encoding BSH enzymes in decomposition soils. Expression of these genes was elevated at days 12, 58, and 86 before converging toward pre-decomposition levels at days 168 and 376 (`Fig~\ref{fig-taud-bsh}`{=latex}A). Hierarchical liner mixed effects (HLM) models showed that both *tauD* (HLM F = `r taud_f`, *p* = `r taud_p`) and BSH (F = `r bsh_f`, *p* `r bsh_p`) gene expression was significantly different over time (`Fig~\ref{fig-taud-bsh}`{=latex}A,B).
-
-```{=tex}
-% Place figure captions after the first paragraph in which they are cited.
-\begin{figure}[!h]
-\caption{{\bf Mean bile salt hydrolase, BSH, (A) and \textit{tauD}, taurine dioxygenase, (B) log2 normalized expression in controls (gold stars) and decomposition (boxplots) soils.}
-Boxplots display the 25th and 75th quartiles and median log2 normalized values between all three individuals at each timepoint. ANOVA p-value is the result of a hierarchical linear mixed effects model accounting for repeated measures of each donor block, while letters denote the results of \textit{post-hoc} Tukey test.}
-\label{fig-taud-bsh}
-\end{figure}
-```
-![](../../figures/tauD_bsh_nlog2.png)
+Expression of genes involved in metabolism of nitrogen and sulfur-containing compounds were also impacted by human decomposition. Specifically, four of the top ten genes whose expression decreased at day 12 were related to taurine metabolism, with their annotations associated with *tauD*, encoding taurine dioxygenase. (Supplementary Table 3). Further investigation into *tauD* showed that mean expression of these genes decreased steadily over one year, beginning at day 12 (`Fig~\ref{fig-taud-bsh}`{=latex}B); however, *tauD* expression in response to human decomposition was variable across taxonomic associations. Most *tauD* transcripts were associated with *Gammaproteobacteria*, *Actinobacteria*, *Betaproteobacteria*, *Alphaproteobacteria*, and fungi. While a majority of the *tauD* gene queries displayed reduced expression over time, expression of fungal-associated and a few *Betaproteobacteria*-associated *tauD* genes increased at day 58 (Supplementary Fig. 4). Sources of taurine in the human body include taurine absorbed from the diet and taurine produced from anaerobic microbial deconjugation of bile salts via bile salt hydrolase (BSH) enzymes [@urdaneta_interactions_2017]. Therefore, we examined expression for genes encoding BSH enzymes in decomposition soils. Expression of these genes was elevated at days 12, 58, and 86 before converging toward pre-decomposition levels at days 168 and 376 (`Fig~\ref{fig-taud-bsh}`{=latex}A). Hierarchical liner mixed effects (HLM) models showed that both *tauD* (HLM F = `r taud_f`, *p* = `r taud_p`) and BSH (F = `r bsh_f`, *p* `r bsh_p`) gene expression was significantly different over time (`Fig~\ref{fig-taud-bsh}`{=latex}A,B).
 
 # Discussion
 
@@ -394,50 +335,76 @@ The code used for analysis and to generate figures are available on [GitHub](htt
 :::{#refs}
 :::
 
+\newpage
+# Figures
+
+```{=tex}
+\begin{figure}[!h]
+\caption{{\bf Microbial gene expression profiles are altered during human decomposition.}
+Multidimensional scaling (MDS) shows gene expression within soils changed as decomposition progressed (A). Additionally, canonical correspondence analysis (CCA) shows that environmental variables explained `r first_2`\% of the variation in gene expression profiles (B). Variables in bold red type significantly (p < 0.05) explained some of the variation in gene expression profiles as assessed by Permutational Analysis of Variance (PERMANOVA). In both panels soils from controls (CON) and the three donors (SP1, SP2, SP3) are denoted by symbol shape, while color represents study day. In B, soil physiochemical variable loadings are represented by arrows: Gravimetric water content (GWC), electrical conductivity (EC), pH (pH), dissolved oxygen (DO), respiration (evolved CO\textsubscript{2}\ \textmu mol gdw\textsuperscript{-1}), ammonium (NH\textsubscript{4}), and nitrate (NO\textsubscript{3}) concentrations (mg gdw\textsuperscript{-1}), percent carbon (\%C), percent nitrogen (\%N), carbon:nitrogen ratio (C:N), ambient temperature (T\textsubscript{A}), and soil temperature (T\textsubscript{S}).}
+\label{fig-mds}
+\end{figure}
+```
+![](../../figures/Fig1.png)
+
+\pagebreak
+
+```{=tex}
+\begin{figure}[!h]
+\caption{{\bf Mean normalized log2 expression of heat shock proteins identified by differential expression analysis comparing decomposition and control soils.}
+Each panel represents a single heat shock gene, labeled with gene names, identified via Prodigal. Symbol color denotes if the sample is a control (CON, green), or one of three individuals: SP1 (orange), SP2 (purple), or SP3 (pink). Error bars are standard error of individual query genes in the top 20 transcripts associated with decomposition soils.}
+\label{fig-heatshock}
+\end{figure}
+```
+![](../../figures/Trt_DE_top15_mean_heatshockTPM.png)
+
+\pagebreak
+
+```{=tex}
+\begin{figure}[!h]
+\caption{{\bf Top twenty up- and down-regulated genes in decomposition soils comparing sequential study days (0, 12, 58, 86, 168, 376) colored by COG functional category (A) and taxonomic annotation (B).}
+Positive values denote increased expression compared to the preceding timepoint, while negative values denote a decrease.}
+\label{fig-top-day-bar}
+\end{figure}
+```
+![](../../figures/Study.con_DE_top20_barplot.png)
+
+\pagebreak
+
+```{=tex}
+\begin{figure}[!h]
+\caption{{\bf Mean transcript abundance, in transcripts per million (TPM), of all bacterial (A) and fungal (B) triacylglycerol lipase (EC 3.1.1.3) genes over time.}
+Abundance of both bacterial (Anova p = `r bact_p`) and fungal (Anova p = `r fung_p`) lipase transcripts change significantly over time. Black lines (A, B) report mean and standard deviation of TPM from three individuals (black line), while gold stars denote mean TPM in control soils. Letters are the result of post-hoc Tukey tests between decomposition timepoints. In B, bars show the relative abundance of the fungal classes \textit{Saccharomycetes}, \textit{Sordariomycetes}, and \textit{Eurotiomycetes}, reported in Taylor et al. (2024).}
+\label{fig-lipase}
+\end{figure}
+```
+![](../../figures/Fig4.png)
+
+\pagebreak
+
+```{=tex}
+\begin{figure}[!h]
+\caption{{\bf Mean gene expression, in transcripts per million (TPM), of commonly used marker genes for enzymes involved in nitrogen cycling over time in controls (A) and decomposition (B) soils.}
+Data in B represent mean and standard deviation of TPM from three individuals.}
+\label{fig-n-genes}
+\end{figure}
+```
+![](../../figures/Fig5.png)
+
+\pagebreak
+
+```{=tex}
+\begin{figure}[!h]
+\caption{{\bf Mean bile salt hydrolase, BSH, (A) and \textit{tauD}, taurine dioxygenase, (B) log2 normalized expression in controls (gold stars) and decomposition (boxplots) soils.}
+Boxplots display the 25th and 75th quartiles and median log2 normalized values between all three individuals at each timepoint. ANOVA p-value is the result of a hierarchical linear mixed effects model accounting for repeated measures of each donor block, while letters denote the results of \textit{post-hoc} Tukey test.}
+\label{fig-taud-bsh}
+\end{figure}
+```
+![](../../figures/tauD_bsh_nlog2.png)
+
+\newpage
 
 # Acknowledgements
 
 We would like to thank the Forensic Anthropology Center at the University of Tennessee-Knoxville for their help in setting up field experiments. We would like to thank Mary Davis for her help in managing the field site and helping to obtain donors for this work. This research was funded by a National Institute of Justice Award (DOJ-NIJ-2017-R2-CX-0008) to LST and JMD.
-
-# Supplementary Information {.unnumbered}
-
-::: {#sup-chem-plot}
-![](../../figures/soilchem_summary.png)
-
-Figure S1. Soil physiochemical parameters in decomposition soils during the one-year study. Data is shown for each individual donor: SP1 (gold), SP2 (blue), and SP2 (black). Values for the full 16 cm core samples were estimated by summing values interface (0-1 cm) and core (0-16 cm) reported by Taylor et al, (2024) in 1:16 and 15:16 ratios, respectively. Controls reported here are means of three experimental controls that were unimpacted by decomposition and are represented by stars.
-:::
-
-::: {#sup-heatmap-plot}
-![](../../figures/Fig_S2.png)
-
-Figure S2. Hierarchical clustering heatmap showing the log counts per million (CPM) of the top 500 most variable genes across samples. Variable genes were determined by selecting genes with the highest variance in gene expression. Samples are clustered along the x-axis using Euclidean distances between samples and colored by study day.
-:::
-
-::: {#sup-tbl-cca-panova}
-Table S1. Permutational analysis of variance (PERMANOVA) results identifying significant environmental parameters which explain some of the variation in soil gene expression profiles. Environmental parameter data is from Taylor et al. (2024). Variables with p < 0.05 are indicated in bold.
-:::
-
-::: {#sup-t30-trt-plot}
-![](../../figures/Trt_DE_top20_barplot.png)
-
-Figure S3. Top 40 up- and down-regulated genes in controls relative to decomposition soils across all study days, colored by COG functional category (A) and taxonomic annotation (B). Positive values denote higher expression in controls, while negative values are higher in decomposition soils.
-:::
-
-::: {#sup-t30-trt-tbl}
-
-Table S2. Top 20 most up- and down-regulated gene queries, determined by log2 fold change and adjusted p-values, in control relative to decomposition soils. Positive log2 fold change values represent genes whose expression was higher in control soils, while negative log2 fold change values were higher in decomposition soils. Taxonomic annotation, COG categories, gene description, gene names, and EC were assigned via eggNOG-mapper.
-:::
-
-
-::: {#sup-t20-day-tbl}
-Table S3. Top 10 most up- and down-regulated genes, determined by log2 fold change and adjusted p-values, for each sequential timepoint comparison. Positive log2 fold change values represent genes whose expression was higher in the later decomposition timepoint soils, while negative log2 fold change values are higher in earlier decomposition timepoint soils. Taxonomic annotation, COG categories, gene names, and EC were assigned via eggNOG-mapper. The comparison column distinguishes each timepoint comparison.
-:::
-
-
-::: {#sup-taud-tax}
-![](../../figures/tauD_nlog2_taxonomy.png)
-
-Figure S4. Mean normalized log2 expression of *tauD* genes by taxonomic association (color) in control and decomposition soils at each study day. Each line represents one *tauD* gene query, while color denotes taxonomic association as determined by eggNOG-mapper.
-:::
-
 
