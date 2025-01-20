@@ -1,5 +1,5 @@
 ---
-title: Soil Microbial Functional Succession Over One Year of Human Decomposition
+title: Microbial Communities Collectively Recycle Cadavers Over One Year of Human Decomposition
 crossref:
   custom:
     - kind: float
