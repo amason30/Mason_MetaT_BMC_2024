@@ -2063,7 +2063,7 @@ ggplot(aminopep_TPM_avg_day_rep) +
 y_norm <- readRDS(here("data/NIJ_DGEList_TMM.rds"))
 y.con.log <- readRDS(here("data/NIJ_filter_log2.rds"))
 
-metadata_wide <- metadata %>% pivot_wider(names_from = parameter, values_from = value)
+# metadata_wide <- metadata %>% pivot_wider(names_from = parameter, values_from = value)
 trt = paste(metadata_wide %>% pull(Trt)) #make an object for the variable trt
 trt = factor(trt) #make sure trt is a factor
 
@@ -2174,6 +2174,8 @@ trt_DE_summary = trt_contrast %>%
   mutate(log_p = -log10(trt_p)) %>%
   left_join(gene_an, by = "query") %>% 
   left_join(COG_cat, by = "COG_category")
+
+saveRDS(trt_DE_summary, here("data/DE_trt_summary.rds"))
 ```
 
 *Top 6 upregulated genes in control soils:*
@@ -2181,6 +2183,7 @@ trt_DE_summary = trt_contrast %>%
 ```{r}
 #| echo: false
 #top 6 upregulated genes in control soils
+trt_DE_summary <- readRDS(here("data/DE_trt_summary.rds"))
 
 trt_DE_summary %>%
   arrange(desc(trt_coeff)) %>%
@@ -2268,9 +2271,13 @@ Differentially expressed genes between controls
 ```{r}
 #| echo: false
 #plot differentially expressed genes between controls
-
+t <- trt_DE_summary %>% filter(trt_cont == "1") %>% filter(trt_p <= 0.05) %>% arrange(desc(trt_coeff)) %>% top_n(20, trt_coeff)
+diff(trt_sig_up.20$query, t$query)
 trt_sig_up.20 = trt_DE_summary %>% arrange(desc(log_p))%>% filter(trt_cont == "1") %>%top_n(20, log_p) #top 10 significant and downregulated genes in control soils
 
+
+
+td <- trt_DE_summary %>% filter(trt_cont == "-1") %>% filter(trt_p <= 0.05) %>% slice_min(n = 20, order_by = trt_coeff)
 trt_sig_down.20 = trt_DE_summary %>% arrange(desc(log_p))%>% filter(trt_cont == "-1") %>%top_n(20, log_p) #top 10 significant and downregulated genes in control soils
 
 trt_top_up.down.20 = rbind(trt_sig_up.20, trt_sig_down.20)

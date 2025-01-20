@@ -1,0 +1,112 @@
+---
+format:
+    pdf:
+        keep-tex: true
+        header-includes:
+            - \usepackage{pdfpages}
+            - \usepackage{pdflscape}
+---
+
+```{r}
+#| include: false
+
+library(tidyverse)
+library(kableExtra)
+```
+# Supplementary Information
+
+\vspace{-0.5cm}
+
+![](../../figures/soilchem_summary.png)
+
+Supplementary Fig 1. Soil physiochemical parameters in decomposition soils during the one-year study. Data is shown for each individual donor: SP1 (gold), SP2 (blue), and SP2 (black). Values for the full 16 cm core samples were estimated by summing values interface (0-1 cm) and core (0-16 cm) reported by Taylor et al, (2024) in 1:16 and 15:16 ratios, respectively. Controls reported here are means of three experimental controls that were unimpacted by decomposition and are represented by stars.
+
+\pagebreak
+
+\includegraphics[width=1\textwidth]{../../figures/Fig_S2.png}
+
+Supplementary Fig 2. Hierarchical clustering heatmap showing the log counts per million (CPM) of the top 500 most variable genes across samples. Variable genes were determined by selecting genes with the highest variance in gene expression. Samples are clustered along the x-axis using Euclidean distances between samples and colored by study day.
+
+\pagebreak
+
+Supplementary Table 1. Permutational analysis of variance (PERMANOVA) results identifying significant environmental parameters which explain some of the variation in soil gene expression profiles. Environmental parameter data is from Taylor et al. (2024). Variables with p < 0.05 are indicated in bold.
+
+\includegraphics[scale=1.4,page=1]{../../tables/cca_permanova.pdf}
+
+\pagebreak
+
+\includegraphics[width=0.88\textwidth]{../../figures/Trt_DE_top20_barplot.png}
+
+Supplementary Fig 3. Top 40 up- and down-regulated genes in controls relative to decomposition soils across all study days, colored by COG functional category (A) and taxonomic annotation (B). Positive values denote higher expression in controls, while negative values are higher in decomposition soils.
+
+\pagebreak
+
+::: {.landscape}
+
+Supplementary Table 2. Top 20 most up- and down-regulated gene queries, determined by log2 fold change and adjusted p-values, in control relative to decomposition soils. Positive log2 fold change values represent genes whose expression was higher in control soils, while negative log2 fold change values were higher in decomposition soils. Taxonomic annotation, COG categories, gene description, gene names, and EC were assigned via eggNOG-mapper.
+
+
+```{r}
+#| echo: false
+de_trt <- read.csv(here::here("data/top_40_DE_trt.csv"))
+
+de_trt %>% 
+mutate(tax = str_split_i(max_annot_lvl, "\\|", 2)) %>%
+select(query, trt_coeff, trt_p, tax, COG_category, Description, Preferred_name, EC) %>%
+kable(.,
+    #   format = "latex",
+      digits = 3,
+      col.names = c("Query", "Coefficient", "p-Value", "Taxonomic Annotation", "COG Category", "Description", "Gene Name", "EC"),
+      booktabs = TRUE,
+      longtable = TRUE) %>%
+column_spec(1, width = "6em") %>%
+# column_spec(3, width = "4") %>%
+# column_spec(4, width = "5") %>%
+column_spec(5, width = "4em") %>%
+column_spec(6, width = "8em") %>%
+column_spec(7, width = "4em") %>%
+column_spec(8, width = "5em") %>%
+kable_styling(latex_options = c("repeat_header"))
+#   kbl(.,
+#     #   format = "latex",
+#       digits = 3,
+#       col.names = c("Query", "Coefficient", "p-Value", "Taxonomic Annotation", "COG Category", "Description", "Gene Name", "EC"),
+#       booktabs = TRUE) %>%
+#   column_spec(6, width = "10em")
+```
+
+\pagebreak
+
+Supplementary Table 3. Top 10 most up- and down-regulated genes, determined by log2 fold change and adjusted p-values, for each sequential timepoint comparison. Positive log2 fold change values represent genes whose expression was higher in the later decomposition timepoint soils, while negative log2 fold change values are higher in earlier decomposition timepoint soils. Taxonomic annotation, COG categories, gene names, and EC were assigned via eggNOG-mapper. The comparison column distinguishes each timepoint comparison.
+
+```{r}
+#| echo: false
+de_time <- read.csv(here::here("data/top_20_DE_time.csv"))
+
+de_time %>%
+  select(query, comp, coeff, p, tax, COG_category, Description, Preferred_name, EC) %>%
+  kable(.,
+      digits = 3,
+      col.names = c("Query", "Comparison", "Coefficient", "p-Value", "Taxonomic Annotation", "COG Category", "Description", "Gene Name", "EC"),
+      booktabs = TRUE,
+      longtable = TRUE) %>%
+  column_spec(2, width = "4.5em") %>%
+  column_spec(3, width = "4.5em") %>%
+  column_spec(6, width = "4em") %>%
+  column_spec(7, width = "8em") %>%
+  column_spec(5, width = "10em") %>%
+  column_spec(8, width = "4em") %>%
+  column_spec(9, width = "4em") %>%
+  kable_styling(font_size = 10, latex_options = c("repeat_header"))
+
+```
+
+
+:::
+\pagebreak
+
+\includegraphics[width=0.9\textwidth]{../../figures/tauD_nlog2_taxonomy.png}
+
+Supplementary Fig 4. Mean normalized log2 expression of *tauD* genes by taxonomic association (color) in control and decomposition soils at each study day. Each line represents one *tauD* gene query, while color denotes taxonomic association as determined by eggNOG-mapper.
+
+

@@ -155,6 +155,8 @@ ts_DE_summary <- ts_contrast %>%
   mutate(log_p = -log10(p)) %>%
   left_join(gene_an, by = c("query")) 
 
+saveRDS(ts_DE_summary, here("data/DE_time_summary.rds"))
+
 #make a dataframe of the normalized log2 expression values for all query genes used in DE analysis
 ts_nlog2 <- as.data.frame(v_ts$E) %>%
   rownames_to_column(var = "query") %>%
@@ -828,6 +830,8 @@ all_top <- rbind(ts_top20_12.0,
                           comp == "C.168v86" ~ "86-168",
                           comp == "C.376v168" ~ "168-376",
                           TRUE ~ "NA"))
+
+write.csv(all_top, here("data/top_20_DE_time.csv"), row.names = FALSE)
   
 all_top %>%
   select(query, comp, coeff, p, tax, COG_category, Description, Preferred_name, EC) %>%
