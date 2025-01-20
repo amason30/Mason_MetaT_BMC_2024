@@ -43,7 +43,7 @@ Supplementary Fig 3. Top 40 up- and down-regulated genes in controls relative to
 
 ::: {.landscape}
 
-Supplementary Table 2. Top 20 most up- and down-regulated gene queries, determined by log2 fold change and adjusted p-values, in control relative to decomposition soils. Positive log2 fold change values represent genes whose expression was higher in control soils, while negative log2 fold change values were higher in decomposition soils. Taxonomic annotation, COG categories, gene description, gene names, and EC were assigned via eggNOG-mapper.
+Supplementary Table 2. Top 20 most significant up- and down-regulated gene queries, determined by log2 fold change and adjusted p-values, in control relative to decomposition soils. Positive log2 fold change values represent genes whose expression was higher in control soils, while negative log2 fold change values were higher in decomposition soils. Taxonomic annotation, COG categories, gene description, gene names, and EC were assigned via eggNOG-mapper.
 
 
 ```{r}
@@ -77,7 +77,7 @@ kable_styling(latex_options = c("repeat_header"))
 
 \pagebreak
 
-Supplementary Table 3. Top 10 most up- and down-regulated genes, determined by log2 fold change and adjusted p-values, for each sequential timepoint comparison. Positive log2 fold change values represent genes whose expression was higher in the later decomposition timepoint soils, while negative log2 fold change values are higher in earlier decomposition timepoint soils. Taxonomic annotation, COG categories, gene names, and EC were assigned via eggNOG-mapper. The comparison column distinguishes each timepoint comparison.
+Supplementary Table 3. Top 10 most significant up- and down-regulated transcripts, determined by log2 fold change and adjusted p-values, for each sequential timepoint comparison. Positive log2 fold change values represent genes whose expression was higher in the later decomposition timepoint soils, while negative log2 fold change values are higher in earlier decomposition timepoint soils. Taxonomic annotation, COG categories, gene names, and EC were assigned via eggNOG-mapper. The comparison column distinguishes each timepoint comparison.
 
 ```{r}
 #| echo: false
