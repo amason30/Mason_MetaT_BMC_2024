@@ -141,7 +141,7 @@ dat <- dat %>%
     filter(parameter %in% c("temp_ambient", "temp_soil", "Gravimetric_moisture", "pH", "EC" , "DO", "CO2_μg C_gdw", "NH4_mg_gdw", "NO3_mg_gdw", "N_percent", "C_percent", "CN_ratio")) %>%
     mutate(parameter = factor(parameter, 
                               levels =  c("temp_ambient", "temp_soil", "Gravimetric_moisture", "pH", "EC" , "DO", "CO2_μg C_gdw", "NH4_mg_gdw", "NO3_mg_gdw", "N_percent", "C_percent", "CN_ratio"),
-                              labels = c("Air Temperature", "Soil Temperature", "Gravimetric Moisture", "pH", "EC" , "DO", "CO~2~ (μg gdw<sup>-1</sup>)", "NH~4~ (mg gdw<sup>-1</sup>)", "NO~3~ (mg gdw<sup>-1</sup>)", "% N", "% C", "C:N")))
+                              labels = c("Air Temperature (\u00b0C)", "Soil Temperature (\u00b0C)", "Gravimetric Moisture", "pH", "EC (\u00b5S cm<sup>-1</sup>)" , "DO (%)", "CO~2~ (μg gdw<sup>-1</sup>)", "NH~4~ (mg gdw<sup>-1</sup>)", "NO~3~ (mg gdw<sup>-1</sup>)", "% N", "% C", "C:N")))
 ```
 
 ```{r}
@@ -185,6 +185,7 @@ NIJ ARF soil data for metatranscriptome samples:
 
 ```{r}
 #| echo: false
+library(ggtext)
 
 sum_plot <- dat %>%
     filter(Rep != "CON") %>%
