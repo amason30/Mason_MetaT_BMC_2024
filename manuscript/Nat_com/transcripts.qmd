@@ -8,6 +8,7 @@ crossref:
       latex-env: supplemental
 format:
   nature-pdf:
+    latex-clean: false
     # journal.cite-style is included in the tex file but ignored by pandoc if 
     # cite-method is not `natbib`.
     journal:
