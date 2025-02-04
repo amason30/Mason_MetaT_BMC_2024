@@ -19,13 +19,13 @@ library(kableExtra)
 
 ![](../../figures/soilchem_summary.png)
 
-Supplementary Fig 1. Soil physiochemical parameters in decomposition soils during the one-year study. Data is shown for each individual donor: SP1 (gold), SP2 (blue), and SP2 (black). Values for the full 16 cm core samples were estimated by summing values interface (0-1 cm) and core (0-16 cm) reported by Taylor et al, (2024) in 1:16 and 15:16 ratios, respectively. Controls reported here are means of three experimental controls that were unimpacted by decomposition and are represented by stars.
+Supplementary Fig 1. Soil physiochemical parameters in decomposition soils during the one-year study. Data is shown for each individual donor: SP1 (gold), SP2 (blue), and SP2 (black). Values for the full 16 cm core samples were estimated by summing values interface (0-1 cm) and core (0-16 cm) reported by Taylor et al. (2024) in 1:16 and 15:16 ratios, respectively. Controls reported here are means of three experimental controls that were unimpacted by decomposition and are represented by stars.
 
 \pagebreak
 
 \includegraphics[width=1\textwidth]{../../figures/Fig_S2.png}
 
-Supplementary Fig 2. Hierarchical clustering heatmap showing the log counts per million (CPM) of the top 500 most variable genes across samples. Variable genes were determined by selecting genes with the highest variance in gene expression. Samples are clustered along the x-axis using Euclidean distances between samples and colored by study day.
+Supplementary Fig 2. Hierarchical clustering heatmap showing the log counts per million (CPM) of the top 500 most variable genes across samples. Variable genes were determined by selecting genes with the highest variance in gene expression. Samples are clustered along the x-axis using Euclidean distances between samples and colored by study day. Sample names denote donor (SP1, SP2, SP3) and sample day.
 
 \pagebreak
 
@@ -109,4 +109,8 @@ de_time %>%
 
 Supplementary Fig 4. Mean normalized log2 expression of *tauD* genes by taxonomic association (color) in control and decomposition soils at each study day. Each line represents one *tauD* gene query, while color denotes taxonomic association as determined by eggNOG-mapper.
 
+\pagebreak
 
+\includegraphics[width=0.95\textwidth]{../../figures/phases_MetaTsamples.png}
+
+Supplementary Fig 5. Sampling timepoints chosen for this study based key phases of microbial activity. Lines show respiration reference data from Taylor et al. (2024) for both warm season (red) and cool season (blue) decomposition trials, along with control soils (black) as a function of soil accumulated degree hours (ADH). Oxic/hypoxic status is based on soil oxygen data from Taylor et al. (2024). Samples selected from the warm season trial for the metatranscriptomic analysis in this present study are indicated by black arrows; study day indicates days since decomposition initiated.
