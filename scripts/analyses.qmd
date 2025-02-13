@@ -349,8 +349,8 @@ cols = c("#ADD8E6" ,"#8AACD3", "#6781C1", "#4556AF" ,"#222B9D", "#00008B")
 
 #pink to dark blue pal
 cols2 = c("#FB7B8E","#FAA7B8","#CDB3D4","#AAB6FB","#6096FD","#031B88")
-cols2 <- setNames(cols2, levels(mds_df$Study_day)) 
-cols2_df <- as.data.frame(cols2) %>% rownames_to_column(var = "Study_day")
+# cols2 <- setNames(cols2, levels(mds_df$Study_day)) 
+# cols2_df <- as.data.frame(cols2) %>% rownames_to_column(var = "Study_day")
 
 mds_df2 <- mds_df %>%
   mutate(phase = case_when(Trt == "Control" ~ "Control",
@@ -361,7 +361,14 @@ mds_df2 <- mds_df %>%
                            Study_day == 168 ~ "Recovery",
                            Study_day == 376 ~ "Recovery",
                            TRUE ~ NA_character_),
-         phase = factor(phase, levels = c("Control", "Initial", "Bloom", "Climax", "Decline", "Recovery"))) 
+         phase = factor(phase, levels = c("Control", "Initial", "Bloom", "Climax", "Decline", "Recovery")),
+         day_phase = case_when(Study_day == 0 ~ "Day 0 (Initial)",
+                               Study_day == 12 ~ "Day 12 (Bloom)",
+                               Study_day == 58 ~ "Day 58 (Climax)",
+                               Study_day == 86 ~ "Day 86 (Decline)",
+                               Study_day == 168 ~ "Day 168 (Recovery)",
+                               Study_day == 376 ~ "Day 376 (Recovery)"),
+         day_phase = factor(day_phase, levels = c("Day 0 (Initial)","Day 12 (Bloom)", "Day 58 (Climax)", "Day 86 (Decline)", "Day 168 (Recovery)", "Day 376 (Recovery)"), ordered = TRUE)) 
 
 # ,
 #          color = case_when(Study_day == 0 ~ cols2[1],
@@ -382,13 +389,13 @@ color_df <- mds_df2 %>%
 
 
 mds_day <- mds_df2 %>%
-  ggplot(aes(x = Dim1, y = Dim2, shape = phase)) +
+  ggplot(aes(x = Dim1, y = Dim2)) +
   geom_hline(yintercept= 0, color = "grey95") + 
   geom_vline(xintercept = 0, color = "grey95") + 
-  geom_point(aes(color = Study_day, fill = Study_day), size = 5) +
-  scale_shape_manual("Decomposition Phase", values = c(4, 15, 17, 16, 25, 18)) + 
+  geom_point(aes(color = day_phase, shape = trt), size = 5) +
+  scale_shape_manual("Treatment", values = c(4, 16)) + 
   scale_color_manual("Study day", values = cols2) + 
-  scale_fill_manual("Study day", values = cols2) +
+  # scale_fill_manual("Study day", values = cols2) +
   labs(x = x_lab, y = y_lab) + 
   theme_bw() + 
   theme(panel.grid.major = element_blank(),
@@ -567,27 +574,27 @@ y_lab <- paste0("CCA2 (", cca2, "%)")
 
 t <- fortify(r_sub_cca) 
 
-t %>% 
-  filter(score == "sites") %>%
-  mutate(Sample_name = TMM_count_table$Sample_name) %>% left_join(metadata_wide, by = "Sample_name")%>%
-  mutate(phase = case_when(Trt == "Control" ~ "Control",
-                           Study_day == 0 ~ "Initial",
-                           Study_day == 12 ~ "Bloom",
-                           Study_day == 58 ~ "Climax",
-                           Study_day == 86 ~ "Decline",
-                           Study_day == 168 ~ "Recovery",
-                           Study_day == 376 ~ "Recovery",
-                           TRUE ~ NA_character_),
-         phase = factor(phase, levels = c("Control", "Initial", "Bloom", "Climax", "Decline", "Recovery"))) %>%
-  ggplot() + 
-  aes(CCA1, CCA2) +
-  geom_hline(yintercept= 0, color = "grey95") + 
-  geom_vline(xintercept = 0, color = "grey95") +
-  geom_point(size = 5, aes(color = phase, shape = Rep)) +
-  scale_shape_manual(values=c(15,16,17,18)) + 
-  scale_color_manual(values = cols3) + 
-  labs(x = x_lab, y = y_lab, color = "Phase") +
-  theme_bw()
+# t %>% 
+#   filter(score == "sites") %>%
+#   mutate(Sample_name = TMM_count_table$Sample_name) %>% left_join(metadata_wide, by = "Sample_name")%>%
+#   mutate(phase = case_when(Trt == "Control" ~ "Control",
+#                            Study_day == 0 ~ "Initial",
+#                            Study_day == 12 ~ "Bloom",
+#                            Study_day == 58 ~ "Climax",
+#                            Study_day == 86 ~ "Decline",
+#                            Study_day == 168 ~ "Recovery",
+#                            Study_day == 376 ~ "Recovery",
+#                            TRUE ~ NA_character_),
+#          phase = factor(phase, levels = c("Control", "Initial", "Bloom", "Climax", "Decline", "Recovery"))) %>%
+#   ggplot() + 
+#   aes(CCA1, CCA2) +
+#   geom_hline(yintercept= 0, color = "grey95") + 
+#   geom_vline(xintercept = 0, color = "grey95") +
+#   geom_point(size = 5, aes(color = phase, shape = Rep)) +
+#   scale_shape_manual(values=c(15,16,17,18)) + 
+#   scale_color_manual(values = cols3) + 
+#   labs(x = x_lab, y = y_lab, color = "Phase") +
+#   theme_bw()
 
 get_cca_arrows <- function(fortify) {
   want <- fortify$score == "biplot"
@@ -665,15 +672,21 @@ cca_p <- t %>%
                            Study_day == 168 ~ "Recovery",
                            Study_day == 376 ~ "Recovery",
                            TRUE ~ NA_character_),
-         phase = factor(phase, levels = c("Control", "Initial", "Bloom", "Climax", "Decline", "Recovery"))) %>%
+         phase = factor(phase, levels = c("Control", "Initial", "Bloom", "Climax", "Decline", "Recovery")),
+         day_phase = case_when(Study_day == 0 ~ "Day 0 (Initial)",
+                               Study_day == 12 ~ "Day 12 (Bloom)",
+                               Study_day == 58 ~ "Day 58 (Climax)",
+                               Study_day == 86 ~ "Day 86 (Decline)",
+                               Study_day == 168 ~ "Day 168 (Recovery)",
+                               Study_day == 376 ~ "Day 376 (Recovery)"),
+         day_phase = factor(day_phase, levels = c("Day 0 (Initial)","Day 12 (Bloom)", "Day 58 (Climax)", "Day 86 (Decline)", "Day 168 (Recovery)", "Day 376 (Recovery)"), ordered = TRUE)) %>%
   ggplot() + 
   aes(CCA1, CCA2) +
   geom_hline(yintercept= 0, color = "grey95") + 
   geom_vline(xintercept = 0, color = "grey95") +
-  geom_point(aes(color = Study_day, fill = Study_day, shape = phase), size = 5) +
-  scale_shape_manual("Decomposition Phase", values = c(4, 15, 17, 16, 25, 18)) + 
+  geom_point(aes(color = day_phase, shape = trt), size = 5) +
+  scale_shape_manual("Treatment", values = c(4, 16)) + 
   scale_color_manual("Study day", values = cols2) + 
-  scale_fill_manual("Study day", values = cols2) +
   labs(x = x_lab, y = y_lab) +
   theme_bw() +
   geom_segment(data = arrows, aes(x = 0, y= 0, xend = CCA1, yend = CCA2), arrow = arrow(length = unit(0.2, "cm")), color = "black", alpha = 0.5) + 
