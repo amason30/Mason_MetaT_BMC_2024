@@ -353,13 +353,13 @@ human cadavers, with multiple parameters still impacted after one year
 low in decomposition soils. Soil electrical conductivity (EC) increased
 in response to decomposition, remaining elevated through approximately
 day 58 before gradually decreasing throughout the remainder of the study
-(Supplementary Fig. 1). Respiration (evolved CO\textsubscript{2})
-increased by an order of magnitude beginning at day 12, which
-corresponded to a reduction in soil dissolved oxygen (DO) to 29\% -
-48.9\%. Ammonium concentrations increased 78-fold, reaching maximum
-concentrations between days 12 and 58. This was followed by decreased
-ammonium and increased nitrate concentrations at day 86, with nitrate
-concentrations reaching a maximum at day 168 (Supplementary Fig. 1).
+(Fig. S1). Respiration (evolved CO\textsubscript{2}) increased by an
+order of magnitude beginning at day 12, which corresponded to a
+reduction in soil dissolved oxygen (DO) to 29\% - 48.9\%. Ammonium
+concentrations increased 78-fold, reaching maximum concentrations
+between days 12 and 58. This was followed by decreased ammonium and
+increased nitrate concentrations at day 86, with nitrate concentrations
+reaching a maximum at day 168 (Fig. S1).
 
 \subsection{Microbial gene expression in response to human
 decomposition}\label{microbial-gene-expression-in-response-to-human-decomposition}
@@ -367,11 +367,19 @@ decomposition}\label{microbial-gene-expression-in-response-to-human-decompositio
 Gene expression profiles in decomposition-impacted soils shifted away
 from controls and day zero samples as decomposition progressed
 (Fig~\ref{fig-mds}A). Expression was most different from controls on
-study days 58, 86, 168 (Supplementary Fig. 2), before starting to return
-toward control conditions on study day 376. After one year of
-decomposition, soil gene expression profiles had not returned to
-pre-decomposition conditions, as evidenced by their clustering away from
-controls and day zero samples in the MDS plot (Fig~\ref{fig-mds}A).
+study days 58, 86, 168 (Fig. S2), before starting to return toward
+control conditions on study day 376. After one year of decomposition,
+soil gene expression profiles had not returned to pre-decomposition
+conditions, as evidenced by their clustering away from controls and day
+zero samples in the MDS plot (Fig~\ref{fig-mds}A).
+
+\begin{figure}[!h]
+\caption{{\bf Microbial gene expression profiles are altered during human decomposition.}
+Multidimensional scaling (MDS) shows gene expression within soils changed as decomposition progressed (A). Canonical correspondence analysis (CCA) shows that environmental variables explained 47.3\% of the variation in gene expression profiles (B). Variables in bold red type significantly (p < 0.05) explained some of the variation in gene expression profiles as assessed by Permutational Analysis of Variance (PERMANOVA). In both panels, treatment (control, decomposition) is denoted by shape, while color represents study day with associated decomposition phase (Fig. S5) in parentheses. In B, soil physiochemical variable loadings are represented by arrows: Gravimetric water content (GWC), electrical conductivity (EC), pH (pH), dissolved oxygen (DO), respiration (evolved CO\textsubscript{2}\ \textmu mol gdw\textsuperscript{-1}), ammonium (NH\textsubscript{4}), and nitrate (NO\textsubscript{3}) concentrations (mg gdw\textsuperscript{-1}), percent carbon (\%C), percent nitrogen (\%N), carbon:nitrogen ratio (C:N), ambient temperature (T\textsubscript{A}), and soil temperature (T\textsubscript{S}).}
+\label{fig-mds}
+\end{figure}
+
+\pandocbounded{\includegraphics[keepaspectratio]{../../figures/Fig1.png}}
 
 Some correlations were observed between gene expression shifts and soil
 physiochemical data at decomposition timepoints. Canonical
@@ -388,7 +396,7 @@ internal accumulated degree hours (ADH) (p = 0.001), soil temperature (p
 = 0.039), pH (p = 0.033), and EC (p = 0.031) significantly explained
 some of the variation in gene expression profiles (p \textless{} 0.05).
 No other soil chemical variables were significant at \textalpha~= 0.05
-(Supplementary Table 1).
+(Table S1).
 
 Overall, decomposition changed soil gene expression profiles over the
 one-year study relative to control soils. Differential expression
@@ -400,22 +408,29 @@ genes whose expression was higher in control soils belonged to ten
 unique COG categories, including signal transduction mechanisms,
 transcription, and those of unknown function. In contrast, the top 20
 genes whose expression was higher in decomposition soils only fell into
-four COG categories (Supplementary Fig. 3 A): 1) post-translational
-modification, protein turnover, and chaperones; 2) energy production and
-conversion; 3) cell motility; and 4) carbohydrate transport and
-metabolism. The most common COG category represented in decomposition
-soils (80\% of the top 20 genes) was post-translational modification,
-protein turnover, and chaperones. Within this category, several heat
-shock stress response genes were identified, including clpB, dnaK,
-groL2, SSA2, HSP82, and clpB (Supplementary Table 2). Further
-investigation of these genes over time shows that their expression
-increased, typically reaching maximum transcript levels around study
-days 58 and 86 (Fig~\ref{fig-heatshock}). This corresponded to elevated
-soil temperatures below decomposing bodies between study days 12-80,
-with soil temperatures increasing to approximately 43°C
-\citep{taylor_transient_2024}, as well as maximum soil EC and minimum
-dissolved oxygen measurements between days 12 and 58 (Supplementary Fig.
-1).
+four COG categories (Fig. S3 A): 1) post-translational modification,
+protein turnover, and chaperones; 2) energy production and conversion;
+3) cell motility; and 4) carbohydrate transport and metabolism. The most
+common COG category represented in decomposition soils (80\% of the top
+20 genes) was post-translational modification, protein turnover, and
+chaperones. Within this category, several heat shock stress response
+genes were identified, including clpB, dnaK, groL2, SSA2, HSP82, and
+clpB (Table S2). Further investigation of these genes over time shows
+that their expression increased, typically reaching maximum transcript
+levels around study days 58 and 86 (Fig~\ref{fig-heatshock}). This
+corresponded to elevated soil temperatures below decomposing bodies
+between study days 12-80, with soil temperatures increasing to
+approximately 43°C \citep{taylor_transient_2024}, as well as maximum
+soil EC and minimum dissolved oxygen measurements between days 12 and 58
+(Fig. S1).
+
+\begin{figure}[!h]
+\caption{{\bf Mean normalized log2 expression of heat shock proteins identified by differential expression analysis comparing decomposition and control soils.}
+Each panel represents a single heat shock gene, labeled with gene names, identified via Prodigal. Symbol color denotes if the sample is a control (CON, green), or one of three individuals: SP1 (orange), SP2 (purple), or SP3 (pink). Error bars are standard error of individual query genes in the top 20 transcripts associated with decomposition soils.}
+\label{fig-heatshock}
+\end{figure}
+
+\pandocbounded{\includegraphics[keepaspectratio]{../../figures/Trt_DE_top15_mean_heatshockTPM.png}}
 
 Taxonomy associated with top differentially expressed gene transcripts
 also differed between control and decomposition soils. The top 40 most
@@ -424,10 +439,10 @@ soils were associated with Fungi, \emph{Actinobacteria}, and
 \emph{Xanthomonadales}, while gene transcripts in controls were
 associated with \emph{Acidobacteria}, \emph{Cyanobacteria},
 \emph{Proteobacteria} (\textalpha, \textdelta, \textgamma), and
-\emph{Planctomycetes} (Supplementary Fig. 3 B). The greatest number of
-differentially expressed genes relative to control samples was observed
-at day 86, where we saw 145,460 and 124,883 up- and down-regulated
-genes, respectively.
+\emph{Planctomycetes} (Fig. S3 B). The greatest number of differentially
+expressed genes relative to control samples was observed at day 86,
+where we saw 145,460 and 124,883 up- and down-regulated genes,
+respectively.
 
 \subsection{Temporal gene expression shows shifted decomposer
 functions}\label{temporal-gene-expression-shows-shifted-decomposer-functions}
@@ -436,7 +451,15 @@ Differential expression analysis between sequential study days revealed
 which genes were altered during decomposition. The top ten transcripts
 that changed in representation (increased/decreased), determined by the
 lowest p-values from differential expression analysis, are reported in
-Supplementary Table 3 and Fig~\ref{fig-top-day-bar}.
+Table S3 and Fig~\ref{fig-top-day-bar}.
+
+\begin{figure}[!h]
+\caption{{\bf Top twenty up- and down-regulated genes in decomposition soils comparing sequential study days (0, 12, 58, 86, 168, 376) colored by COG functional category (A) and taxonomic annotation (B).}
+Positive values denote increased expression compared to the preceding timepoint, while negative values denote a decrease.}
+\label{fig-top-day-bar}
+\end{figure}
+
+\pandocbounded{\includegraphics[keepaspectratio]{../../figures/Study.con_DE_top20_barplot.png}}
 
 Expression of genes annotated with the COG categories cell
 wall/membrane/envelope biogenesis, inorganic ion transport and
@@ -456,7 +479,7 @@ ribosomal protein large (RPL), involved in ribosomal binding. Genes
 across multiple COG categories with taxonomic associations to
 \emph{Bacilli} and \emph{Clostridia} decreased between study days 12 and
 58, six of which were transcripts that previously increased between days
-zero and 12 (Fig~\ref{fig-top-day-bar}B, Supplementary Table 3).
+zero and 12 (Fig~\ref{fig-top-day-bar}B, Table S3).
 
 Multiple transcripts associated with the energy production and
 conversion COG, as well as transcripts annotated as inorganic transport
@@ -466,15 +489,14 @@ the upregulated energy and production and conservation transcripts were
 associated with cytochrome c oxidase subunits in
 \emph{Betaproteobacteria}, while another was annotated as \emph{hao},
 encoding the enzyme hydroxylamine dehydrogenase which is involved in
-conversion of hydroxylamine to nitrite during nitrification
-(Supplementary Table 3). Further investigation into hydroxylamine
-dehydrogenase showed a significant increase in \emph{hao} transcripts at
-day 86 followed by subsequent decreases at days 168 and 376 (F = 4.183;
-\emph{p} = 0.02). This increase corresponded to decreased soil ammonium
-levels and subsequent accumulation of nitrate (Supplementary Fig. 1).
-Half of the 10 most downregulated genes between days 58 and 86 were not
-assigned to a COG (\emph{i.e.}, unclassified) or were of unknown
-function.
+conversion of hydroxylamine to nitrite during nitrification (Table S3).
+Further investigation into hydroxylamine dehydrogenase showed a
+significant increase in \emph{hao} transcripts at day 86 followed by
+subsequent decreases at days 168 and 376 (F = 4.183; \emph{p} = 0.02).
+This increase corresponded to decreased soil ammonium levels and
+subsequent accumulation of nitrate (Fig. S1). Half of the 10 most
+downregulated genes between days 58 and 86 were not assigned to a COG
+(\emph{i.e.}, unclassified) or were of unknown function.
 
 Differential expression comparing study days 86 with 168 and 168 with
 376 identified genes across a variety of functional categories, with
@@ -500,6 +522,14 @@ annotated as bacteria decreased with decomposition time (F = 10.392;
 \emph{p} = 0.001), while fungal lipase transcripts increased, reaching a
 maximum at study day 58 (F = 4.509; \emph{p} = 0.015)
 (Fig~\ref{fig-lipase}).
+
+\begin{figure}[!h]
+\caption{{\bf Mean transcript abundance, in transcripts per million (TPM), of all bacterial (A) and fungal (B) triacylglycerol lipase (EC 3.1.1.3) genes over time.}
+Abundance of both bacterial (\textit{p} = 0.001) and fungal (\textit{p} = 0.015) lipase transcripts change significantly over time. Black lines (A, B) report mean and standard deviation of TPM from three individuals (black line), while gold stars denote mean TPM in control soils. Letters are the result of post-hoc Tukey tests between decomposition timepoints. In B, bars show the relative abundance of the fungal classes \textit{Saccharomycetes}, \textit{Sordariomycetes}, and \textit{Eurotiomycetes}, reported in Taylor et al. (2024).}
+\label{fig-lipase}
+\end{figure}
+
+\pandocbounded{\includegraphics[keepaspectratio]{../../figures/Fig4.png}}
 
 \subsection{Nitrogen- and sulfur compound
 transformations}\label{nitrogen--and-sulfur-compound-transformations}
@@ -534,32 +564,48 @@ enzymes involved in dissimilatory nitrate reduction, \emph{nirB}, and
 \emph{nrfA}, was low for the first 168 days, with \emph{nrfA} expression
 increasing at day 376 (Fig~\ref{fig-n-genes}B).
 
+\begin{figure}[!h]
+\caption{{\bf Mean gene expression, in transcripts per million (TPM), of commonly used marker genes for enzymes involved in nitrogen cycling over time in controls (A) and decomposition (B) soils.}
+Data in B represent mean and standard deviation of TPM from three individuals.}
+\label{fig-n-genes}
+\end{figure}
+
+\pandocbounded{\includegraphics[keepaspectratio]{../../figures/Fig5.png}}
+
 Expression of genes involved in metabolism of nitrogen and
 sulfur-containing compounds were also impacted by human decomposition.
 Specifically, four of the top ten genes whose expression decreased at
 day 12 were related to taurine metabolism, with their annotations
-associated with \emph{tauD}, encoding taurine dioxygenase.
-(Supplementary Table 3). Further investigation into \emph{tauD} showed
-that mean expression of these genes decreased steadily over one year,
-beginning at day 12 (Fig~\ref{fig-taud-bsh}B); however, \emph{tauD}
-expression in response to human decomposition was variable across
-taxonomic associations. Most \emph{tauD} transcripts were associated
-with \emph{Gammaproteobacteria}, \emph{Actinobacteria},
-\emph{Betaproteobacteria}, \emph{Alphaproteobacteria}, and fungi. While
-a majority of the \emph{tauD} gene queries displayed reduced expression
-over time, expression of fungal-associated and a few
+associated with \emph{tauD}, encoding taurine dioxygenase. (Table S3).
+Further investigation into \emph{tauD} showed that mean expression of
+these genes decreased steadily over one year, beginning at day 12
+(Fig~\ref{fig-taud-bsh}B); however, \emph{tauD} expression in response
+to human decomposition was variable across taxonomic associations. Most
+\emph{tauD} transcripts were associated with \emph{Gammaproteobacteria},
+\emph{Actinobacteria}, \emph{Betaproteobacteria},
+\emph{Alphaproteobacteria}, and fungi. While a majority of the
+\emph{tauD} gene queries displayed reduced expression over time,
+expression of fungal-associated and a few
 \emph{Betaproteobacteria}-associated \emph{tauD} genes increased at day
-58 (Supplementary Fig. 4). Sources of taurine in the human body include
-taurine absorbed from the diet and taurine produced from anaerobic
-microbial deconjugation of bile salts via bile salt hydrolase (BSH)
-enzymes \citep{urdaneta_interactions_2017}. Therefore, we examined
-transcripts encoding BSH enzymes in decomposition soils. Expression of
-these genes was elevated at days 12, 58, and 86 before converging toward
+58 (Fig. S4). Sources of taurine in the human body include taurine
+absorbed from the diet and taurine produced from anaerobic microbial
+deconjugation of bile salts via bile salt hydrolase (BSH) enzymes
+\citep{urdaneta_interactions_2017}. Therefore, we examined transcripts
+encoding BSH enzymes in decomposition soils. Expression of these genes
+was elevated at days 12, 58, and 86 before converging toward
 pre-decomposition levels at days 168 and 376 (Fig~\ref{fig-taud-bsh}A).
 Hierarchical liner mixed effects (HLM) models showed that both
 \emph{tauD} (HLM F = 7.356, \emph{p} = 0.002) and BSH (F = 13.768,
 \emph{p} \textless{} 0.001) gene expression was significantly different
 over time (Fig~\ref{fig-taud-bsh}A,B).
+
+\begin{figure}[!h]
+\caption{{\bf Mean bile salt hydrolase, BSH, (A) and \textit{tauD}, taurine dioxygenase, (B) log2 normalized expression in controls (gold stars) and decomposition (boxplots) soils.}
+Boxplots display the 25th and 75th quartiles and median log2 normalized values between all three individuals at each timepoint. ANOVA p-value is the result of a hierarchical linear mixed effects model accounting for repeated measures of each donor block, while letters denote the results of \textit{post-hoc} Tukey test.}
+\label{fig-taud-bsh}
+\end{figure}
+
+\pandocbounded{\includegraphics[keepaspectratio]{../../figures/tauD_bsh_nlog2.png}}
 
 \section{Discussion}\label{discussion}
 
@@ -912,15 +958,15 @@ pH/ISE/Conductivity/Dissolved Oxygen portable multiparameter meter
 
 A subset of 6 study timepoints were chosen for metatranscriptomics
 analysis. Study days 0, 12, 58, 86, 168, and 376 were chosen as they
-represented distinct biogeochemical phases during decomposition
-(Supplementary Fig. 5). Study day 0 was chosen as a baseline sample
-prior to cadaver placement. Study day 12 was the start of active
-decomposition, during the initial bloom when soil microbial activity was
-rapidly increasing resulting in the onset of hypoxia: soil ammonium
-reached maximum concentrations and soil oxygen was at minimum
-(approximately 39\%). Study day 58 was during a climax period of
-sustained elevated microbial activity, characterized by high ammonium
-concentrations, hypoxia, maximum soil temperatures and minimum soil pH
+represented distinct biogeochemical phases during decomposition (Fig.
+S5). Study day 0 was chosen as a baseline sample prior to cadaver
+placement. Study day 12 was the start of active decomposition, during
+the initial bloom when soil microbial activity was rapidly increasing
+resulting in the onset of hypoxia: soil ammonium reached maximum
+concentrations and soil oxygen was at minimum (approximately 39\%).
+Study day 58 was during a climax period of sustained elevated microbial
+activity, characterized by high ammonium concentrations, hypoxia,
+maximum soil temperatures and minimum soil pH
 \citep{taylor_transient_2024}. Study day 86 represented a period of
 declining microbial activity, declining hypoxia, and increasing nitrate
 concentrations. Study day 168 was chosen as nitrate was at its maximum
@@ -1070,7 +1116,8 @@ Tukey tests. ANOVA across all timepoints were applied to hierarchical
 linear mixed effects models to account for repeated sampling within each
 donor block.
 
-\section{Data availability}\label{data-availability}
+\section{Availability of data and
+materials}\label{availability-of-data-and-materials}
 
 Raw RNA sequence files from the Illumina Novaseq are available at the
 National Center for Biotechnology Information's (NCBI) Sequence Read
@@ -1079,81 +1126,9 @@ Archive (SRA) as a part of
 PRJNA1066312} under BioSample accession numbers
 SAMN45195141-SAMN45195164. Additional datasets supporting the
 conclusions of this article are available on
-\href{https://github.com/amason30/Mason_MetaT_XXX_2024}{GitHub}.
-
-\section{Code availability}\label{code-availability}
-
-The code used for analysis and to generate figures are available on
-\href{https://github.com/amason30/Mason_MetaT_XXX_2024}{GitHub}.
-
-\section{References}\label{references}
-
-\renewcommand{\bibsection}{}
-\bibliography{bibliography.bib}
-
-\newpage
-
-\section{Figures}\label{figures}
-
-\begin{figure}[!h]
-\caption{{\bf Microbial gene expression profiles are altered during human decomposition.}
-Multidimensional scaling (MDS) shows gene expression within soils changed as decomposition progressed (A). Canonical correspondence analysis (CCA) shows that environmental variables explained 47.3\% of the variation in gene expression profiles (B). Variables in bold red type significantly (p < 0.05) explained some of the variation in gene expression profiles as assessed by Permutational Analysis of Variance (PERMANOVA). In both panels, treatment (control, decomposition) is denoted by shape, while color represents study day with associated decomposition phase (Supplementary Fig. 5) in parentheses. In B, soil physiochemical variable loadings are represented by arrows: Gravimetric water content (GWC), electrical conductivity (EC), pH (pH), dissolved oxygen (DO), respiration (evolved CO\textsubscript{2}\ \textmu mol gdw\textsuperscript{-1}), ammonium (NH\textsubscript{4}), and nitrate (NO\textsubscript{3}) concentrations (mg gdw\textsuperscript{-1}), percent carbon (\%C), percent nitrogen (\%N), carbon:nitrogen ratio (C:N), ambient temperature (T\textsubscript{A}), and soil temperature (T\textsubscript{S}).}
-\label{fig-mds}
-\end{figure}
-
-\pandocbounded{\includegraphics[keepaspectratio]{../../figures/Fig1.png}}
-
-\pagebreak
-
-\begin{figure}[!h]
-\caption{{\bf Mean normalized log2 expression of heat shock proteins identified by differential expression analysis comparing decomposition and control soils.}
-Each panel represents a single heat shock gene, labeled with gene names, identified via Prodigal. Symbol color denotes if the sample is a control (CON, green), or one of three individuals: SP1 (orange), SP2 (purple), or SP3 (pink). Error bars are standard error of individual query genes in the top 20 transcripts associated with decomposition soils.}
-\label{fig-heatshock}
-\end{figure}
-
-\pandocbounded{\includegraphics[keepaspectratio]{../../figures/Trt_DE_top15_mean_heatshockTPM.png}}
-
-\pagebreak
-
-\begin{figure}[!h]
-\caption{{\bf Top twenty up- and down-regulated genes in decomposition soils comparing sequential study days (0, 12, 58, 86, 168, 376) colored by COG functional category (A) and taxonomic annotation (B).}
-Positive values denote increased expression compared to the preceding timepoint, while negative values denote a decrease.}
-\label{fig-top-day-bar}
-\end{figure}
-
-\pandocbounded{\includegraphics[keepaspectratio]{../../figures/Study.con_DE_top20_barplot.png}}
-
-\pagebreak
-
-\begin{figure}[!h]
-\caption{{\bf Mean transcript abundance, in transcripts per million (TPM), of all bacterial (A) and fungal (B) triacylglycerol lipase (EC 3.1.1.3) genes over time.}
-Abundance of both bacterial (\textit{p} = 0.001) and fungal (\textit{p} = 0.015) lipase transcripts change significantly over time. Black lines (A, B) report mean and standard deviation of TPM from three individuals (black line), while gold stars denote mean TPM in control soils. Letters are the result of post-hoc Tukey tests between decomposition timepoints. In B, bars show the relative abundance of the fungal classes \textit{Saccharomycetes}, \textit{Sordariomycetes}, and \textit{Eurotiomycetes}, reported in Taylor et al. (2024).}
-\label{fig-lipase}
-\end{figure}
-
-\pandocbounded{\includegraphics[keepaspectratio]{../../figures/Fig4.png}}
-
-\pagebreak
-
-\begin{figure}[!h]
-\caption{{\bf Mean gene expression, in transcripts per million (TPM), of commonly used marker genes for enzymes involved in nitrogen cycling over time in controls (A) and decomposition (B) soils.}
-Data in B represent mean and standard deviation of TPM from three individuals.}
-\label{fig-n-genes}
-\end{figure}
-
-\pandocbounded{\includegraphics[keepaspectratio]{../../figures/Fig5.png}}
-
-\pagebreak
-
-\begin{figure}[!h]
-\caption{{\bf Mean bile salt hydrolase, BSH, (A) and \textit{tauD}, taurine dioxygenase, (B) log2 normalized expression in controls (gold stars) and decomposition (boxplots) soils.}
-Boxplots display the 25th and 75th quartiles and median log2 normalized values between all three individuals at each timepoint. ANOVA p-value is the result of a hierarchical linear mixed effects model accounting for repeated measures of each donor block, while letters denote the results of \textit{post-hoc} Tukey test.}
-\label{fig-taud-bsh}
-\end{figure}
-
-\pandocbounded{\includegraphics[keepaspectratio]{../../figures/tauD_bsh_nlog2.png}}
-
-\newpage
+\href{https://github.com/amason30/Mason_MetaT_XXX_2024}{GitHub}. Scipts
+containing code for all analyses and to generate figures are available
+on \href{https://github.com/amason30/Mason_MetaT_XXX_2024}{GitHub}.
 
 \section{Acknowledgements}\label{acknowledgements}
 
@@ -1163,6 +1138,332 @@ experiments. We would like to thank Mary Davis for her help in managing
 the field site and helping to obtain donors for this work. This research
 was funded by a National Institute of Justice Award
 (DOJ-NIJ-2017-R2-CX-0008) to LST and JMD.
+
+\section{References}\label{references}
+
+\begin{thebibliography}{10}
+  \expandafter\ifx\csname url\endcsname\relax
+    \def\url#1{\burl{#1}}\fi
+  \expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL }\fi
+  \providecommand{\bibinfo}[2]{#2}
+  \providecommand{\eprint}[2][]{\url{#2}}
+  \providecommand{\doi}[1]{\url{https://doi.org/#1}}
+  \bibcommenthead
+  
+  \bibitem{benninger_biochemical_2008}
+  \bibinfo{author}{Benninger, L.~A.}, \bibinfo{author}{Carter, D.~O.} \& \bibinfo{author}{Forbes, S.~L.}
+  \newblock \bibinfo{title}{The biochemical alteration of soil beneath a decomposing carcass}.
+  \newblock \emph{\bibinfo{journal}{Forensic Science International}} \textbf{\bibinfo{volume}{180}}, \bibinfo{pages}{70--5} (\bibinfo{year}{2008}).
+  
+  \bibitem{towne_prairie_2000}
+  \bibinfo{author}{Towne, E.~G.}
+  \newblock \bibinfo{title}{Prairie vegetation and soil nutrient responses to ungulate carcasses}.
+  \newblock \emph{\bibinfo{journal}{Oecologia}} \textbf{\bibinfo{volume}{122}}, \bibinfo{pages}{232--239} (\bibinfo{year}{2000}).
+  
+  \bibitem{debruyn_carrion_2024}
+  \bibinfo{author}{DeBruyn, J.~M.}, \bibinfo{author}{Keenan, S.~W.} \& \bibinfo{author}{Taylor, L.~S.}
+  \newblock \bibinfo{title}{From carrion to soil: microbial recycling of animal carcasses}.
+  \newblock \emph{\bibinfo{journal}{Trends in Microbiology}} \textbf{\bibinfo{volume}{33}}, \bibinfo{pages}{194--207} (\bibinfo{year}{2025}).
+  
+  \bibitem{parmenter_carrion_2009}
+  \bibinfo{author}{Parmenter, R.~R.} \& \bibinfo{author}{MacMahon, J.~A.}
+  \newblock \bibinfo{title}{Carrion decomposition and nutrient cycling in a semiarid shrub–steppe ecosystem}.
+  \newblock \emph{\bibinfo{journal}{Ecological Monographs}} \textbf{\bibinfo{volume}{79}}, \bibinfo{pages}{637--661} (\bibinfo{year}{2009}).
+  
+  \bibitem{macdonald_carrion_2014}
+  \bibinfo{author}{Macdonald, B. C.~T.} \emph{et~al.}
+  \newblock \bibinfo{title}{Carrion decomposition causes large and lasting effects on soil amino acid and peptide flux}.
+  \newblock \emph{\bibinfo{journal}{Soil Biology and Biochemistry}} \textbf{\bibinfo{volume}{69}}, \bibinfo{pages}{132--140} (\bibinfo{year}{2014}).
+  
+  \bibitem{bump_ungulate_2009}
+  \bibinfo{author}{Bump, J.~K.} \emph{et~al.}
+  \newblock \bibinfo{title}{Ungulate carcasses perforate ecological filters and create biogeochemical hotspots in forest herbaceous layers allowing trees a competitive advantage}.
+  \newblock \emph{\bibinfo{journal}{Ecosystems}} \textbf{\bibinfo{volume}{12}}, \bibinfo{pages}{996--1007} (\bibinfo{year}{2009}).
+  
+  \bibitem{aitkenhead-peterson_mapping_2012}
+  \bibinfo{author}{Aitkenhead-Peterson, J.~A.}, \bibinfo{author}{Owings, C.~G.}, \bibinfo{author}{Alexander, M.~B.}, \bibinfo{author}{Larison, N.} \& \bibinfo{author}{Bytheway, J.~A.}
+  \newblock \bibinfo{title}{Mapping the lateral extent of human cadaver decomposition with soil chemistry}.
+  \newblock \emph{\bibinfo{journal}{Forensic Science International}} \textbf{\bibinfo{volume}{216}}, \bibinfo{pages}{127--34} (\bibinfo{year}{2012}).
+  
+  \bibitem{keenan_mortality_2018}
+  \bibinfo{author}{Keenan, S.~W.}, \bibinfo{author}{Schaeffer, S.~M.}, \bibinfo{author}{Jin, V.~L.} \& \bibinfo{author}{DeBruyn, J.~M.}
+  \newblock \bibinfo{title}{Mortality hotspots: nitrogen cycling in forest soils during vertebrate decomposition}.
+  \newblock \emph{\bibinfo{journal}{Soil Biology and Biochemistry}} \textbf{\bibinfo{volume}{121}}, \bibinfo{pages}{165--176} (\bibinfo{year}{2018}).
+  
+  \bibitem{fancher_evaluation_2017}
+  \bibinfo{author}{Fancher, J.~P.} \emph{et~al.}
+  \newblock \bibinfo{title}{An evaluation of soil chemistry in human cadaver decomposition islands: {Potential} for estimating postmortem interval ({PMI})}.
+  \newblock \emph{\bibinfo{journal}{Forensic Science International}} \textbf{\bibinfo{volume}{279}}, \bibinfo{pages}{130--139} (\bibinfo{year}{2017}).
+  
+  \bibitem{quaggiotto_dynamic_2019}
+  \bibinfo{author}{Quaggiotto, M.-M.}, \bibinfo{author}{Evans, M.~J.}, \bibinfo{author}{Higgins, A.}, \bibinfo{author}{Strong, C.} \& \bibinfo{author}{Barton, P.~S.}
+  \newblock \bibinfo{title}{Dynamic soil nutrient and moisture changes under decomposing vertebrate carcasses}.
+  \newblock \emph{\bibinfo{journal}{Biogeochemistry}} \textbf{\bibinfo{volume}{146}}, \bibinfo{pages}{71--82} (\bibinfo{year}{2019}).
+  
+  \bibitem{taylor_soil_2023}
+  \bibinfo{author}{Taylor, L.~S.} \emph{et~al.}
+  \newblock \bibinfo{title}{Soil elemental changes during human decomposition}.
+  \newblock \emph{\bibinfo{journal}{PLoS ONE}} \textbf{\bibinfo{volume}{18}}, \bibinfo{pages}{1--24} (\bibinfo{year}{2023}).
+  \newblock \bibinfo{note}{Publisher: Public Library of Science}.
+  
+  \bibitem{mason_body_2022}
+  \bibinfo{author}{Mason, A.~R.} \emph{et~al.}
+  \newblock \bibinfo{title}{Body mass index ({BMI}) impacts soil chemical and microbial response to human decomposition}.
+  \newblock \emph{\bibinfo{journal}{mSphere}} \bibinfo{pages}{e0032522} (\bibinfo{year}{2022}).
+  
+  \bibitem{taylor_transient_2024}
+  \bibinfo{author}{Taylor, L.~S.} \emph{et~al.}
+  \newblock \bibinfo{title}{Transient hypoxia drives soil microbial community dynamics and biogeochemistry during human decomposition}.
+  \newblock \emph{\bibinfo{journal}{FEMS Microbiology Ecology}} \textbf{\bibinfo{volume}{100}}, \bibinfo{pages}{fiae119} (\bibinfo{year}{2024}).
+  
+  \bibitem{keenan_microbial_2023}
+  \bibinfo{author}{Keenan, S.~W.}, \bibinfo{author}{Emmons, A.~L.} \& \bibinfo{author}{DeBruyn, J.~M.}
+  \newblock \bibinfo{title}{Microbial community coalescence and nitrogen cycling in simulated mortality decomposition hotspots}.
+  \newblock \emph{\bibinfo{journal}{Ecological Processes}} \textbf{\bibinfo{volume}{12}}, \bibinfo{pages}{45} (\bibinfo{year}{2023}).
+  
+  \bibitem{mason_microbial_2023}
+  \bibinfo{author}{Mason, A.~R.}, \bibinfo{author}{Taylor, L.~S.} \& \bibinfo{author}{DeBruyn, J.~M.}
+  \newblock \bibinfo{title}{Microbial ecology of vertebrate decomposition in terrestrial ecosystems}.
+  \newblock \emph{\bibinfo{journal}{FEMS Microbiology Ecology}} \textbf{\bibinfo{volume}{99}}, \bibinfo{pages}{fiad006} (\bibinfo{year}{2023}).
+  
+  \bibitem{burcham_total_2019}
+  \bibinfo{author}{Burcham, Z.~M.} \emph{et~al.}
+  \newblock \bibinfo{title}{Total {RNA} analysis of bacterial community structural and functional shifts throughout vertebrate decomposition}.
+  \newblock \emph{\bibinfo{journal}{Journal of Forensic Sciences}} \textbf{\bibinfo{volume}{64}}, \bibinfo{pages}{1707--1719} (\bibinfo{year}{2019}).
+  
+  \bibitem{ashe_characterization_2021}
+  \bibinfo{author}{Ashe, E.~C.}, \bibinfo{author}{Comeau, A.~M.}, \bibinfo{author}{Zejdlik, K.} \& \bibinfo{author}{O'Connell, S.~P.}
+  \newblock \bibinfo{title}{Characterization of bacterial community dynamics of the human mouth throughout decomposition via metagenomic, metatranscriptomic, and culturing techniques}.
+  \newblock \emph{\bibinfo{journal}{Frontiers in Microbiology}} \textbf{\bibinfo{volume}{12}}, \bibinfo{pages}{689493} (\bibinfo{year}{2021}).
+  
+  \bibitem{debruyn_comparative_2021}
+  \bibinfo{author}{DeBruyn, J.~M.} \emph{et~al.}
+  \newblock \bibinfo{title}{Comparative decomposition of humans and pigs: soil biogeochemistry, microbial activity and metabolomic profiles}.
+  \newblock \emph{\bibinfo{journal}{Frontiers in Microbiology}} \textbf{\bibinfo{volume}{11}}, \bibinfo{pages}{608856} (\bibinfo{year}{2021}).
+  
+  \bibitem{howard_characterization_2010}
+  \bibinfo{author}{Howard, G.~T.}, \bibinfo{author}{Duos, B.} \& \bibinfo{author}{Watson-Horzelski, E.~J.}
+  \newblock \bibinfo{title}{Characterization of the soil microbial community associated with the decomposition of a swine carcass}.
+  \newblock \emph{\bibinfo{journal}{International Biodeterioration \& Biodegradation}} \textbf{\bibinfo{volume}{64}}, \bibinfo{pages}{300--304} (\bibinfo{year}{2010}).
+  
+  \bibitem{cobaugh_functional_2015}
+  \bibinfo{author}{Cobaugh, K.~L.}, \bibinfo{author}{Schaeffer, S.~M.} \& \bibinfo{author}{DeBruyn, J.~M.}
+  \newblock \bibinfo{title}{Functional and structural succession of soil microbial communities below decomposing human cadavers}.
+  \newblock \emph{\bibinfo{journal}{Plos One}} \textbf{\bibinfo{volume}{10}}, \bibinfo{pages}{e0130201} (\bibinfo{year}{2015}).
+  
+  \bibitem{singh_temporal_2018}
+  \bibinfo{author}{Singh, B.} \emph{et~al.}
+  \newblock \bibinfo{title}{Temporal and spatial impact of human cadaver decomposition on soil bacterial and arthropod community structure and function}.
+  \newblock \emph{\bibinfo{journal}{Frontiers in Microbiology}} \textbf{\bibinfo{volume}{8}}, \bibinfo{pages}{2616} (\bibinfo{year}{2018}).
+  
+  \bibitem{urdaneta_interactions_2017}
+  \bibinfo{author}{Urdaneta, V.} \& \bibinfo{author}{Casadesús, J.}
+  \newblock \bibinfo{title}{Interactions between bacteria and bile salts in the gastrointestinal and hepatobiliary tracts}.
+  \newblock \emph{\bibinfo{journal}{Frontiers in Medicine}} \textbf{\bibinfo{volume}{4}} (\bibinfo{year}{2017}).
+  
+  \bibitem{van_der_wal_thready_2013}
+  \bibinfo{author}{van~der Wal, A.}, \bibinfo{author}{Geydan, T.~D.}, \bibinfo{author}{Kuyper, T.~W.} \& \bibinfo{author}{de~Boer, W.}
+  \newblock \bibinfo{title}{A thready affair: linking fungal diversity and community dynamics to terrestrial decomposition processes}.
+  \newblock \emph{\bibinfo{journal}{FEMS Microbiology Reviews}} \textbf{\bibinfo{volume}{37}}, \bibinfo{pages}{477--494} (\bibinfo{year}{2013}).
+  
+  \bibitem{essington_soil_2015}
+  \bibinfo{author}{Essington, M.~E.}
+  \newblock \emph{\bibinfo{title}{Soil and water chemistry: an integrative approach}}  (\bibinfo{publisher}{CRC press}, \bibinfo{year}{2015}).
+  
+  \bibitem{peng_short-term_2017}
+  \bibinfo{author}{Peng, J.}, \bibinfo{author}{Wegner, C.-E.} \& \bibinfo{author}{Liesack, W.}
+  \newblock \bibinfo{title}{Short-term exposure of paddy soil microbial communities to salt stress triggers different transcriptional responses of key taxonomic groups}.
+  \newblock \emph{\bibinfo{journal}{Frontiers in Microbiology}} \textbf{\bibinfo{volume}{8}} (\bibinfo{year}{2017}).
+  
+  \bibitem{pandit_snapshot_2015}
+  \bibinfo{author}{Pandit, A.~S.} \emph{et~al.}
+  \newblock \bibinfo{title}{A snapshot of microbial communities from the {Kutch}: one of the largest salt deserts in the {World}}.
+  \newblock \emph{\bibinfo{journal}{Extremophiles}} \textbf{\bibinfo{volume}{19}}, \bibinfo{pages}{973--987} (\bibinfo{year}{2015}).
+  
+  \bibitem{metcalf_microbial_2016}
+  \bibinfo{author}{Metcalf, J.~L.} \emph{et~al.}
+  \newblock \bibinfo{title}{Microbial community assembly and metabolic function during mammalian corpse decomposition}.
+  \newblock \emph{\bibinfo{journal}{Science}} \textbf{\bibinfo{volume}{351}}, \bibinfo{pages}{158--62} (\bibinfo{year}{2016}).
+  
+  \bibitem{fu_fungal_2019}
+  \bibinfo{author}{Fu, X.} \emph{et~al.}
+  \newblock \bibinfo{title}{Fungal succession during mammalian cadaver decomposition and potential forensic implications}.
+  \newblock \emph{\bibinfo{journal}{Scientific Reports}} \textbf{\bibinfo{volume}{9}}, \bibinfo{pages}{12907} (\bibinfo{year}{2019}).
+  
+  \bibitem{dujon_genome_2004}
+  \bibinfo{author}{Dujon, B.} \emph{et~al.}
+  \newblock \bibinfo{title}{Genome evolution in yeasts}.
+  \newblock \emph{\bibinfo{journal}{Nature}} \textbf{\bibinfo{volume}{430}}, \bibinfo{pages}{35--44} (\bibinfo{year}{2004}).
+  
+  \bibitem{haridas_genome_2013}
+  \bibinfo{author}{Haridas, S.} \emph{et~al.}
+  \newblock \bibinfo{title}{The genome and transcriptome of the pine saprophyte \textit{Ophiostoma piceae}, and a comparison with the bark beetle-associated pine pathogen textit{Grosmannia clavigera}}.
+  \newblock \emph{\bibinfo{journal}{BMC Genomics}} \textbf{\bibinfo{volume}{14}}, \bibinfo{pages}{373} (\bibinfo{year}{2013}).
+  
+  \bibitem{notter_initial_2009}
+  \bibinfo{author}{Notter, S.~J.}, \bibinfo{author}{Stuart, B.~H.}, \bibinfo{author}{Rowe, R.} \& \bibinfo{author}{Langlois, N.}
+  \newblock \bibinfo{title}{The initial changes of fat deposits during the decomposition of human and pig remains}.
+  \newblock \emph{\bibinfo{journal}{Journal of Forensic Sciences}} \textbf{\bibinfo{volume}{54}}, \bibinfo{pages}{195--201} (\bibinfo{year}{2009}).
+  
+  \bibitem{kok_characterization_1995}
+  \bibinfo{author}{Kok, R.~G.} \emph{et~al.}
+  \newblock \bibinfo{title}{Characterization of the extracellular lipase, {LipA}, of {Acinetobacter} calcoaceticus {BD413} and sequence analysis of the cloned structural gene}.
+  \newblock \emph{\bibinfo{journal}{Molecular Microbiology}} \textbf{\bibinfo{volume}{15}}, \bibinfo{pages}{803--818} (\bibinfo{year}{1995}).
+  
+  \bibitem{hasan_influence_2006}
+  \bibinfo{author}{Hasan, F.}, \bibinfo{author}{Shah, A.~A.} \& \bibinfo{author}{Hameed, A.}
+  \newblock \bibinfo{title}{Influence of culture conditions on lipase production by {Bacillus} sp. {FH5}}.
+  \newblock \emph{\bibinfo{journal}{Annals of Microbiology}} \textbf{\bibinfo{volume}{56}}, \bibinfo{pages}{247--252} (\bibinfo{year}{2006}).
+  
+  \bibitem{zouaoui_production_2012}
+  \bibinfo{author}{Zouaoui, B.} \& \bibinfo{author}{Bouziane, A.}
+  \newblock \bibinfo{title}{Production, optimization and characterization of the lipase from \textit{Pseudomonas aeruginosa}}.
+  \newblock \emph{\bibinfo{journal}{Romanian Biotechnological Letters}} \textbf{\bibinfo{volume}{17}}, \bibinfo{pages}{7187--7193} (\bibinfo{year}{2012}).
+  
+  \bibitem{soler-jofra_hydroxylamine_2021}
+  \bibinfo{author}{Soler-Jofra, A.}, \bibinfo{author}{Pérez, J.} \& \bibinfo{author}{van Loosdrecht, M. C.~M.}
+  \newblock \bibinfo{title}{Hydroxylamine and the nitrogen cycle: {A} review}.
+  \newblock \emph{\bibinfo{journal}{Water Research}} \textbf{\bibinfo{volume}{190}}, \bibinfo{pages}{116723} (\bibinfo{year}{2021}).
+  
+  \bibitem{yu_nitrosomonas_2018}
+  \bibinfo{author}{Yu, R.}, \bibinfo{author}{Perez-Garcia, O.}, \bibinfo{author}{Lu, H.} \& \bibinfo{author}{Chandran, K.}
+  \newblock \bibinfo{title}{\textit{Nitrosomonas europaea} adaptation to anoxic-oxic cycling: {Insights} from transcription analysis, proteomics and metabolic network modeling}.
+  \newblock \emph{\bibinfo{journal}{Science of the Total Environment}} \textbf{\bibinfo{volume}{615}}, \bibinfo{pages}{1566--1573} (\bibinfo{year}{2018}).
+  
+  \bibitem{seidel_taurine_2019}
+  \bibinfo{author}{Seidel, U.}, \bibinfo{author}{Huebbe, P.} \& \bibinfo{author}{Rimbach, G.}
+  \newblock \bibinfo{title}{Taurine: {A} regulator of cellular redox homeostasis and skeletal muscle function}.
+  \newblock \emph{\bibinfo{journal}{Molecular Nutrition \& Food Research}} \textbf{\bibinfo{volume}{63}}, \bibinfo{pages}{1800569} (\bibinfo{year}{2019}).
+  
+  \bibitem{mora-ortiz_thanatometabolomics_2019}
+  \bibinfo{author}{Mora-Ortiz, M.}, \bibinfo{author}{Trichard, M.}, \bibinfo{author}{Oregioni, A.} \& \bibinfo{author}{Claus, S.~P.}
+  \newblock \bibinfo{title}{Thanatometabolomics: introducing {NMR}-based metabolomics to identify metabolic biomarkers of the time of death}.
+  \newblock \emph{\bibinfo{journal}{Metabolomics}} \textbf{\bibinfo{volume}{15}}, \bibinfo{pages}{37} (\bibinfo{year}{2019}).
+  
+  \bibitem{locci_1h_2019}
+  \bibinfo{author}{Locci, E.} \emph{et~al.}
+  \newblock \bibinfo{title}{A {1H} {NMR} metabolomic approach for the estimation of the time since death using aqueous humour: an animal model}.
+  \newblock \emph{\bibinfo{journal}{Metabolomics}} \textbf{\bibinfo{volume}{15}}, \bibinfo{pages}{76} (\bibinfo{year}{2019}).
+  
+  \bibitem{zelentsova_post-mortem_2016}
+  \bibinfo{author}{Zelentsova, E.~A.} \emph{et~al.}
+  \newblock \bibinfo{title}{Post-mortem changes in the metabolomic compositions of rabbit blood, aqueous and vitreous humors}.
+  \newblock \emph{\bibinfo{journal}{Metabolomics}} \textbf{\bibinfo{volume}{12}}, \bibinfo{pages}{172} (\bibinfo{year}{2016}).
+  
+  \bibitem{hoeland_katharina_investigating_2021}
+  \bibinfo{author}{Hoeland, K.~M.}
+  \newblock \emph{\bibinfo{title}{Investigating the potential of postmortem metabolomics in mammalian decomposition studies in outdoor settings}}.
+  \newblock Ph.D. thesis, \bibinfo{school}{University of Tennessee-Knoxville}, \bibinfo{address}{https://trace.tennessee.edu/utk\_graddiss/7000} (\bibinfo{year}{2021}).
+  
+  \bibitem{javan_human_2016}
+  \bibinfo{author}{Javan, G.~T.} \emph{et~al.}
+  \newblock \bibinfo{title}{Human thanatomicrobiome succession and time since death}.
+  \newblock \emph{\bibinfo{journal}{Scientific Reports}} \textbf{\bibinfo{volume}{6}}, \bibinfo{pages}{29598} (\bibinfo{year}{2016}).
+  
+  \bibitem{javan_cadaver_2017}
+  \bibinfo{author}{Javan, G.~T.}, \bibinfo{author}{Finley, S.~J.}, \bibinfo{author}{Smith, T.}, \bibinfo{author}{Miller, J.} \& \bibinfo{author}{Wilkinson, J.~E.}
+  \newblock \bibinfo{title}{Cadaver thanatomicrobiome signatures: the ubiquitous nature of {Clostridium} species in human decomposition}.
+  \newblock \emph{\bibinfo{journal}{Frontiers in Microbiology}} \textbf{\bibinfo{volume}{8}}, \bibinfo{pages}{2096} (\bibinfo{year}{2017}).
+  
+  \bibitem{debruyn_postmortem_2017}
+  \bibinfo{author}{DeBruyn, J.~M.} \& \bibinfo{author}{Hauther, K.~A.}
+  \newblock \bibinfo{title}{Postmortem succession of gut microbial communities in deceased human subjects}.
+  \newblock \emph{\bibinfo{journal}{Peerj}} \textbf{\bibinfo{volume}{5}}, \bibinfo{pages}{e3437} (\bibinfo{year}{2017}).
+  
+  \bibitem{cook_metabolism_2006}
+  \bibinfo{author}{Cook, A.~M.} \& \bibinfo{author}{Denger, K.}
+  \newblock \emph{\bibinfo{title}{Metabolism of taurine in microorganisms}}, \bibinfo{pages}{3--13} (\bibinfo{year}{2006}).
+  
+  \bibitem{kertesz_riding_2000}
+  \bibinfo{author}{Kertesz, M.~A.}
+  \newblock \bibinfo{title}{Riding the sulfur cycle – metabolism of sulfonates and sulfate esters in {Gram}-negative bacteria}.
+  \newblock \emph{\bibinfo{journal}{FEMS Microbiology Reviews}} \textbf{\bibinfo{volume}{24}}, \bibinfo{pages}{135--175} (\bibinfo{year}{2000}).
+  
+  \bibitem{bruggemann_enzymes_2004}
+  \bibinfo{author}{Brüggemann, C.}, \bibinfo{author}{Denger, K.}, \bibinfo{author}{Cook, A.~M.} \& \bibinfo{author}{Ruff, J.}
+  \newblock \bibinfo{title}{Enzymes and genes of taurine and isethionate dissimilation in \textit{Paracoccus denitrificans}}.
+  \newblock \emph{\bibinfo{journal}{Microbiology}} \textbf{\bibinfo{volume}{150}}, \bibinfo{pages}{805--816} (\bibinfo{year}{2004}).
+  
+  \bibitem{keenan_spatial_2018}
+  \bibinfo{author}{Keenan, S.~W.} \emph{et~al.}
+  \newblock \bibinfo{title}{Spatial impacts of a multi-individual grave on microbial and microfaunal communities and soil biogeochemistry}.
+  \newblock \emph{\bibinfo{journal}{PLoS One}} \textbf{\bibinfo{volume}{13}}, \bibinfo{pages}{e0208845} (\bibinfo{year}{2018}).
+  
+  \bibitem{payne_summer_1965}
+  \bibinfo{author}{Payne, J.~A.}
+  \newblock \bibinfo{title}{A summer carrion study of the baby pig \textit{Sus Scrofa} linnaeus}.
+  \newblock \emph{\bibinfo{journal}{Ecology}} \textbf{\bibinfo{volume}{46}}, \bibinfo{pages}{592--602} (\bibinfo{year}{1965}).
+  
+  \bibitem{apprill_minor_2015}
+  \bibinfo{author}{Apprill, A.}, \bibinfo{author}{McNally, S.}, \bibinfo{author}{Parsons, R.} \& \bibinfo{author}{Weber, L.}
+  \newblock \bibinfo{title}{Minor revision to {V4} region {SSU} {rRNA} {806R} gene primer greatly increases detection of {SAR11} bacterioplankton}.
+  \newblock \emph{\bibinfo{journal}{Aquatic Microbial Ecology}} \textbf{\bibinfo{volume}{75}}, \bibinfo{pages}{129--137} (\bibinfo{year}{2015}).
+  
+  \bibitem{parada_every_2016}
+  \bibinfo{author}{Parada, A.~E.}, \bibinfo{author}{Needham, D.~M.} \& \bibinfo{author}{Fuhrman, J.~A.}
+  \newblock \bibinfo{title}{Every base matters: assessing small subunit {rRNA} primers for marine microbiomes with mock communities, time series and global field samples}.
+  \newblock \emph{\bibinfo{journal}{Environmental Microbiology}} \textbf{\bibinfo{volume}{18}}, \bibinfo{pages}{1403--14} (\bibinfo{year}{2016}).
+  
+  \bibitem{arkin_kbase_2018}
+  \bibinfo{author}{Arkin, A.~P.} \emph{et~al.}
+  \newblock \bibinfo{title}{{KBase}: {The} {United} {States} {Department} of {Energy} {Systems} {Biology} {Knowledgebase}}.
+  \newblock \emph{\bibinfo{journal}{Nature Biotechnology}} \textbf{\bibinfo{volume}{36}}, \bibinfo{pages}{566--569} (\bibinfo{year}{2018}).
+  
+  \bibitem{bolger_trimmomatic_2014}
+  \bibinfo{author}{Bolger, A.~M.}, \bibinfo{author}{Lohse, M.} \& \bibinfo{author}{Usadel, B.}
+  \newblock \bibinfo{title}{Trimmomatic: a flexible trimmer for {Illumina} sequence data}.
+  \newblock \emph{\bibinfo{journal}{Bioinformatics}} \textbf{\bibinfo{volume}{30}}, \bibinfo{pages}{2114--2120} (\bibinfo{year}{2014}).
+  
+  \bibitem{bushnell_bbtools_2014}
+  \bibinfo{author}{Bushnell, B.}
+  \newblock \bibinfo{title}{{BBTools} software package} (\bibinfo{year}{2014}).
+  
+  \bibitem{li_megahit_2015}
+  \bibinfo{author}{Li, D.}, \bibinfo{author}{Liu, C.-M.}, \bibinfo{author}{Luo, R.}, \bibinfo{author}{Sadakane, K.} \& \bibinfo{author}{Lam, T.-W.}
+  \newblock \bibinfo{title}{{MEGAHIT}: an ultra-fast single-node solution for large and complex metagenomics assembly via succinct de {Bruijn} graph}.
+  \newblock \emph{\bibinfo{journal}{Bioinformatics}} \textbf{\bibinfo{volume}{31}}, \bibinfo{pages}{1674--1676} (\bibinfo{year}{2015}).
+  
+  \bibitem{hyatt_prodigal_2010}
+  \bibinfo{author}{Hyatt, D.} \emph{et~al.}
+  \newblock \bibinfo{title}{Prodigal: prokaryotic gene recognition and translation initiation site identification}.
+  \newblock \emph{\bibinfo{journal}{BMC Bioinformatics}} \textbf{\bibinfo{volume}{11}}, \bibinfo{pages}{119} (\bibinfo{year}{2010}).
+  
+  \bibitem{cantalapiedra_eggnog-mapper_2021}
+  \bibinfo{author}{Cantalapiedra, C.~P.}, \bibinfo{author}{Hernández-Plaza, A.}, \bibinfo{author}{Letunic, I.}, \bibinfo{author}{Bork, P.} \& \bibinfo{author}{Huerta-Cepas, J.}
+  \newblock \bibinfo{title}{{eggNOG}-mapper v2: functional annotation, orthology assignments, and domain prediction at the metagenomic scale}.
+  \newblock \emph{\bibinfo{journal}{Molecular Biology and Evolution}} \textbf{\bibinfo{volume}{38}}, \bibinfo{pages}{5825--5829} (\bibinfo{year}{2021}).
+  
+  \bibitem{buchfink_sensitive_2021}
+  \bibinfo{author}{Buchfink, B.}, \bibinfo{author}{Reuter, K.} \& \bibinfo{author}{Drost, H.-G.}
+  \newblock \bibinfo{title}{Sensitive protein alignments at tree-of-life scale using {DIAMOND}}.
+  \newblock \emph{\bibinfo{journal}{Nature Methods}} \textbf{\bibinfo{volume}{18}}, \bibinfo{pages}{366--368} (\bibinfo{year}{2021}).
+  
+  \bibitem{robinson_edger_2010}
+  \bibinfo{author}{Robinson, M.~D.}, \bibinfo{author}{McCarthy, D.~J.} \& \bibinfo{author}{Smyth, G.~K.}
+  \newblock \bibinfo{title}{{edgeR}: a {Bioconductor} package for differential expression analysis of digital gene expression data}.
+  \newblock \emph{\bibinfo{journal}{Bioinformatics}} \textbf{\bibinfo{volume}{26}}, \bibinfo{pages}{139--140} (\bibinfo{year}{2010}).
+  
+  \bibitem{smyth_limma_2005}
+  \bibinfo{author}{Smyth, G.~K.}
+  \newblock \bibinfo{title}{ in \textit{limma: {Linear} {Models} for {Microarray} {Data}}} (eds \bibinfo{editor}{Gentleman, R.}, \bibinfo{editor}{Carey, V.~J.}, \bibinfo{editor}{Huber, W.}, \bibinfo{editor}{Irizarry, R.~A.} \& \bibinfo{editor}{Dudoit, S.}) \emph{\bibinfo{booktitle}{Bioinformatics and {Computational} {Biology} {Solutions} {Using} {R} and {Bioconductor}}} \bibinfo{pages}{397--420} (\bibinfo{publisher}{Springer New York}, \bibinfo{address}{New York, NY}, \bibinfo{year}{2005}).
+  
+  \bibitem{phipson_differential_2020}
+  \bibinfo{author}{Phipson, B.} \emph{et~al.}
+  \newblock \bibinfo{title}{Differential expression analysis} (\bibinfo{year}{2020}).
+  \newblock \urlprefix\url{https://combine-australia.github.io/RNAseq-R/06-rnaseq-day1.html#References}.
+  
+  \bibitem{wickham_ggplot2_2016}
+  \bibinfo{author}{Wickham, H.}
+  \newblock \emph{\bibinfo{title}{ggplot2: {Elegant} {Graphics} for {Data} {Analysis}}}  (\bibinfo{publisher}{Springer-Verlag New York}, \bibinfo{year}{2016}).
+  \newblock \urlprefix\url{https://ggplot2.tidyverse.org}.
+  
+  \bibitem{oksanen_vegan_2024}
+  \bibinfo{author}{Oksanen, J.} \emph{et~al.}
+  \newblock \emph{\bibinfo{title}{vegan: {Community} {Ecology} {Package}}}  (\bibinfo{year}{2024}).
+  \newblock \urlprefix\url{https://vegandevs.github.io/vegan/}.
+  
+  \end{thebibliography}
+  
 
 
 

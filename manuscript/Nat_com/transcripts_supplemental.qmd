@@ -19,17 +19,17 @@ library(kableExtra)
 
 ![](../../figures/soilchem_summary.png)
 
-Supplementary Fig 1. Soil physiochemical parameters in decomposition soils during the one-year study. Data is shown for each individual donor: SP1 (gold), SP2 (blue), and SP2 (black). Values for the full 16 cm core samples were estimated by summing values interface (0-1 cm) and core (0-16 cm) reported by Taylor et al. (2024) in 1:16 and 15:16 ratios, respectively. Controls reported here are means of three experimental controls that were unimpacted by decomposition and are represented by stars.
+Figure S1. Soil physiochemical parameters in decomposition soils during the one-year study. Data is shown for each individual donor: SP1 (gold), SP2 (blue), and SP2 (black). Values for the full 16 cm core samples were estimated by summing values interface (0-1 cm) and core (0-16 cm) reported by Taylor et al. (2024) in 1:16 and 15:16 ratios, respectively. Controls reported here are means of three experimental controls that were unimpacted by decomposition and are represented by stars.
 
 \pagebreak
 
 \includegraphics[width=1\textwidth]{../../figures/Fig_S2.png}
 
-Supplementary Fig 2. Hierarchical clustering heatmap showing the log counts per million (CPM) of the top 500 most variable genes across samples. Variable genes were determined by selecting genes with the highest variance in gene expression. Samples are clustered along the x-axis using Euclidean distances between samples and colored by study day. Sample names denote donor (SP1, SP2, SP3) and sample day.
+Figure S2. Hierarchical clustering heatmap showing the log counts per million (CPM) of the top 500 most variable genes across samples. Variable genes were determined by selecting genes with the highest variance in gene expression. Samples are clustered along the x-axis using Euclidean distances between samples and colored by study day. Sample names denote donor (SP1, SP2, SP3) and sample day.
 
 \pagebreak
 
-Supplementary Table 1. Permutational analysis of variance (PERMANOVA) results identifying significant environmental parameters which explain some of the variation in soil gene expression profiles. Environmental parameter data is from Taylor et al. (2024). Variables with p < 0.05 are indicated in bold.
+Table S1. Permutational analysis of variance (PERMANOVA) results identifying significant environmental parameters which explain some of the variation in soil gene expression profiles. Environmental parameter data is from Taylor et al. (2024). Variables with p < 0.05 are indicated in bold.
 
 \includegraphics[scale=1.4,page=1]{../../tables/cca_permanova.pdf}
 
@@ -37,13 +37,13 @@ Supplementary Table 1. Permutational analysis of variance (PERMANOVA) results id
 
 \includegraphics[width=0.88\textwidth]{../../figures/Trt_DE_top20_barplot.png}
 
-Supplementary Fig 3. Top 40 up- and down-regulated genes in controls relative to decomposition soils across all study days, colored by COG functional category (A) and taxonomic annotation (B). Positive values denote higher expression in controls, while negative values are higher in decomposition soils.
+Figure S3. Top 40 up- and down-regulated genes in controls relative to decomposition soils across all study days, colored by COG functional category (A) and taxonomic annotation (B). Positive values denote higher expression in controls, while negative values are higher in decomposition soils.
 
 \pagebreak
 
 ::: {.landscape}
 
-Supplementary Table 2. Top 20 most significant up- and down-regulated gene queries, determined by log2 fold change and adjusted p-values, in control relative to decomposition soils. Positive log2 fold change values represent genes whose expression was higher in control soils, while negative log2 fold change values were higher in decomposition soils. Taxonomic annotation, COG categories, gene description, gene names, and EC were assigned via eggNOG-mapper.
+Table S2. Top 20 most significant up- and down-regulated gene queries, determined by log2 fold change and adjusted p-values, in control relative to decomposition soils. Positive log2 fold change values represent genes whose expression was higher in control soils, while negative log2 fold change values were higher in decomposition soils. Taxonomic annotation, COG categories, gene description, gene names, and EC were assigned via eggNOG-mapper.
 
 
 ```{r}
@@ -77,7 +77,7 @@ kable_styling(latex_options = c("repeat_header"))
 
 \pagebreak
 
-Supplementary Table 3. Top 10 most significant up- and down-regulated transcripts, determined by log2 fold change and adjusted p-values, for each sequential timepoint comparison. Positive log2 fold change values represent genes whose expression was higher in the later decomposition timepoint soils, while negative log2 fold change values are higher in earlier decomposition timepoint soils. Taxonomic annotation, COG categories, gene names, and EC were assigned via eggNOG-mapper. The comparison column distinguishes each timepoint comparison.
+Table S3. Top 10 most significant up- and down-regulated transcripts, determined by log2 fold change and adjusted p-values, for each sequential timepoint comparison. Positive log2 fold change values represent genes whose expression was higher in the later decomposition timepoint soils, while negative log2 fold change values are higher in earlier decomposition timepoint soils. Taxonomic annotation, COG categories, gene names, and EC were assigned via eggNOG-mapper. The comparison column distinguishes each timepoint comparison.
 
 ```{r}
 #| echo: false
@@ -107,10 +107,10 @@ de_time %>%
 
 \includegraphics[width=0.9\textwidth]{../../figures/tauD_nlog2_taxonomy.png}
 
-Supplementary Fig 4. Mean normalized log2 expression of *tauD* genes by taxonomic association (color) in control and decomposition soils at each study day. Each line represents one *tauD* gene query, while color denotes taxonomic association as determined by eggNOG-mapper.
+Figure S4. Mean normalized log2 expression of *tauD* genes by taxonomic association (color) in control and decomposition soils at each study day. Each line represents one *tauD* gene query, while color denotes taxonomic association as determined by eggNOG-mapper.
 
 \pagebreak
 
 \includegraphics[width=0.95\textwidth]{../../figures/phases_MetaTsamples.png}
 
-Supplementary Fig 5. Sampling timepoints chosen for this study based key phases of microbial activity. Lines show respiration reference data from Taylor et al. (2024) for both warm season (red) and cool season (blue) decomposition trials, along with control soils (black) as a function of soil accumulated degree hours (ADH). Oxic/hypoxic status is based on soil oxygen data from Taylor et al. (2024). Samples selected from the warm season trial for the metatranscriptomic analysis in this present study are indicated by black arrows; study day indicates days since decomposition initiated.
+Figure S5. Sampling timepoints chosen for this study based key phases of microbial activity. Lines show respiration reference data from Taylor et al. (2024) for both warm season (red) and cool season (blue) decomposition trials, along with control soils (black) as a function of soil accumulated degree hours (ADH). Oxic/hypoxic status is based on soil oxygen data from Taylor et al. (2024). Samples selected from the warm season trial for the metatranscriptomic analysis in this present study are indicated by black arrows; study day indicates days since decomposition initiated.
