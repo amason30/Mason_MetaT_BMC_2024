@@ -54,7 +54,11 @@ author:
     attributes:
       corresponding: true
 abstract: |
-  During terrestrial vertebrate decomposition, host and environmental microbial communities work together to drive biogeochemical cycling of carbon and nutrients. These mixed communities undergo dramatic restructuring in the resulting decomposition hotspots. To reveal the succession of both the active microbial members and the metabolic pathways they use, we generated metatranscriptomes from soil samples collected over one year from below three decomposing human bodies. Soil microbes increased expression of heat shock proteins in response to decomposition products changing physiochemical conditions (*i.e.*, reduced oxygen, high salt). Increased fungal lipase expression implicated fungi as key decomposers of fat tissue. Expression of nitrogen cycling genes was phased with soil oxygen concentrations: during hypoxic soil conditions, genes catalyzing N-reducing processes (*e.g.*, hydroxylamine to nitric oxide and nitrous oxide to nitrogen gas during reduced oxygen conditions) were increased, followed by increased expression of nitrification genes once oxygen diffused back into the soil. Increased expression of bile salt hydrolases implicated a microbial source for the high concentrations of taurine typically observed during vertebrate decomposition. Collectively, microbial gene expression profiles remained altered even after one year. Together, we show how human decomposition alters soil microbial gene expression, revealing both ephemeral and lasting effects on soil microbial communities. 
+  **Background** During terrestrial vertebrate decomposition, host and environmental microbial communities work together to drive biogeochemical cycling of carbon and nutrients. These mixed communities undergo dramatic restructuring in the resulting decomposition hotspots. To reveal the succession of both the active microbial members and the metabolic pathways they use, we generated metatranscriptomes from soil samples collected over one year from below three decomposing human bodies. 
+  
+  **Results** Soil microbes increased expression of heat shock proteins in response to decomposition products changing physiochemical conditions (*i.e.*, reduced oxygen, high salt). Increased fungal lipase expression implicated fungi as key decomposers of fat tissue. Expression of nitrogen cycling genes was phased with soil oxygen concentrations: during hypoxic soil conditions, genes catalyzing N-reducing processes (*e.g.*, hydroxylamine to nitric oxide and nitrous oxide to nitrogen gas during reduced oxygen conditions) were increased, followed by increased expression of nitrification genes once oxygen diffused back into the soil. Increased expression of bile salt hydrolases implicated a microbial source for the high concentrations of taurine typically observed during vertebrate decomposition. 
+  
+  **Conclusions** Collectively, microbial gene expression profiles remained altered even after one year. Together, we show how human decomposition alters soil microbial gene expression, revealing both ephemeral and lasting effects on soil microbial communities. 
 keywords: [Human Decomposition, Microbial Succession, Metatranscriptomics, Soil Microbial Ecology]
 bibliography: bibliography.bib  
 ---
@@ -376,13 +380,27 @@ Raw counts were then log2 normalized and gene expression profiles compared via m
 For differential expression analysis, raw filtered reads were normalized using edgeR’s trimmed mean of M values (TMM) normalization using the function calcNormFactors(). TMM normalized reads were then log2 transformed using limma’s voom() and differential expression assessed. Empirical Bayes shrinkage was used correct to p-values for false discovery rates. The topmost up and down regulated genes for each comparison, determined by log2 fold change and adjusted p-values, were then reported. Expression of certain genes were assessed after performing transcripts per million (TPM) normalization and statistical analyses with a combination of analysis of variance (ANOVA) and post-hoc Tukey tests. ANOVA across all timepoints were applied to hierarchical linear mixed effects models to account for repeated sampling within each donor block.
 
 
-# Availability of data and materials
+# Ethics approval and consent to participate
+All individuals were whole body donors to the Forensic Anthropology Center (https://fac.utk.edu/body-donation/) specifically for the purpose of decomposition research. No living human subjects were involved and only donors who consent to decomposition research on their donation paperwork were enrolled in this study. The University of Tennessee, Knoxville, Human Research Protections Program (HRPP) reviewed this project and determined that research with human donors is exempt under 45 CFR 46.101.
 
+# Consent for publication
+No living human subjects were involved and only donors who consent to decomposition research on their donation paperwork were enrolled in this study. 
+
+# Funding
+This research was funded by a National Institute of Justice Award (DOJ-NIJ-2017-R2-CX-0008) to LST and JMD.
+
+# Availability of data and materials
 Raw RNA sequence files from the Illumina Novaseq are available at the National Center for Biotechnology Information's (NCBI) Sequence Read Archive (SRA) as a part of [BioProject PRJNA1066312](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA1066312/) under BioSample accession numbers SAMN45195141-SAMN45195164. Additional datasets supporting the conclusions of this article are available on [GitHub](https://github.com/amason30/Mason_MetaT_XXX_2024). Scipts containing code for all analyses and to generate figures are available on [GitHub](https://github.com/amason30/Mason_MetaT_XXX_2024).
+
+# Competing interests
+The authors declare that they have no competing interests.
+
+# Authors' contributions
+Conceptualization: ARM, LST, JMD; Methodology: ARM, LST, NEG, SWW, JMD; Investigation: ARM, LST, JMD; Formal Analysis: ARM; Resources: JMD, SWW; Data Curation: ARM; Writing – Original Draft: ARM, JMD; Writing – Review & Editing: LST, NEG, SWW, JMD; Visualization: ARM; Supervision: JMD; Project Administration: JMD; Funding Acquisition: LST, JMD. All authors read and approved the final manuscript."
 
 # Acknowledgements
 
-We would like to thank the Forensic Anthropology Center at the University of Tennessee-Knoxville for their help in setting up field experiments. We would like to thank Mary Davis for her help in managing the field site and helping to obtain donors for this work. This research was funded by a National Institute of Justice Award (DOJ-NIJ-2017-R2-CX-0008) to LST and JMD.
+We would like to thank the Forensic Anthropology Center at the University of Tennessee-Knoxville for their help in setting up field experiments. We would like to thank Mary Davis for her help in managing the field site and helping to obtain donors for this work.
 
 # References
 <!-- the pattern below controls the placement of the references -->
