@@ -379,27 +379,27 @@ Raw counts were then log2 normalized and gene expression profiles compared via m
 
 For differential expression analysis, raw filtered reads were normalized using edgeR’s trimmed mean of M values (TMM) normalization using the function calcNormFactors(). TMM normalized reads were then log2 transformed using limma’s voom() and differential expression assessed. Empirical Bayes shrinkage was used correct to p-values for false discovery rates. The topmost up and down regulated genes for each comparison, determined by log2 fold change and adjusted p-values, were then reported. Expression of certain genes were assessed after performing transcripts per million (TPM) normalization and statistical analyses with a combination of analysis of variance (ANOVA) and post-hoc Tukey tests. ANOVA across all timepoints were applied to hierarchical linear mixed effects models to account for repeated sampling within each donor block.
 
+# Declarations
 
-# Ethics approval and consent to participate
+## Ethics approval and consent to participate
 All individuals were whole body donors to the Forensic Anthropology Center (https://fac.utk.edu/body-donation/) specifically for the purpose of decomposition research. No living human subjects were involved and only donors who consent to decomposition research on their donation paperwork were enrolled in this study. The University of Tennessee, Knoxville, Human Research Protections Program (HRPP) reviewed this project and determined that research with human donors is exempt under 45 CFR 46.101.
 
-# Consent for publication
+## Consent for publication
 No living human subjects were involved and only donors who consent to decomposition research on their donation paperwork were enrolled in this study. 
 
-# Funding
+## Funding
 This research was funded by a National Institute of Justice Award (DOJ-NIJ-2017-R2-CX-0008) to LST and JMD.
 
-# Availability of data and materials
-Raw RNA sequence files from the Illumina Novaseq are available at the National Center for Biotechnology Information's (NCBI) Sequence Read Archive (SRA) as a part of [BioProject PRJNA1066312](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA1066312/) under BioSample accession numbers SAMN45195141-SAMN45195164. Additional datasets supporting the conclusions of this article are available on [GitHub](https://github.com/amason30/Mason_MetaT_XXX_2024). Scipts containing code for all analyses and to generate figures are available on [GitHub](https://github.com/amason30/Mason_MetaT_XXX_2024).
+## Availability of data and materials
+Raw RNA sequence files from the Illumina Novaseq are available at the National Center for Biotechnology Information's (NCBI) Sequence Read Archive (SRA) as a part of [BioProject PRJNA1066312](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA1066312/) under BioSample accession numbers SAMN45195141-SAMN45195164. Additional datasets supporting the conclusions of this article are available on [GitHub](https://github.com/amason30/Mason_MetaT_BMC_2024). Scipts containing code for all analyses and to generate figures are available on [GitHub](https://github.com/amason30/Mason_MetaT_BMC_2024).
 
-# Competing interests
+## Competing interests
 The authors declare that they have no competing interests.
 
-# Authors' contributions
-Conceptualization: ARM, LST, JMD; Methodology: ARM, LST, NEG, SWW, JMD; Investigation: ARM, LST, JMD; Formal Analysis: ARM; Resources: JMD, SWW; Data Curation: ARM; Writing – Original Draft: ARM, JMD; Writing – Review & Editing: LST, NEG, SWW, JMD; Visualization: ARM; Supervision: JMD; Project Administration: JMD; Funding Acquisition: LST, JMD. All authors read and approved the final manuscript."
+## Authors' contributions
+Conceptualization: ARM, LST, JMD; Methodology: ARM, LST, NEG, SWW, JMD; Investigation: ARM, LST, JMD; Formal Analysis: ARM; Resources: JMD, SWW; Data Curation: ARM; Writing – Original Draft: ARM, JMD; Writing – Review & Editing: LST, NEG, SWW, JMD; Visualization: ARM; Supervision: JMD; Project Administration: JMD; Funding Acquisition: LST, JMD. All authors read and approved the final manuscript.
 
-# Acknowledgements
-
+## Acknowledgements
 We would like to thank the Forensic Anthropology Center at the University of Tennessee-Knoxville for their help in setting up field experiments. We would like to thank Mary Davis for her help in managing the field site and helping to obtain donors for this work.
 
 # References
