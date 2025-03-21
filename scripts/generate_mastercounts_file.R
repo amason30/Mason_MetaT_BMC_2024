@@ -7,6 +7,8 @@ library(tidyverse)
 
 
 #import all CSV from CLC:
+# report of how *paired_trimmed_notaligned mapping.csv files were generated 
+# is in: scripts/transcript_processing_notes.docx
 
 #day 0:
 CON_0 <- read.csv(here("data/CLC_megaassembly_GOI_mappings/NIJ_0_CON_001_paired_trimmed_notaligned mapping.csv")) %>% rename(CON_0 = Total.read.count)
