@@ -1,0 +1,202 @@
+<!-- This file contains the code used to generate a gene count table for all 24 samples. For extended notes please see the file: "scripts/transcript_processing_notes.docx" -->
+
+1. Download files from Hudson Alpha, if downloading from NCBI proceed to 3.
+
+2. Merge Paired reads in CLC
+
+<!-- Importing files into CLC:
+
+    Import files into CLC:
+    Open CLC from desktop
+    A new folder named ‘Allison’ was made in CLC
+    Files were imported into CLC:
+    Hit the ‘import’ button on the top toolbar
+    Select ‘Illumia’ from the drop down
+    Too add the files for upload: select ‘add files’, navigate to the folder Allison_Mason were files were saved
+    Select files for import and hit save
+    Files were imported with default settings:
+    General options: paired reads selected
+
+    Paired read information: Paired-end(forward-reverse) selected; minimum distance = 1; maximum distance = 1000
+
+    Illuminate options: remove failed reads selected; quality scores: NCBI/Sanger to Illumina Pipeline 1.8 and later
+
+    Hit ‘Finish’
+    NOTE: The HudsonAlpha naming system does not work with this upload. This method is specifically looking fo the naming format: ID_R1_001/ ID_R2_001. Adding R1/R2 or R1_001/R2_001 to the HusonAlpha names will not work. CLC will try and pair the first 2 alphanumeric files instead of the correct pairs. Therefore, files were renamed to the following:
+
+    Paired file log (saved to CLC)
+
+    NIJ_0_CON_R1_001 (paired),63,614,592
+    NIJ_0_SP1_R1_002 (paired),91,353,623
+    NIJ_0_SP2_R1_003 (paired),101,006,659
+    NIJ_0_SP3_R1_004 (paired),90,940,450
+    NIJ_12_CON_005 (paired),95,195,127
+    NIJ_12_SP1_006 (paired),97,865,170
+    NIJ_12_SP2_007 (paired),132,290,589
+    NIJ_12_SP3_008 (paired),107,436,059
+    NIJ_58_CON_009 (paired),115,123,179
+    NIJ_58_SP1_010 (paired),109,617,223
+    NIJ_58_SP2_011 (paired),121,032,180
+    NIJ_58_SP3_012 (paired),118,617,587
+    NIJ_168_SP3_R2_020 (paired),118,157,609
+    NIJ_168_CON_R1_017 (paired),128,964,387
+    NIJ_167_SP1_018 (paired),114,895,508
+    NIJ_168_SP2_R1_019 (paired),99,627,508
+    NIJ_378_CON_R1_021 (paired),115,709,432
+    NIJ_378_SP1_022 (paired),120,555,590
+    NIJ_378_SP2_R2_023 (paired),113,572,964
+    NIJ_378_SP3_024 (paired),113,704,922
+    NIJ_86_CON_R1_013 (paired),51,892,500
+    NIJ_86_SP1_R1_014 (paired),103,783,522
+    NIJ_86_SP2_R1_015 (paired),104,722,146
+    NIJ_86_SP3_R1_016 (paired),107,059,839 -->
+
+3. Trim reads with trimmomatic (v0.36) and QC with FastQC
+
+<!-- Note: I did this in KBase; next time do not use KBase, learn command line for FastQC and Trimmomatic. After finally uploading all files as paired library files into KBase, each file was individual run through Trimmomatic using the settings described below. FastQC was checked on a random subset of files before running all files, and FastQC was run on pre- and post- trimmed files for sample 001 (NIJ_0_CON_R1_001). FastQC notes can be found in the "scripts/transcript_processing_notes.docx" file.
+
+    Uploading in KBase:
+
+        Importing files:
+
+        Login to KBase
+        Create a new narrative called ‘NIJ-ARF Metatrans’
+        Click ‘Add data’ in the top left-hand workspace
+        Select files and upload
+        Note: 2 .gz files took ~10 minutes to upload
+        Click on the arrow to the right of the uploaded file, select fastq (Do this for both files) and click the downward facing arrow
+        Import files from data to staging area:
+        Select the R1 file as the forward file
+        Select the R2 files as the reverse file
+        Unselect: single genome
+        Hit RUN
+        Note: 2 .gz files took ~ 5 min to import
+        Mar 12: Only 2 files were uploaded to KBase: the untrimmed R1 and R2 files for NIJ_CON_0_001 sample
+
+
+    Running Trimmomatic in KBase: 
+
+        1. Individually upload each sample to the staging area using the forward and reverse files are imports, resulting in a paired library file for each sample.
+        2. Trimmomatic settings in KBase:
+
+            Input: paired reads library
+
+            Enable adapter clipping:
+
+            Adapters = TruSeq3-PE-2
+
+            Seed mismatches = 2
+
+            Palindrome clip threshold = 30
+
+            Simple clip threshold = 10
+
+            Sliding window options:
+
+            Sliding window size = 4
+
+            Sliding window minimum quality = 15
+
+            Output name: name_paired_trimmomatic.fastq
+        3. Quality check with FastQC and default parameters
+
+    Export all trimmed files from KBase. --> 
+
+4. Remove rRNA with bbmap 
+
+<!-- bbmap for rRNA removal (JGI program)
+Version 38.90
+
+    1) bbmap is local, and therefore the commands need to be present on the device and the path to each command's script must be specified. Naomi has created a folder on the Desktop of computer 8 named bbmap, which contains all the code files (.sh) for each command in the bbmap suite. They can be dragged and dropped into ubuntu
+
+    2) nagivgate to output file location 
+
+    3) drag and drop the bbmap code into ubutu
+
+    4) run the following (note: this alrady contains the bbmap.sh that we dragged and dropped) -->
+
+
+'/home/wilhelmlab/Desktop/bbmap/bbmap.sh' 
+in=/media/wilhelmlab/TOX/NIJ-ARF-Metatranscriptomes/Paired_trimmed_reads/Unzipped/NIJ_0_CON_R1_001_R1_paired_trimmomatic-test_paired_85638_8_1\ \(1\).FASTQ/NIJ_0_CON_001_paired_trimmed.fastq 
+outu=NIJ_0_CON_001_paired_trimmed_notaligned.fastq 
+ref=/home/wilhelmlab/Desktop/BBMAP_contam_rRNA_refs/rrna_contam_concat_refs.fa 
+nodisk 
+maxindel=20 
+minid=0.93 
+
+5. Merge all file into one referene for co-assembly
+
+<!-- note: I tried assembling each sample individually. Gene identification and annotation was performed following this pipeline published by Pound et al.: https://www.protocols.io/view/functional-and-taxonomic-characterization-of-seque-buvbnw2n?step=3 using MetaGeneMark version 3.25 and GhostKOALA version 2.2. All code and notes for this process can be found in "scripts/transcript_processing_notes.docx". I noticed that the % mapped reads to the contig reference files are mostly below 10%, therefore it was recommended by Steve to try a mega-assembly (also co-assembly) to help improve the number of reads assembled into contigs (it was low, and seemed to only be dominant reads as the reads mapped was low (< 10%)). To mega-assemble, I first need to merge all sample files into one reference. To do this, paired, trimmed, ribosomal reduced reads were concatenated in Linux using the following command below. -->
+
+cat input_001.fastq, input_002.fastq, … input_024.fastq > NIJ_all_paired_trimmed_notaligned.fastq
+
+5. Assemble with megahit (v1.2.9)
+
+<!-- set up megahit in conda env -->
+conda create -n megahit-v1.2.9 python=3.4
+conda activate megahit-v1.2.9
+conda install -c bioconda megahit
+
+<!-- run megahit -->
+conda activate megahit-v1.2.9
+<!-- navigate to directory where you want the new output directories to go -->
+Megahit - -12 /media/wilhelmlab/Elements/NIJ_ARF_metaT/bbmap/NIJ_all_paired_trimmed_notaligned.fastq -o NIJ_all_contigs.megahit - -k-min 23 - -k-max 123 - -k-step 10 - -continue
+<!-- 12 = tells megahit the input file, 12 is specific for a paired, interleaved input file
+o = tells megahit the name of the output directory
+k-min = tells megahit the min k-mer
+k-max = tells megahit the max k-mer
+k-step = tells megahit the interval between k-min and k-max to run
+kmin-1pass = activates 1 pass mode to make assemblies more memory efficient, may be optimal for ultra-low depth datasets, such as soil
+continue = continue a megahit run from its last available check point (prevents from having to start over if an error or some problem is thrown) -->
+
+<!-- Megahit update – instead of megahit taking 1-3 days to complete, NIJ_001 only took ~1 hour to complete. The output looks ok, the n50 ~ 400. Since the run went do fast, I compared the contig stats for 001 run both with and without kmin-1pass. The overall run time was the same and the N50s were similar, if not slightly better without kmin-1-pass. I will move forward without kmin-1pass. I also compared k-min 21, kmax 81 with a script with parameters suggested by JGI for Naomi’s dataset (k-min 23, k-max 123) run with 001. The N50 was better with JGI parameters, so I will move forward with these parameters. -->
+
+<!-- Update on Megahit: to complete the mega-assembly, Megahit took ~2.25 days to run through all sequences and k-mer lengths. Overall, the mega-assembly seemed to perform better than individual assemblies, resulting in more total contigs (3969878 to 5042547; +1072669) and more basepairs assembled (2303279612 to 3080406514; +777126902). The average contig length an N50 also increased (avg contig: 610; N50: 644). -->
+
+6. Gene identification with Prodigal (V2.6.3)
+
+conda install -c bioconda prodigal
+prodigal -i NIJ_all_contigs.fa -o NIJ_all_genes -d NIJ_all_nuc.fa -a NIJ_all_proteins.fa -p meta -f gff
+
+7. Annotate genes with eggNOG mapper (V2.1.6)
+
+conda install -c bioconda eggnog-mapper
+emapper.py -i NIJ_all_proteins.fa -o NIJ_all_an - -excel
+
+<!-- Note: another error was thrown. This was stated the database was not present and to run download_eggnog_data.py. As a result, download_eggnog_data.py was run however it did not download the databases. It appears that the folder the software wants to unpack the databases into within conda does not exist. Naomi navigated to the root folder and made a new folder (mkdir) under the name the software wants. This worked out as the folder did not exist previously. download_eggnog_data.py was rerun and databases were successfully installed. The command above was rerun and started with no errors. I am expecting this to take ~2-3 days. -->
+
+8. Determine GOI
+
+<!-- I imported the excel file in R and filtered for terms ‘Bacteria’, ‘Archaea’, and ‘Fungi’. For more information, see the ‘Annotation file processing’ r file found in  at("scripts\Annotation file processing.R"). The list of gene names for GOI were saved as an excel file (NIJ_all_GOI) and .txt file. -->
+
+9. Filter reference for GOI with seqkit
+
+conda install -c bioconda seqkit
+seqkit grep -f NIJ_all_GOI.txt NIJ_all_nuc_sub.fa -o NIJ_all_GOI_nuc.fa
+
+<!-- This results in a successful subset of the sequences. This was confirmed by looking at the file size and the first few lines using the head command. Next step is to map reads from each individual file to this reference (NIJ_all_GOI_nuc.fa). -->
+
+10. Get gene counts with CLC
+<!-- 
+For this the input files are each of the 24 trimmed, clean, and bbmap rRNA removed reads files, which will be individually mapped to the GOI reference file (NIJ_all_GOI_nuc.fa). 
+
+1. import clean, trimmed read files back into CLC
+    To import fastq files into CLC, click import, then Illumina. Add the fastq files to be uploaded and be sure to un-click the ‘paired reads’ box. Even though these are paired reads, the files I am importing are interleaved. After upload, reads can be specified as paired by opening the fasta file, clicking the box with a green check mark in front of white paper. Then, next to ‘paired status’ click ‘edit’ and click the ‘paired reads’ box. Now they are paired.
+
+2. import gene of interest (GOI) list files into CLC
+    Click import, then standard. Ensure ‘automatic import’ is filled in the first page. This tells CLC to autodetect the file type for import. For this part, only the functionally and taxonomic annotated GOI lists were uploaded and searched. 
+
+3. Map reads with ‘Map reads to Reference’ tool.
+
+    To open the tool, click ‘Toolbox’, then hover over ‘Resequencing Analysis’, then select the ‘Map Reads to Reference tool’. In this scenario, the reference is the GOI list and reads files are the sequences to map. Once the tool is open do the following:
+
+    Select sequencing reads. Navigate to the reads folder and select the sequencing reads file. Click on the file of interest and then select the the ‘->’ arrow. Ensure only your file of interest is listed in the ‘selected elements’ list. Click next.
+    We wanted to search all reads files against 1 reference (NIJ_all_GOI_nuc.fa), therefore ‘batch’ in the bottom left corner was selected.
+    Select the reference file to map to. Click the file with magnifying glass in the ‘references’ section and select the GOI list file in a similar manner to step 1. Click next.
+    Mapping options. Do not change any parameters, we are running default, which are suggested by Pound et al. (2021). Click next.
+    Click ‘create report’. Then next.
+    Select where we want the output file and report to save. For this project a new folder named ‘Read_map_GOI funtax an’ was created in CLC within the ‘Allison’ folder. This is where all the files will be saved to. Click finish. -->
+
+4. Export each sample mapping (file formate: ID_paired_trimmed_notaligned mapping.csv) and generate a counts table in R using "scripts/generate_mastercounts_file.R". This will be used for downstream analyses.
+
+
